@@ -1,12 +1,14 @@
 class ApiEndPoints {
   static String baseUrl =
-      "https://app-api-vpro-as-afghanstore.milliekit.com/api/reseller/";
+      "https://app-api-vpro-wl-waslat.milliekit.com/api/reseller/";
+
+  static String publicUrl =
+      "https://app-api-vpro-wl-waslat.milliekit.com/api/public/";
 
   // static String baseUrl =
-  //     "https://app-api-vpro-wl-waslat.milliekit.com/api/reseller/";
+  //     "https://app-api-vpro-as-afghanstore.milliekit.com/api/reseller/";
 
-  static String languageUrl =
-      "https://app-api-vpro-tt.taktelcom.com/api/locale/";
+  // static String publicUrl = "https://app-api-vpro-as-afghanstore.milliekit.com/api/public/";
 
   static OtherendPoints otherendpoints = OtherendPoints();
 }
@@ -38,4 +40,6 @@ class OtherendPoints {
   final String earningtransfer = "earning-transfer";
   final String companies = "companies";
   final String loanbalance = "reseller-balances";
+  final String appsetting = "app-setting";
+  final String rechargeconfig = "get-afg-custom-recharge-config";
 }

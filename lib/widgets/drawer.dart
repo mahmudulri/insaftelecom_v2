@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:insaftelecom/helpers/download_image_helper.dart';
 import 'package:insaftelecom/pages/network.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -116,10 +115,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     imagelink: "assets/icons/user.png",
                     menuname: languagesController.tr("PROFILE"),
                     onpressed: () {
-                      mypagecontroller.changePage(
-                        ProfileScreen(),
-                        isMainPage: false,
-                      );
+                      mypagecontroller.openSubPage(ProfileScreen());
                       Navigator.pop(context);
                     },
                   ),
@@ -130,10 +126,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     imagelink: "assets/icons/set_sell_price.png",
                     menuname: languagesController.tr("SET_SALE_PRICE"),
                     onpressed: () {
-                      mypagecontroller.changePage(
-                        SellingPriceScreen(),
-                        isMainPage: false,
-                      );
+                      mypagecontroller.openSubPage(SellingPriceScreen());
                       Navigator.pop(context);
                     },
                   ),
@@ -144,7 +137,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     imagelink: "assets/icons/sub_reseller.png",
                     menuname: languagesController.tr("NETWORK"),
                     onpressed: () {
-                      mypagecontroller.changePage(Network(), isMainPage: false);
+                      mypagecontroller.openSubPage(Network());
                       Navigator.pop(context);
                     },
                   ),
@@ -155,10 +148,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     imagelink: "assets/icons/set_vendor_sell_price.png",
                     menuname: languagesController.tr("COMMISSION_GROUP"),
                     onpressed: () {
-                      mypagecontroller.changePage(
-                        CommissionGroupScreen(),
-                        isMainPage: false,
-                      );
+                      mypagecontroller.openSubPage(CommissionGroupScreen());
                       Navigator.pop(context);
                     },
                   ),
@@ -218,10 +208,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   imagelink: "assets/icons/security-safe.png",
                   menuname: languagesController.tr("CHANGE_PIN"),
                   onpressed: () {
-                    mypagecontroller.changePage(
-                      ChangePinScreen(),
-                      isMainPage: false,
-                    );
+                    mypagecontroller.openSubPage(ChangePinScreen());
                     Navigator.pop(context);
                   },
                 ),
@@ -230,10 +217,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   imagelink: "assets/icons/padlock.png",
                   menuname: languagesController.tr("CHANGE_PASSWORD"),
                   onpressed: () {
-                    mypagecontroller.changePage(
-                      ChangePasswordScreen(),
-                      isMainPage: false,
-                    );
+                    mypagecontroller.openSubPage(ChangePasswordScreen());
                     Navigator.pop(context);
                   },
                 ),
@@ -242,10 +226,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   imagelink: "assets/icons/note-text.png",
                   menuname: languagesController.tr("HELP"),
                   onpressed: () {
-                    mypagecontroller.changePage(
-                      Helpscreen(),
-                      isMainPage: false,
-                    );
+                    mypagecontroller.openSubPage(Helpscreen());
                     Navigator.pop(context);
                   },
                 ),

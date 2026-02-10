@@ -95,7 +95,7 @@ class _CommissionTransferScreenState extends State<CommissionTransferScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.goBack();
+                          mypagecontroller.handleBack();
                         },
                         child: Container(
                           height: 45,
@@ -187,10 +187,7 @@ class _CommissionTransferScreenState extends State<CommissionTransferScreen> {
                         height: 50,
                         width: double.maxFinite,
                         onpressed: () {
-                          mypagecontroller.changePage(
-                            CreateTransferScreen(),
-                            isMainPage: false,
-                          );
+                          mypagecontroller.openSubPage(CreateTransferScreen());
                         },
                       ),
                     ),

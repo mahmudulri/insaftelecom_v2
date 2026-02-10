@@ -278,7 +278,23 @@
 "BUYING_PRICE": "سعر الشراء",
 "COMPANY_NAME": "اسم الشركة",
 "VALIDITY": "الصلاحية",
-"UPDATE_GROUP": "تحديث المجموعة"
+"UPDATE_GROUP": "تحديث المجموعة",
+"ENTER_ID": "أدخل المعرف",
+"ENTER_YOUR_ID": "أدخل معرفك",
+"PIN": "الرقم السري",
+"FILTER_TRANSACTION": "تصفية المعاملات",
+"TYPE": "النوع",
+"SELECT_CATEGORY": "اختر الفئة",
+"SELECT_PURPOSE": "اختر الغرض",
+"START_DATE": "تاريخ البدء",
+"END_DATE": "تاريخ الانتهاء",
+"ADMIN_TO_RESELLER": "من المشرف إلى الموزع",
+"RESELLER_TO_ADMIN": "من الموزع إلى المشرف",
+"ORDER": "طلب",
+"MONEY_TRANSFER": "تحويل الأموال",
+"WARNING": "تحذير",
+"SELECT_START_DATE_FIRST": "يرجى اختيار تاريخ البدء أولاً"
+
 
 
 

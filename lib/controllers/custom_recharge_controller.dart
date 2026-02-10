@@ -8,6 +8,17 @@ import 'package:insaftelecom/global_controller/languages_controller.dart';
 
 import 'package:insaftelecom/utils/api_endpoints.dart';
 
+import '../global_controller/afghan_recharge_controller.dart';
+import 'conversation_controller.dart';
+import 'custom_history_controller.dart';
+
+ConversationController conversationController = Get.put(
+  ConversationController(),
+);
+
+final AfghanRechargeController controller =
+    Get.find<AfghanRechargeController>();
+
 class CustomRechargeController extends GetxController {
   TextEditingController numberController = TextEditingController();
   TextEditingController amountController = TextEditingController();
@@ -15,53 +26,16 @@ class CustomRechargeController extends GetxController {
   LanguagesController languagesController = Get.put(LanguagesController());
   final box = GetStorage();
 
-  TextEditingController pinController = TextEditingController();
+  final customhistoryController = Get.find<CustomHistoryController>();
 
   RxBool isLoading = false.obs;
-  RxBool placeingLoading = false.obs;
-
-  RxBool loadsuccess = false.obs;
-
-  Future<void> verify(BuildContext context) async {
-    try {
-      isLoading.value = true;
-      loadsuccess.value =
-          false; // Start with false, only set to true if successful.
-
-      var url = Uri.parse(
-        "${ApiEndPoints.baseUrl}confirm_pin?pin=${pinController.text}",
-      );
-
-      http.Response response = await http.get(
-        url,
-        headers: {'Authorization': 'Bearer ${box.read("userToken")}'},
-      );
-
-      final results = jsonDecode(response.body);
-
-      if (response.statusCode == 200 && results["success"] == true) {
-        pinController.clear();
-        loadsuccess.value =
-            true; // Mark as successful only if status and success are correct
-
-        // Proceed with placing the order
-        await placeOrder(context);
-      } else {
-        showErrorDialog(context, results["message"]);
-      }
-    } catch (e) {
-      showErrorDialog(context, e.toString());
-    } finally {
-      isLoading.value = false;
-    }
-  }
 
   Future<void> placeOrder(BuildContext context) async {
     try {
-      placeingLoading.value = true;
+      isLoading.value = true;
       var url = Uri.parse("${ApiEndPoints.baseUrl}custom-recharge");
       Map body = {
-        'country_id': box.read("country_id"),
+        'country_id': box.read("afghanistan_id"),
         'rechargeble_account': numberController.text,
         'amount': amountController.text,
       };
@@ -78,33 +52,37 @@ class CustomRechargeController extends GetxController {
       );
 
       final orderResults = jsonDecode(response.body);
-      print(response.statusCode.toString());
-      print(response.body.toString());
+      // print(response.statusCode.toString());
+      // print(response.body.toString());
       if (response.statusCode == 201 && orderResults["success"] == true) {
-        loadsuccess.value = false;
-        pinController.clear();
+        customhistoryController.finalList.clear();
+        customhistoryController.initialpage = 1;
+        customhistoryController.fetchHistory();
+        controller.reset();
+        conversationController.resetConversion();
+        isLoading.value = false;
+
         numberController.clear();
         box.remove("bundleID");
-        placeingLoading.value = false;
 
         showSuccessDialog(context);
       } else {
+        isLoading.value = false;
         showErrorDialog(context, orderResults["message"]);
       }
     } catch (e) {
+      isLoading.value = false;
       showErrorDialog(context, e.toString());
     }
   }
 
   void handleFailure(String message) {
-    pinController.clear();
-    loadsuccess.value = false;
-    placeingLoading.value = false;
+    isLoading.value = false;
   }
 
   void showSuccessDialog(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
-    pinController.clear();
+
     numberController.clear();
     amountController.clear();
     showDialog(
@@ -159,7 +137,7 @@ class CustomRechargeController extends GetxController {
 
   void showErrorDialog(BuildContext context, String errorMessage) {
     var screenWidth = MediaQuery.of(context).size.width;
-    pinController.clear();
+
     showDialog(
       context: context,
       builder: (context) {

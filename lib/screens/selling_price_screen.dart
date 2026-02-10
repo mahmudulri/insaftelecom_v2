@@ -28,8 +28,9 @@ class SellingPriceScreen extends StatefulWidget {
 class _SellingPriceScreenState extends State<SellingPriceScreen> {
   LanguagesController languagesController = Get.put(LanguagesController());
 
-  final SellingPriceController sellingPriceController =
-      Get.put(SellingPriceController());
+  final SellingPriceController sellingPriceController = Get.put(
+    SellingPriceController(),
+  );
 
   final box = GetStorage();
 
@@ -38,11 +39,13 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(0xff011A52), // Status bar background color
-      statusBarIconBrightness: Brightness.light, // For Android
-      statusBarBrightness: Brightness.light, // For iOS
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Color(0xff011A52), // Status bar background color
+        statusBarIconBrightness: Brightness.light, // For Android
+        statusBarBrightness: Brightness.light, // For iOS
+      ),
+    );
     sellingPriceController.fetchpriceData();
     serviceController.fetchservices();
   }
@@ -50,8 +53,9 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
   final categorisListController = Get.find<CategorisListController>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final OnlyServiceController serviceController =
-      Get.put(OnlyServiceController());
+  final OnlyServiceController serviceController = Get.put(
+    OnlyServiceController(),
+  );
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
@@ -80,7 +84,7 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.goBack();
+                          mypagecontroller.handleBack();
                         },
                         child: Container(
                           height: 45,
@@ -90,9 +94,7 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
-                            child: Icon(
-                              FontAwesomeIcons.chevronLeft,
-                            ),
+                            child: Icon(FontAwesomeIcons.chevronLeft),
                           ),
                         ),
                       ),
@@ -121,10 +123,7 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.menu,
-                              color: Colors.black,
-                            ),
+                            child: Icon(Icons.menu, color: Colors.black),
                           ),
                         ),
                       ),
@@ -133,9 +132,7 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Container(
@@ -165,17 +162,15 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                                 fontSize: screenHeight * 0.020,
                                 fontFamily:
                                     box.read("language").toString() == "Fa"
-                                        ? Get.find<FontController>().currentFont
-                                        : null,
+                                    ? Get.find<FontController>().currentFont
+                                    : null,
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
+                    SizedBox(width: 10),
                     Expanded(
                       flex: 4,
                       child: DefaultButton1(
@@ -183,9 +178,8 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                         height: 50,
                         width: double.maxFinite,
                         onpressed: () {
-                          mypagecontroller.changePage(
+                          mypagecontroller.openSubPage(
                             CreateSellingPriceScreen(),
-                            isMainPage: false,
                           );
                         },
                       ),
@@ -194,9 +188,7 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Container(
@@ -204,16 +196,24 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                 width: screenWidth,
                 // color: Colors.cyan,
                 child: Obx(
-                  () => sellingPriceController.isLoading.value == false &&
+                  () =>
+                      sellingPriceController.isLoading.value == false &&
                           serviceController.isLoading.value == false
                       ? ListView.builder(
                           padding: EdgeInsets.all(0),
                           physics: BouncingScrollPhysics(),
                           itemCount: sellingPriceController
-                              .allpricelist.value.data!.pricings!.length,
+                              .allpricelist
+                              .value
+                              .data!
+                              .pricings!
+                              .length,
                           itemBuilder: (context, index) {
                             final data = sellingPriceController
-                                .allpricelist.value.data!.pricings![index];
+                                .allpricelist
+                                .value
+                                .data!
+                                .pricings![index];
                             return Container(
                               width: screenWidth,
                               margin: EdgeInsets.only(bottom: 5),
@@ -235,8 +235,11 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
                                           image: NetworkImage(
-                                            serviceController.allservices.value
-                                                .data!.services
+                                            serviceController
+                                                .allservices
+                                                .value
+                                                .data!
+                                                .services
                                                 .firstWhere(
                                                   (srvs) =>
                                                       srvs.id.toString() ==
@@ -249,9 +252,7 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
+                                    SizedBox(width: 5),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
@@ -262,8 +263,11 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                serviceController.allservices
-                                                    .value.data!.services
+                                                serviceController
+                                                    .allservices
+                                                    .value
+                                                    .data!
+                                                    .services
                                                     .firstWhere(
                                                       (srvs) =>
                                                           srvs.id.toString() ==
@@ -283,24 +287,28 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                                                     .firstWhere(
                                                       (cat) =>
                                                           cat.id.toString() ==
-                                                          data.service!
+                                                          data
+                                                              .service!
                                                               .serviceCategoryId
                                                               .toString(),
                                                       orElse: () =>
                                                           Servicecategory(
-                                                              categoryName:
-                                                                  'null'),
+                                                            categoryName:
+                                                                'null',
+                                                          ),
                                                     )
                                                     .categoryName
                                                     .toString(),
                                                 style: TextStyle(
-                                                  fontFamily: box
+                                                  fontFamily:
+                                                      box
                                                               .read("language")
                                                               .toString() ==
                                                           "Fa"
                                                       ? Get.find<
-                                                              FontController>()
-                                                          .currentFont
+                                                              FontController
+                                                            >()
+                                                            .currentFont
                                                       : null,
                                                 ),
                                               ),
@@ -311,65 +319,67 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                languagesController
-                                                    .tr("COMMISSION_TYPE"),
+                                                languagesController.tr(
+                                                  "COMMISSION_TYPE",
+                                                ),
                                               ),
                                               Text(
                                                 data.commissionType
                                                             .toString() ==
                                                         "percentage"
-                                                    ? languagesController
-                                                        .tr("PERCENTAGE")
-                                                    : languagesController
-                                                        .tr("FIXED"),
+                                                    ? languagesController.tr(
+                                                        "PERCENTAGE",
+                                                      )
+                                                    : languagesController.tr(
+                                                        "FIXED",
+                                                      ),
                                               ),
                                             ],
                                           ),
-                                          SizedBox(
-                                            height: 4,
-                                          ),
+                                          SizedBox(height: 4),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                languagesController
-                                                    .tr("AMOUNT"),
+                                                languagesController.tr(
+                                                  "AMOUNT",
+                                                ),
                                                 style: TextStyle(
-                                                  fontFamily: box
+                                                  fontFamily:
+                                                      box
                                                               .read("language")
                                                               .toString() ==
                                                           "Fa"
                                                       ? Get.find<
-                                                              FontController>()
-                                                          .currentFont
+                                                              FontController
+                                                            >()
+                                                            .currentFont
                                                       : null,
                                                 ),
                                               ),
                                               Text(
                                                 data.amount.toString(),
                                                 style: TextStyle(
-                                                  fontFamily: box
+                                                  fontFamily:
+                                                      box
                                                               .read("language")
                                                               .toString() ==
                                                           "Fa"
                                                       ? Get.find<
-                                                              FontController>()
-                                                          .currentFont
+                                                              FontController
+                                                            >()
+                                                            .currentFont
                                                       : null,
                                                 ),
                                               ),
                                             ],
                                           ),
-                                          SizedBox(
-                                            height: 4,
-                                          ),
+                                          SizedBox(height: 4),
                                         ],
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
+                                    SizedBox(width: 5),
                                     GestureDetector(
                                       onTap: () {
                                         showDialog(
@@ -387,16 +397,14 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
                                         Icons.delete,
                                         color: Colors.red,
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),
                             );
                           },
                         )
-                      : Center(
-                          child: CircularProgressIndicator(),
-                        ),
+                      : Center(child: CircularProgressIndicator()),
                 ),
               ),
             ),
@@ -408,15 +416,13 @@ class _SellingPriceScreenState extends State<SellingPriceScreen> {
 }
 
 class DeleteDialog extends StatelessWidget {
-  DeleteDialog({
-    super.key,
-    this.priceID,
-  });
+  DeleteDialog({super.key, this.priceID});
 
   String? priceID;
 
-  final DeleteSellingPriceController controller =
-      Get.put(DeleteSellingPriceController());
+  final DeleteSellingPriceController controller = Get.put(
+    DeleteSellingPriceController(),
+  );
 
   LanguagesController languagesController = Get.put(LanguagesController());
 
@@ -433,14 +439,9 @@ class DeleteDialog extends StatelessWidget {
         children: [
           Text(
             languagesController.tr("DO_YOU_WANT_TO_DELETE"),
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
-          SizedBox(
-            height: 25,
-          ),
+          SizedBox(height: 25),
           Container(
             height: 50,
             width: screenWidth,
@@ -459,18 +460,19 @@ class DeleteDialog extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Center(
-                        child: Obx(
-                      () => Text(
-                        controller.isLoading.value == false
-                            ? languagesController.tr("YES")
-                            : languagesController.tr("PLEASE_WAIT"),
-                        style: TextStyle(
-                          color: Color(0xffFFFFFF),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                      child: Obx(
+                        () => Text(
+                          controller.isLoading.value == false
+                              ? languagesController.tr("YES")
+                              : languagesController.tr("PLEASE_WAIT"),
+                          style: TextStyle(
+                            color: Color(0xffFFFFFF),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
-                    )),
+                    ),
                   ),
                 ),
                 Spacer(),

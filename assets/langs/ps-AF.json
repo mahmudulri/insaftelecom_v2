@@ -279,7 +279,23 @@
 "BUYING_PRICE": "د پېرودلو قیمت",
 "COMPANY_NAME": "د شرکت نوم",
 "VALIDITY": "اعتبار",
-"UPDATE_GROUP": "ګروپ تازه کړئ"
+"UPDATE_GROUP": "ګروپ تازه کړئ",
+"ENTER_ID": "شناسه دننه کړئ",
+"ENTER_YOUR_ID": "خپل شناسه دننه کړئ",
+"PIN": "پین",
+"FILTER_TRANSACTION": "راکړه ورکړه فلټر کړئ",
+"TYPE": "ډول",
+"SELECT_CATEGORY": "کټګوري وټاکئ",
+"SELECT_PURPOSE": "موخه وټاکئ",
+"START_DATE": "د پیل نېټه",
+"END_DATE": "د پای نېټه",
+"ADMIN_TO_RESELLER": "له اډمین څخه پلورونکي ته",
+"RESELLER_TO_ADMIN": "له پلورونکي څخه اډمین ته",
+"ORDER": "فرمایش",
+"MONEY_TRANSFER": "د پیسو لېږد",
+"WARNING": "خبرداری",
+"SELECT_START_DATE_FIRST": "مهرباني وکړئ لومړی د پیل نېټه وټاکئ"
+
 
 
 

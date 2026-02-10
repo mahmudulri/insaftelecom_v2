@@ -279,7 +279,23 @@
 "BUYING_PRICE": "ক্রয় মূল্য",
 "COMPANY_NAME": "কোম্পানির নাম",
 "VALIDITY": "বৈধতা",
-"UPDATE_GROUP": "গ্রুপ আপডেট করুন"
+"UPDATE_GROUP": "গ্রুপ আপডেট করুন",
+"ENTER_ID": "আইডি লিখুন",
+"ENTER_YOUR_ID": "আপনার আইডি লিখুন",
+"PIN": "পিন",
+"FILTER_TRANSACTION": "লেনদেন ফিল্টার করুন",
+"TYPE": "ধরন",
+"SELECT_CATEGORY": "ক্যাটাগরি নির্বাচন করুন",
+"SELECT_PURPOSE": "উদ্দেশ্য নির্বাচন করুন",
+"START_DATE": "শুরুর তারিখ",
+"END_DATE": "শেষ তারিখ",
+"ADMIN_TO_RESELLER": "অ্যাডমিন থেকে রিসেলার",
+"RESELLER_TO_ADMIN": "রিসেলার থেকে অ্যাডমিন",
+"ORDER": "অর্ডার",
+"MONEY_TRANSFER": "মানি ট্রান্সফার",
+"WARNING": "সতর্কতা",
+"SELECT_START_DATE_FIRST": "অনুগ্রহ করে প্রথমে শুরুর তারিখ নির্বাচন করুন"
+
 
   
 }

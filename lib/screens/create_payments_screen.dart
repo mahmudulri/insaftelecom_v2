@@ -66,7 +66,7 @@ class _CreatePaymentsScreenState extends State<CreatePaymentsScreen> {
     // TODO: implement initState
     super.initState();
     paymentMethodController.fetchmethods();
-    currencyController.fetchCurrency();
+    currencyController.fetchCurrencyList();
     paymentTypeController.fetchtypes();
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -115,7 +115,7 @@ class _CreatePaymentsScreenState extends State<CreatePaymentsScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.goBack();
+                          mypagecontroller.handleBack();
                         },
                         child: Container(
                           height: 45,
@@ -442,7 +442,7 @@ class _CreatePaymentsScreenState extends State<CreatePaymentsScreen> {
                                                                   },
                                                               itemCount:
                                                                   currencyController
-                                                                      .allcurrency
+                                                                      .allcurrencylist
                                                                       .value
                                                                       .data!
                                                                       .currencies!
@@ -450,7 +450,7 @@ class _CreatePaymentsScreenState extends State<CreatePaymentsScreen> {
                                                               itemBuilder: (context, index) {
                                                                 final data =
                                                                     currencyController
-                                                                        .allcurrency
+                                                                        .allcurrencylist
                                                                         .value
                                                                         .data!
                                                                         .currencies![index];

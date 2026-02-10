@@ -57,6 +57,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   final box = GetStorage();
 
   bool showSelling = false;
+
+  final GlobalKey captureKey = GlobalKey();
+  final GlobalKey shareKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
@@ -68,16 +71,16 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         height: screenHeight,
         width: screenWidth,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25),
+          padding: EdgeInsets.only(top: 40, left: 25, right: 25),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               RepaintBoundary(
-                key: catpureKey,
+                key: captureKey,
                 child: RepaintBoundary(
                   key: shareKey,
                   child: Container(
-                    height: 480,
+                    height: 470,
                     width: screenWidth,
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -151,7 +154,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                              SizedBox(width: 10),
+                              SizedBox(width: 8),
                               Text(
                                 widget.bundleTitle.toString(),
                                 style: TextStyle(
@@ -160,6 +163,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
+                              SizedBox(width: 8),
+
                               KText(
                                 text: widget.validityType.toString() == "yearly"
                                     ? languagesController.tr("YEARLY")
@@ -228,8 +233,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 fontWeight: FontWeight.w400,
                               ),
                               SizedBox(width: 5),
-                              convertToDate(
-                                widget.createDate.toString(),
+
+                              Text(
+                                convertToDate(widget.createDate.toString()),
                                 style: TextStyle(
                                   fontSize: 15,
                                   color: Color(0xff637381),
@@ -252,8 +258,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 fontWeight: FontWeight.w400,
                               ),
                               SizedBox(width: 5),
-                              convertToLocalTime(
-                                widget.createDate.toString(),
+
+                              Text(
+                                convertToLocalTime(
+                                  widget.createDate.toString(),
+                                ),
                                 style: TextStyle(
                                   fontFamily:
                                       box.read("language").toString() == "Fa"
@@ -409,7 +418,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 5),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -434,12 +443,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         },
                         child: Icon(
                           showSelling ? Icons.visibility : Icons.visibility_off,
-                          size: 40,
+                          size: 30,
                           color: Colors.grey,
                         ),
                       ),
                       Container(
-                        height: 50,
+                        height: 45,
                         width: double.maxFinite,
                         // color: Colors.red,
                         child: Row(
@@ -448,7 +457,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                               flex: 1,
                               child: GestureDetector(
                                 onTap: () async {
-                                  capturePng();
+                                  capturePng(captureKey);
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(

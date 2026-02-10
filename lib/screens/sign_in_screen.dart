@@ -56,33 +56,33 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   final Mypagecontroller mypagecontroller = Get.put(Mypagecontroller());
-  Future<bool> showExitPopup() async {
-    final shouldExit = mypagecontroller.goBack();
-    if (shouldExit) {
-      return await showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text(languagesController.tr("EXIT_APP")),
-              content: Text(languagesController.tr("DO_YOU_WANT_TO_EXIT_APP")),
-              actions: [
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: Text(languagesController.tr("NO")),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    exit(0);
-                  },
-                  child: Text(languagesController.tr("YES")),
-                ),
-              ],
-            ),
-          ) ??
-          false;
-    }
-    setState(() {}); // Rebuild screen after popping
-    return false;
-  }
+  // Future<bool> showExitPopup() async {
+  //   final shouldExit = mypagecontroller.goBack();
+  //   if (shouldExit) {
+  //     return await showDialog(
+  //           context: context,
+  //           builder: (context) => AlertDialog(
+  //             title: Text(languagesController.tr("EXIT_APP")),
+  //             content: Text(languagesController.tr("DO_YOU_WANT_TO_EXIT_APP")),
+  //             actions: [
+  //               ElevatedButton(
+  //                 onPressed: () => Navigator.of(context).pop(false),
+  //                 child: Text(languagesController.tr("NO")),
+  //               ),
+  //               ElevatedButton(
+  //                 onPressed: () {
+  //                   exit(0);
+  //                 },
+  //                 child: Text(languagesController.tr("YES")),
+  //               ),
+  //             ],
+  //           ),
+  //         ) ??
+  //         false;
+  //   }
+  //   setState(() {}); // Rebuild screen after popping
+  //   return false;
+  // }
 
   final String phoneNumber = "+930777005805";
   @override
@@ -90,308 +90,298 @@ class _SignInScreenState extends State<SignInScreen> {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     // ignore: deprecated_member_use
-    return WillPopScope(
-      onWillPop: showExitPopup,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.white,
-        body: Padding(
-          padding: const EdgeInsets.only(top: 40),
-          child: Container(
-            height: screenHeight,
-            width: screenWidth,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/mywebp.webp'),
-                fit: BoxFit.fill,
-              ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: const EdgeInsets.only(top: 40),
+        child: Container(
+          height: screenHeight,
+          width: screenWidth,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/mywebp.webp'),
+              fit: BoxFit.fill,
             ),
-            child: Padding(
-              padding: EdgeInsets.only(top: 220, left: 20, right: 20),
-              child: Container(
-                child: Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(languagesController.tr("LANGUAGES")),
-                              content: Container(
-                                height: 350,
-                                width: screenWidth,
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: languagesController
-                                      .alllanguagedata
-                                      .length,
-                                  itemBuilder: (context, index) {
-                                    final data = languagesController
-                                        .alllanguagedata[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        final languageName = data["name"]
-                                            .toString();
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(top: 220, left: 20, right: 20),
+            child: Container(
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(languagesController.tr("LANGUAGES")),
+                            content: Container(
+                              height: 350,
+                              width: screenWidth,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount:
+                                    languagesController.alllanguagedata.length,
+                                itemBuilder: (context, index) {
+                                  final data = languagesController
+                                      .alllanguagedata[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      final languageName = data["name"]
+                                          .toString();
 
-                                        final matched = languagesController
-                                            .alllanguagedata
-                                            .firstWhere(
-                                              (lang) =>
-                                                  lang["name"] == languageName,
-                                              orElse: () => {
-                                                "isoCode": "en",
-                                                "direction": "ltr",
-                                              },
-                                            );
+                                      final matched = languagesController
+                                          .alllanguagedata
+                                          .firstWhere(
+                                            (lang) =>
+                                                lang["name"] == languageName,
+                                            orElse: () => {
+                                              "isoCode": "en",
+                                              "direction": "ltr",
+                                            },
+                                          );
 
-                                        final languageISO = matched["isoCode"]!;
-                                        final languageDirection =
-                                            matched["direction"]!;
+                                      final languageISO = matched["isoCode"]!;
+                                      final languageDirection =
+                                          matched["direction"]!;
 
-                                        // Store selected language & direction
-                                        languagesController.changeLanguage(
-                                          languageName,
-                                        );
-                                        box.write("language", languageName);
-                                        box.write(
-                                          "direction",
-                                          languageDirection,
-                                        );
+                                      // Store selected language & direction
+                                      languagesController.changeLanguage(
+                                        languageName,
+                                      );
+                                      box.write("language", languageName);
+                                      box.write("direction", languageDirection);
 
-                                        // Set locale based on ISO
-                                        Locale locale;
-                                        switch (languageISO) {
-                                          case "fa":
-                                            locale = Locale("fa", "IR");
-                                            break;
-                                          case "ar":
-                                            locale = Locale("ar", "AE");
-                                            break;
-                                          case "ps":
-                                            locale = Locale("ps", "AF");
-                                            break;
-                                          case "tr":
-                                            locale = Locale("tr", "TR");
-                                            break;
-                                          case "bn":
-                                            locale = Locale("bn", "BD");
-                                            break;
-                                          case "en":
-                                          default:
-                                            locale = Locale("en", "US");
-                                        }
+                                      // Set locale based on ISO
+                                      Locale locale;
+                                      switch (languageISO) {
+                                        case "fa":
+                                          locale = Locale("fa", "IR");
+                                          break;
+                                        case "ar":
+                                          locale = Locale("ar", "AE");
+                                          break;
+                                        case "ps":
+                                          locale = Locale("ps", "AF");
+                                          break;
+                                        case "tr":
+                                          locale = Locale("tr", "TR");
+                                          break;
+                                        case "bn":
+                                          locale = Locale("bn", "BD");
+                                          break;
+                                        case "en":
+                                        default:
+                                          locale = Locale("en", "US");
+                                      }
 
-                                        // Set app locale
-                                        setState(() {
-                                          EasyLocalization.of(
-                                            context,
-                                          )!.setLocale(locale);
-                                        });
+                                      // Set app locale
+                                      setState(() {
+                                        EasyLocalization.of(
+                                          context,
+                                        )!.setLocale(locale);
+                                      });
 
-                                        // Pop dialog
-                                        Navigator.pop(context);
+                                      // Pop dialog
+                                      Navigator.pop(context);
 
-                                        print(
-                                          "🌐 Language changed to $languageName ($languageISO), Direction: $languageDirection",
-                                        );
-                                      },
-                                      child: Container(
-                                        margin: EdgeInsets.only(bottom: 5),
-                                        height: 45,
-                                        width: screenWidth,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            width: 1,
-                                            color: Colors.grey.shade300,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
+                                      print(
+                                        "🌐 Language changed to $languageName ($languageISO), Direction: $languageDirection",
+                                      );
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.only(bottom: 5),
+                                      height: 45,
+                                      width: screenWidth,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          width: 1,
+                                          color: Colors.grey.shade300,
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Center(
-                                                child: KText(
-                                                  text: languagesController
-                                                      .alllanguagedata[index]["fullname"]
-                                                      .toString(),
-                                                ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Center(
+                                              child: KText(
+                                                text: languagesController
+                                                    .alllanguagedata[index]["fullname"]
+                                                    .toString(),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    );
-                                  },
-                                ),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        );
-                      },
-                      child: KText(
-                        text: languagesController.tr("LOGIN"),
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    KText(
-                      text: languagesController.tr("ENTER_YOUR_LOGIN_INFO"),
-                      fontSize: 12,
-                      color: Color(0xffF4F6F8),
-                    ),
-                    SizedBox(height: 10),
-                    Authtextfield(
-                      hinttext: languagesController.tr("USERNAME"),
-                      controller: signInController.usernameController,
-                    ),
-                    SizedBox(height: 10),
-                    PasswordField(
-                      hinttext: languagesController.tr("PASSWORD"),
-                      controller: signInController.passwordController,
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      children: [
-                        KText(
-                          text: languagesController.tr("FORGOT_YOUR_PASSWORD"),
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                        SizedBox(width: 8),
-                        KText(
-                          text: languagesController.tr("PASSWORD_RECOVERY"),
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Obx(
-                      () => SinInbutton(
-                        width: screenWidth,
-                        height: 50,
-                        buttonName: signInController.isLoading.value == false
-                            ? languagesController.tr("LOGIN")
-                            : languagesController.tr("PLEASE_WAIT"),
-                        onpressed: () async {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => BaseScreen(),
-                          //   ),
-                          // );
-                          if (signInController
-                                  .usernameController
-                                  .text
-                                  .isEmpty ||
-                              signInController
-                                  .passwordController
-                                  .text
-                                  .isEmpty) {
-                            Get.snackbar("Oops!", "Fill the text fields");
-                          } else {
-                            print("Attempting login...");
-                            await signInController.signIn();
-
-                            if (signInController.loginsuccess.value == false) {
-                              dashboardController.fetchDashboardData();
-                              // Navigating to the BottomNavigationbar page
-                              // countryListController.fetchCountryData();
-                              Get.toNamed(basescreen);
-
-                              // if (box.read("direction") == "rtl") {
-                              //   setState(() {
-                              //     EasyLocalization.of(context)!
-                              //         .setLocale(Locale('ar', 'AE'));
-                              //   });
-                              // } else {
-                              //   setState(() {
-                              //     EasyLocalization.of(context)!
-                              //         .setLocale(Locale('en', 'US'));
-                              //   });
-                              // }
-                            } else {
-                              print("Navigation conditions not met.");
-                            }
-                          }
+                            ),
+                          );
                         },
-                      ),
+                      );
+                    },
+                    child: KText(
+                      text: languagesController.tr("LOGIN"),
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                    SizedBox(height: 20),
-                    Container(
-                      height: 60,
+                  ),
+                  KText(
+                    text: languagesController.tr("ENTER_YOUR_LOGIN_INFO"),
+                    fontSize: 12,
+                    color: Color(0xffF4F6F8),
+                  ),
+                  SizedBox(height: 10),
+                  Authtextfield(
+                    hinttext: languagesController.tr("USERNAME"),
+                    controller: signInController.usernameController,
+                  ),
+                  SizedBox(height: 10),
+                  PasswordField(
+                    hinttext: languagesController.tr("PASSWORD"),
+                    controller: signInController.passwordController,
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      KText(
+                        text: languagesController.tr("FORGOT_YOUR_PASSWORD"),
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                      SizedBox(width: 8),
+                      KText(
+                        text: languagesController.tr("PASSWORD_RECOVERY"),
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Obx(
+                    () => SinInbutton(
                       width: screenWidth,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              whatsapp();
-                            },
-                            child: Icon(
-                              FontAwesomeIcons.whatsapp,
-                              size: 40,
-                              color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(width: 50),
-                          GestureDetector(
-                            onTap: () {
-                              showSocialPopup(context);
-                            },
-                            child: Image.asset(
-                              "assets/icons/social-media.png",
-                              height: 40,
-                            ),
-                          ),
-                          SizedBox(width: 50),
-                          GestureDetector(
-                            onTap: () {
-                              _makePhoneCall(phoneNumber);
-                            },
-                            child: Icon(
-                              FontAwesomeIcons.phone,
-                              size: 28,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
+                      height: 50,
+                      buttonName: signInController.isLoading.value == false
+                          ? languagesController.tr("LOGIN")
+                          : languagesController.tr("PLEASE_WAIT"),
+                      onpressed: () async {
+                        if (signInController.usernameController.text
+                                .trim()
+                                .isEmpty ||
+                            signInController.passwordController.text
+                                .trim()
+                                .isEmpty) {
+                          Get.snackbar("Oops!", "Fill the text fields");
+                          return;
+                        }
+
+                        await signInController.signIn();
+                      },
                     ),
-                    SizedBox(height: 20),
-                    Row(
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    height: 60,
+                    width: screenWidth,
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        KText(
-                          text: languagesController.tr(
-                            "HAVE_NOT_REGISTERED_YET",
-                          ),
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                        SizedBox(width: 8),
                         GestureDetector(
                           onTap: () {
-                            Get.to(() => SignUpScreen());
+                            whatsapp();
                           },
-                          child: KText(
-                            text: languagesController.tr("REGISTER"),
+                          child: Icon(
+                            FontAwesomeIcons.whatsapp,
+                            size: 40,
                             color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(width: 50),
+                        GestureDetector(
+                          onTap: () {
+                            showSocialPopup(context);
+                          },
+                          child: Image.asset(
+                            "assets/icons/social-media.png",
+                            height: 40,
+                          ),
+                        ),
+                        SizedBox(width: 50),
+                        GestureDetector(
+                          onTap: () {
+                            _makePhoneCall(phoneNumber);
+                          },
+                          child: Icon(
+                            FontAwesomeIcons.phone,
+                            size: 28,
+                            color: Colors.white,
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      KText(
+                        text: languagesController.tr("HAVE_NOT_REGISTERED_YET"),
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                      SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => SignUpScreen());
+                        },
+                        child: KText(
+                          text: languagesController.tr("REGISTER"),
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          signInController.usernameController.text =
+                              "01986072587";
+                          signInController.passwordController.text = "00000000";
+                        },
+                        child: Text(
+                          "01986",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () {
+                          signInController.usernameController.text =
+                              "0796321768";
+                          signInController.passwordController.text = "00000000";
+                        },
+                        child: Text(
+                          "0796321",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),

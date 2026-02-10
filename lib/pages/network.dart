@@ -103,7 +103,7 @@ class _NetworkState extends State<Network> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.goBack();
+                          mypagecontroller.handleBack();
                         },
                         child: Container(
                           height: 45,
@@ -172,10 +172,7 @@ class _NetworkState extends State<Network> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.changePage(
-                            AddNewUser(),
-                            isMainPage: false,
-                          );
+                          mypagecontroller.openSubPage(AddNewUser());
                         },
                         child: Container(
                           height: 50,
@@ -494,14 +491,12 @@ class _NetworkState extends State<Network> {
                                                         GestureDetector(
                                                           onTap: () {
                                                             mypagecontroller
-                                                                .changePage(
+                                                                .openSubPage(
                                                                   ChangeBalance(
                                                                     subID: data
                                                                         .id
                                                                         .toString(),
                                                                   ),
-                                                                  isMainPage:
-                                                                      false,
                                                                 );
                                                             Navigator.pop(
                                                               context,
@@ -534,14 +529,12 @@ class _NetworkState extends State<Network> {
                                                         GestureDetector(
                                                           onTap: () {
                                                             mypagecontroller
-                                                                .changePage(
+                                                                .openSubPage(
                                                                   SetPassword(
                                                                     subID: data
                                                                         .id
                                                                         .toString(),
                                                                   ),
-                                                                  isMainPage:
-                                                                      false,
                                                                 );
                                                             Navigator.pop(
                                                               context,
@@ -678,13 +671,14 @@ class _NetworkState extends State<Network> {
                                                         SizedBox(height: 25),
                                                         GestureDetector(
                                                           onTap: () {
-                                                            mypagecontroller.changePage(
-                                                              SetSubresellerPin(
-                                                                subID: data.id
-                                                                    .toString(),
-                                                              ),
-                                                              isMainPage: false,
-                                                            );
+                                                            mypagecontroller
+                                                                .openSubPage(
+                                                                  SetSubresellerPin(
+                                                                    subID: data
+                                                                        .id
+                                                                        .toString(),
+                                                                  ),
+                                                                );
                                                             Navigator.pop(
                                                               context,
                                                             );

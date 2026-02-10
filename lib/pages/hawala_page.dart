@@ -214,10 +214,7 @@ class _HawalaPageState extends State<HawalaPage> {
                         imagelink: "assets/icons/exchange.png",
                         mycolor: Color(0xffFE8F2D),
                         onpressed: () {
-                          mypagecontroller.changePage(
-                            HawalaListScreen(),
-                            isMainPage: false,
-                          );
+                          mypagecontroller.openSubPage(HawalaListScreen());
                         },
                       ),
                       SizedBox(height: 10),
@@ -228,10 +225,7 @@ class _HawalaPageState extends State<HawalaPage> {
                         imagelink: "assets/icons/wallet.png",
                         mycolor: Color(0xff04B75D),
                         onpressed: () {
-                          mypagecontroller.changePage(
-                            ReceiptsScreen(),
-                            isMainPage: false,
-                          );
+                          mypagecontroller.openSubPage(ReceiptsScreen());
                         },
                       ),
                       SizedBox(height: 10),
@@ -240,10 +234,7 @@ class _HawalaPageState extends State<HawalaPage> {
                         imagelink: "assets/icons/exchange-rate.png",
                         mycolor: Color(0xff4B7AFC),
                         onpressed: () {
-                          mypagecontroller.changePage(
-                            HawalaCurrencyScreen(),
-                            isMainPage: false,
-                          );
+                          mypagecontroller.openSubPage(HawalaCurrencyScreen());
                         },
                       ),
                     ],

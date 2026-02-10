@@ -5,11 +5,11 @@ import '../models/transaction_model.dart';
 import '../services/transaction_service.dart';
 
 class TransactionController extends GetxController {
-  @override
-  void onInit() {
-    fetchTransactionData();
-    super.onInit();
-  }
+  // @override
+  // void onInit() {
+  //   fetchTransactionData();
+  //   super.onInit();
+  // }
 
   var isLoading = false.obs;
 
@@ -18,7 +18,7 @@ class TransactionController extends GetxController {
   void fetchTransactionData() async {
     try {
       isLoading(true);
-      await TransactionApi().fetchTransaction().then((value) {
+      await TransactionApi().fetchTransaction(1).then((value) {
         alltransactionlist.value = value;
 
         isLoading(false);

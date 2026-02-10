@@ -218,10 +218,7 @@ class _TransactionsTypeState extends State<TransactionsType> {
                         imagelink: "assets/icons/transactionsicon.png",
                         mycolor: Color(0xff3498db),
                         onpressed: () {
-                          mypagecontroller.changePage(
-                            RequestLoanScreen(),
-                            isMainPage: false,
-                          );
+                          mypagecontroller.openSubPage(RequestLoanScreen());
                         },
                       ),
                       SizedBox(height: 10),
@@ -232,10 +229,7 @@ class _TransactionsTypeState extends State<TransactionsType> {
                         imagelink: "assets/icons/transactionsicon.png",
                         mycolor: Color(0xffDE4B5E),
                         onpressed: () {
-                          mypagecontroller.changePage(
-                            Transactions(),
-                            isMainPage: false,
-                          );
+                          mypagecontroller.openSubPage(Transactions());
                         },
                       ),
                       SizedBox(height: 10),
@@ -246,9 +240,8 @@ class _TransactionsTypeState extends State<TransactionsType> {
                         imagelink: "assets/icons/transactionsicon.png",
                         mycolor: Color(0xff9b59b6),
                         onpressed: () {
-                          mypagecontroller.changePage(
+                          mypagecontroller.openSubPage(
                             CommissionTransferScreen(),
-                            isMainPage: false,
                           );
                         },
                       ),
@@ -258,10 +251,7 @@ class _TransactionsTypeState extends State<TransactionsType> {
                         imagelink: "assets/icons/ordericon.png",
                         mycolor: Color(0xff2c3e50),
                         onpressed: () {
-                          mypagecontroller.changePage(
-                            Orders(),
-                            isMainPage: false,
-                          );
+                          mypagecontroller.openSubPage(Orders());
                         },
                       ),
                     ],

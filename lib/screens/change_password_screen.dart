@@ -78,10 +78,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.changePage(
-                            Homepages(),
-                            isMainPage: true,
-                          );
+                          mypagecontroller.handleBack();
                         },
                         child: Container(
                           height: 45,

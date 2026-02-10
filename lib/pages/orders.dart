@@ -159,7 +159,7 @@ class _OrdersState extends State<Orders> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.goBack();
+                          mypagecontroller.handleBack();
                         },
                         child: Container(
                           height: 45,
@@ -1483,6 +1483,8 @@ class DetailsDialog extends StatelessWidget {
 
   LanguagesController languagesController = Get.put(LanguagesController());
   final box = GetStorage();
+  final GlobalKey captureKey = GlobalKey();
+  final GlobalKey shareKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
@@ -1499,7 +1501,7 @@ class DetailsDialog extends StatelessWidget {
           child: Column(
             children: [
               RepaintBoundary(
-                key: catpureKey,
+                key: captureKey,
                 child: RepaintBoundary(
                   key: shareKey,
                   child: Container(
@@ -1671,7 +1673,9 @@ class DetailsDialog extends StatelessWidget {
                                                 fontSize: 15,
                                               ),
                                             ),
-                                            convertToDate(date.toString()),
+                                            Text(
+                                              convertToDate(date.toString()),
+                                            ),
                                           ],
                                         ),
                                         Row(
@@ -1685,7 +1689,11 @@ class DetailsDialog extends StatelessWidget {
                                                 fontSize: 15,
                                               ),
                                             ),
-                                            convertToLocalTime(date.toString()),
+                                            Text(
+                                              convertToLocalTime(
+                                                date.toString(),
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -1711,7 +1719,7 @@ class DetailsDialog extends StatelessWidget {
                       flex: 1,
                       child: GestureDetector(
                         onTap: () async {
-                          capturePng();
+                          capturePng(captureKey);
                         },
                         child: Container(
                           decoration: BoxDecoration(

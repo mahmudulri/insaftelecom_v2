@@ -11,7 +11,19 @@ class DashboardController extends GetxController {
     super.onInit();
   }
 
+  void onhomeTabOpened() {
+    fetchDashboardData();
+  }
+
+  void setDeactivated(String status, String message) {
+    deactiveStatus.value = status;
+    deactivateMessage.value = message;
+  }
+
   var isLoading = false.obs;
+
+  final deactiveStatus = ''.obs;
+  final deactivateMessage = ''.obs;
 
   var alldashboardData = DashboardDataModel().obs;
 
@@ -24,11 +36,7 @@ class DashboardController extends GetxController {
       isLoading(true);
       await DashboardApi().fetchDashboard().then((value) {
         alldashboardData.value = value;
-        userBalanceController.balance.value = alldashboardData
-            .value
-            .data!
-            .balance
-            .toString();
+
         isLoading(false);
       });
 

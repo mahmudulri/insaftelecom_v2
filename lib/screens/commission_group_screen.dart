@@ -74,10 +74,7 @@ class _CommissionGroupScreenState extends State<CommissionGroupScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.changePage(
-                            Homepages(),
-                            isMainPage: false,
-                          );
+                          mypagecontroller.handleBack();
                         },
                         child: Container(
                           height: 45,

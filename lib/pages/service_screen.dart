@@ -29,9 +29,9 @@ import '../controllers/dashboard_controller.dart';
 import '../controllers/service_controller.dart';
 import '../global_controller/font_controller.dart';
 import '../widgets/default_button1.dart';
-import 'country_selection.dart';
-import 'credit_transfer.dart';
-import 'social_bundles.dart';
+import '../screens/country_selection.dart';
+import '../screens/credit_transfer.dart';
+import '../screens/social_bundles.dart';
 
 class ServiceScreen extends StatefulWidget {
   ServiceScreen({super.key});
@@ -105,7 +105,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    currencyController.fetchCurrency();
+    currencyController.fetchCurrencyList();
 
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -283,10 +283,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                   } else {
                     print("Country list is empty.");
                   }
-                  mypagecontroller.changePage(
-                    CreditTransfer(),
-                    isMainPage: false,
-                  );
+                  mypagecontroller.openSubPage(CreditTransfer());
                 },
               ),
             ),
@@ -333,10 +330,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                           box.write("service_category_id", data.id);
 
                           if (data.type.toString() == "nonsocial") {
-                            mypagecontroller.changePage(
-                              InternetPack(),
-                              isMainPage: false,
-                            );
+                            mypagecontroller.openSubPage(InternetPack());
                           } else {
                             box.write("validity_type", "");
                             box.write("search_tag", "");
@@ -346,10 +340,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                             bundleController.finalList.clear();
                             bundleController.initialpage = 1;
 
-                            mypagecontroller.changePage(
-                              SocialBundles(),
-                              isMainPage: false,
-                            );
+                            mypagecontroller.openSubPage(SocialBundles());
                           }
                         },
                         child: Container(

@@ -279,7 +279,23 @@
 "BUYING_PRICE": "Buying price",
 "COMPANY_NAME": "Company Name",
 "VALIDITY": "Validity",
-"UPDATE_GROUP": "Update Group"
+"UPDATE_GROUP": "Update Group",
+"ENTER_ID": "Enter ID",
+"ENTER_YOUR_ID": "Enter your ID",
+"PIN": "PIN",
+"FILTER_TRANSACTION": "Filter transaction",
+"TYPE": "Type",
+"SELECT_CATEGORY": "Select category",
+"SELECT_PURPOSE": "Select purpose",
+"START_DATE": "Start date",
+"END_DATE": "End date",
+"ADMIN_TO_RESELLER": "Admin to reseller",
+"RESELLER_TO_ADMIN": "Reseller to admin",
+"ORDER": "Order",
+"MONEY_TRANSFER": "Money transfer",
+"WARNING": "Warning",
+"SELECT_START_DATE_FIRST": "Select start date first"
+
 
 
 

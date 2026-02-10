@@ -89,7 +89,7 @@ class _RequestLoanScreenState extends State<RequestLoanScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.goBack();
+                          mypagecontroller.handleBack();
                         },
                         child: Container(
                           height: 45,

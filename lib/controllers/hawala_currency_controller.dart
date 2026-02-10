@@ -21,8 +21,8 @@ class HawalaCurrencyController extends GetxController {
       await HawalaCurrencyApi().fetchcurrency().then((value) {
         allcurrencylist.value = value;
 
-        // ✅ Filter: শুধু from_currency.code মিলে এমনগুলো
-        List<Rate> filteredRates = value.data?.rates
+        List<Rate> filteredRates =
+            value.data?.rates
                 ?.where((rate) => rate.fromCurrency?.code == code)
                 .toList() ??
             [];

@@ -279,7 +279,23 @@
 "BUYING_PRICE": "قیمت خرید",
 "COMPANY_NAME": "نام شرکت",
 "VALIDITY": "اعتبار",
-"UPDATE_GROUP": "به‌روزرسانی گروه"
+"UPDATE_GROUP": "به‌روزرسانی گروه",
+"ENTER_ID": "شناسه را وارد کنید",
+"ENTER_YOUR_ID": "شناسه خود را وارد کنید",
+"PIN": "پین",
+"FILTER_TRANSACTION": "فیلتر تراکنش",
+"TYPE": "نوع",
+"SELECT_CATEGORY": "انتخاب دسته‌بندی",
+"SELECT_PURPOSE": "انتخاب هدف",
+"START_DATE": "تاریخ شروع",
+"END_DATE": "تاریخ پایان",
+"ADMIN_TO_RESELLER": "از مدیر به نماینده",
+"RESELLER_TO_ADMIN": "از نماینده به مدیر",
+"ORDER": "سفارش",
+"MONEY_TRANSFER": "انتقال پول",
+"WARNING": "هشدار",
+"SELECT_START_DATE_FIRST": "لطفاً ابتدا تاریخ شروع را انتخاب کنید"
+
 
 
 

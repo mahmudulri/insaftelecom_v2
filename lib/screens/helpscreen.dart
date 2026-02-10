@@ -67,10 +67,7 @@ class _HelpscreenState extends State<Helpscreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.changePage(
-                            Homepages(),
-                            isMainPage: false,
-                          );
+                          mypagecontroller.handleBack();
                         },
                         child: Container(
                           height: 45,

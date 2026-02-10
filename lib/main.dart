@@ -7,12 +7,18 @@ import 'package:insaftelecom/controllers/network_checker.dart';
 import 'package:insaftelecom/routes/routes.dart';
 
 import 'controllers/currency_controller.dart';
+import 'global_controller/afghan_recharge_controller.dart';
+import 'global_controller/recharge_config_controller.dart';
 import 'global_controller/time_zone_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  Get.put(CurrencyController(), permanent: true);
+  Get.put(RechargeConfigController(), permanent: true);
+  Get.put(AfghanRechargeController(), permanent: true);
   await GetStorage.init();
+  DependencyInjection.init();
 
   runApp(
     EasyLocalization(
@@ -29,9 +35,6 @@ void main() async {
       child: MyApp(),
     ),
   );
-  // used for check real time internet access
-  // DependencyInjection.init();
-  //
 }
 
 class MyApp extends StatefulWidget {
@@ -47,30 +50,21 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _initTimezone();
+    initTimezone();
   }
 
-  Future<void> _initTimezone() async {
-    try {
-      final timezoneInfo = await FlutterTimezone.getLocalTimezone();
+  void initTimezone() {
+    Duration offset = DateTime.now().timeZoneOffset;
 
-      print('TimezoneInfo object: $timezoneInfo');
+    timeZoneController.sign = offset.isNegative ? "-" : "+";
+    timeZoneController.hour = offset.inHours.abs().toString().padLeft(2, '0');
+    timeZoneController.minute = (offset.inMinutes.abs() % 60)
+        .toString()
+        .padLeft(2, '0');
 
-      timeZoneController.myzone = timezoneInfo.toString();
-
-      // Apply your offset logic
-      timeZoneController.setTimezoneOffset();
-      timeZoneController.extractTimeDetails();
-
-      print('Detected Timezone: ${timeZoneController.myzone}');
-      print(
-        'UTC Offset: ${timeZoneController.sign}${timeZoneController.hour}:${timeZoneController.minute}',
-      );
-    } catch (e) {
-      print('Error getting timezone: $e');
-      timeZoneController.myzone = 'UTC';
-      timeZoneController.setTimezoneOffset();
-    }
+    print(
+      "Offset = ${timeZoneController.sign}${timeZoneController.hour}:${timeZoneController.minute}",
+    );
   }
 
   @override

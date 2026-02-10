@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 
 import '../controllers/dashboard_controller.dart';
 import '../global_controller/languages_controller.dart';
@@ -32,11 +33,13 @@ class _WalletScreenState extends State<WalletScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Color(0xff011A52), // Status bar background color
-      statusBarIconBrightness: Brightness.light, // For Android
-      statusBarBrightness: Brightness.light, // For iOS
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Color(0xff011A52), // Status bar background color
+        statusBarIconBrightness: Brightness.light, // For Android
+        statusBarBrightness: Brightness.light, // For iOS
+      ),
+    );
   }
 
   @override
@@ -61,12 +64,12 @@ class _WalletScreenState extends State<WalletScreen> {
               padding: EdgeInsets.only(left: 15, right: 15, top: 40),
               child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                  padding: EdgeInsets.symmetric(horizontal: 0),
                   child: Row(
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.goBack();
+                          mypagecontroller.handleBack();
                         },
                         child: Container(
                           height: 45,
@@ -76,9 +79,7 @@ class _WalletScreenState extends State<WalletScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
-                            child: Icon(
-                              FontAwesomeIcons.chevronLeft,
-                            ),
+                            child: Icon(FontAwesomeIcons.chevronLeft),
                           ),
                         ),
                       ),
@@ -106,11 +107,8 @@ class _WalletScreenState extends State<WalletScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.menu,
-                              color: Colors.black,
-                            ),
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(Icons.menu, color: Colors.black),
                           ),
                         ),
                       ),
@@ -119,17 +117,16 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 50,
-            ),
+            SizedBox(height: 30),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+              padding: EdgeInsets.symmetric(horizontal: 15),
               child: Container(
                 width: screenWidth,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius:
-                      BorderRadius.circular(12), // optional, makes it modern
+                  borderRadius: BorderRadius.circular(
+                    12,
+                  ), // optional, makes it modern
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.08), // light shadow
@@ -140,131 +137,129 @@ class _WalletScreenState extends State<WalletScreen> {
                   ],
                 ),
                 child: Padding(
-                    padding: EdgeInsets.all(15.0),
-                    child:
-                        Obx(() => dashboardController.isLoading.value == false
-                            ? Column(
-                                children: [
-                                  balanceBox(
-                                    "assets/icons/balance.png",
-                                    languagesController.tr("BALANCE"),
-                                    dashboardController
-                                        .alldashboardData.value.data!.balance
-                                        .toString(),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    height: 1,
-                                    width: screenWidth,
-                                    color: Colors.grey.shade100,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  balanceBox(
-                                    "assets/icons/profit.png",
-                                    languagesController.tr("PROFIT"),
-                                    dashboardController.alldashboardData.value
-                                        .data!.totalRevenue
-                                        .toString(),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    height: 1,
-                                    width: screenWidth,
-                                    color: Colors.grey.shade100,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  balanceBox(
-                                    "assets/icons/profit.png",
-                                    languagesController.tr("TODAY_PROFIT"),
-                                    dashboardController.alldashboardData.value
-                                        .data!.todayProfit
-                                        .toString(),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    height: 1,
-                                    width: screenWidth,
-                                    color: Colors.grey.shade100,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  balanceBox(
-                                    "assets/icons/sale.png",
-                                    languagesController.tr("SALE"),
-                                    dashboardController.alldashboardData.value
-                                        .data!.totalSoldAmount
-                                        .toString(),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    height: 1,
-                                    width: screenWidth,
-                                    color: Colors.grey.shade100,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  balanceBox(
-                                    "assets/icons/sale.png",
-                                    languagesController.tr("TODAY_SALE"),
-                                    dashboardController
-                                        .alldashboardData.value.data!.todaySale
-                                        .toString(),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    height: 1,
-                                    width: screenWidth,
-                                    color: Colors.grey.shade100,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  balanceBox(
-                                    "assets/icons/loan_balance.png",
-                                    languagesController.tr("LOAN_BALANCE"),
-                                    dashboardController.alldashboardData.value
-                                        .data!.loanBalance
-                                        .toString(),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    height: 1,
-                                    width: screenWidth,
-                                    color: Colors.grey.shade100,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  balanceBox(
-                                    "assets/icons/comission.png",
-                                    languagesController.tr("COMISSION"),
-                                    dashboardController.alldashboardData.value
-                                        .data!.userInfo!.totalearning
-                                        .toString(),
-                                  ),
-                                ],
-                              )
-                            : Center(
-                                child: CircularProgressIndicator(),
-                              ))),
+                  padding: EdgeInsets.all(15.0),
+                  child: Obx(
+                    () => dashboardController.isLoading.value == false
+                        ? Column(
+                            children: [
+                              balanceBox(
+                                "assets/icons/balance.png",
+                                languagesController.tr("BALANCE"),
+                                dashboardController
+                                    .alldashboardData
+                                    .value
+                                    .data!
+                                    .balance
+                                    .toString(),
+                              ),
+                              SizedBox(height: 10),
+                              Container(
+                                height: 1,
+                                width: screenWidth,
+                                color: Colors.grey.shade100,
+                              ),
+                              SizedBox(height: 10),
+                              balanceBox(
+                                "assets/icons/profit.png",
+                                languagesController.tr("PROFIT"),
+                                dashboardController
+                                    .alldashboardData
+                                    .value
+                                    .data!
+                                    .totalRevenue
+                                    .toString(),
+                              ),
+                              SizedBox(height: 10),
+                              Container(
+                                height: 1,
+                                width: screenWidth,
+                                color: Colors.grey.shade100,
+                              ),
+                              SizedBox(height: 10),
+                              balanceBox(
+                                "assets/icons/profit.png",
+                                languagesController.tr("TODAY_PROFIT"),
+                                dashboardController
+                                    .alldashboardData
+                                    .value
+                                    .data!
+                                    .todayProfit
+                                    .toString(),
+                              ),
+                              SizedBox(height: 10),
+                              Container(
+                                height: 1,
+                                width: screenWidth,
+                                color: Colors.grey.shade100,
+                              ),
+                              SizedBox(height: 10),
+                              balanceBox(
+                                "assets/icons/sale.png",
+                                languagesController.tr("SALE"),
+                                dashboardController
+                                    .alldashboardData
+                                    .value
+                                    .data!
+                                    .totalSoldAmount
+                                    .toString(),
+                              ),
+                              SizedBox(height: 10),
+                              Container(
+                                height: 1,
+                                width: screenWidth,
+                                color: Colors.grey.shade100,
+                              ),
+                              SizedBox(height: 10),
+                              balanceBox(
+                                "assets/icons/sale.png",
+                                languagesController.tr("TODAY_SALE"),
+                                dashboardController
+                                    .alldashboardData
+                                    .value
+                                    .data!
+                                    .todaySale
+                                    .toString(),
+                              ),
+                              SizedBox(height: 10),
+                              Container(
+                                height: 1,
+                                width: screenWidth,
+                                color: Colors.grey.shade100,
+                              ),
+                              SizedBox(height: 10),
+                              balanceBox(
+                                "assets/icons/loan_balance.png",
+                                languagesController.tr("LOAN_BALANCE"),
+                                dashboardController
+                                    .alldashboardData
+                                    .value
+                                    .data!
+                                    .loanBalance
+                                    .toString(),
+                              ),
+                              SizedBox(height: 10),
+                              Container(
+                                height: 1,
+                                width: screenWidth,
+                                color: Colors.grey.shade100,
+                              ),
+                              SizedBox(height: 10),
+                              balanceBox(
+                                "assets/icons/comission.png",
+                                languagesController.tr("COMISSION"),
+                                dashboardController
+                                    .alldashboardData
+                                    .value
+                                    .data!
+                                    .userInfo!
+                                    .totalearning
+                                    .toString(),
+                              ),
+                            ],
+                          )
+                        : Center(child: CircularProgressIndicator()),
+                  ),
+                ),
               ),
             ),
           ],
@@ -276,14 +271,8 @@ class _WalletScreenState extends State<WalletScreen> {
   Widget balanceBox(String imagelink, String name, String balance) {
     return Row(
       children: [
-        Image.asset(
-          imagelink.toString(),
-          height: 20,
-          width: 20,
-        ),
-        SizedBox(
-          width: 6,
-        ),
+        Image.asset(imagelink.toString(), height: 20, width: 20),
+        SizedBox(width: 6),
         KText(
           text: name.toString(),
           color: Colors.black,
@@ -291,15 +280,20 @@ class _WalletScreenState extends State<WalletScreen> {
           fontSize: 16,
         ),
         Spacer(),
-        KText(
-          text: balance.toString(),
-          color: Colors.black,
-          fontWeight: FontWeight.w500,
-          fontSize: 16,
+        Text(
+          NumberFormat.currency(
+            locale: 'en_US',
+            symbol: '',
+            decimalDigits: 2,
+          ).format(double.parse(balance.toString())),
+
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+          ),
         ),
-        SizedBox(
-          width: 4,
-        ),
+        SizedBox(width: 4),
         KText(
           text: box.read("currencyName"),
           fontSize: 10,

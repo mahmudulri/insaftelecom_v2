@@ -23,8 +23,9 @@ class HawalaCurrencyScreen extends StatefulWidget {
 class _HawalaCurrencyScreenState extends State<HawalaCurrencyScreen> {
   final box = GetStorage();
 
-  HawalaCurrencyController hawalacurrencycontroller =
-      Get.put(HawalaCurrencyController());
+  HawalaCurrencyController hawalacurrencycontroller = Get.put(
+    HawalaCurrencyController(),
+  );
 
   LanguagesController languagesController = Get.put(LanguagesController());
 
@@ -67,7 +68,7 @@ class _HawalaCurrencyScreenState extends State<HawalaCurrencyScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.goBack();
+                          mypagecontroller.handleBack();
                         },
                         child: Container(
                           height: 45,
@@ -77,9 +78,7 @@ class _HawalaCurrencyScreenState extends State<HawalaCurrencyScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
-                            child: Icon(
-                              FontAwesomeIcons.chevronLeft,
-                            ),
+                            child: Icon(FontAwesomeIcons.chevronLeft),
                           ),
                         ),
                       ),
@@ -108,10 +107,7 @@ class _HawalaCurrencyScreenState extends State<HawalaCurrencyScreen> {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.menu,
-                              color: Colors.black,
-                            ),
+                            child: Icon(Icons.menu, color: Colors.black),
                           ),
                         ),
                       ),
@@ -120,9 +116,7 @@ class _HawalaCurrencyScreenState extends State<HawalaCurrencyScreen> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -141,17 +135,25 @@ class _HawalaCurrencyScreenState extends State<HawalaCurrencyScreen> {
                 child: Obx(
                   () => hawalacurrencycontroller.isLoading.value == false
                       ? SizedBox(
-                          height: screenHeight *
+                          height:
+                              screenHeight *
                               0.7, // এখানে আপনি নিজে height fix করে দিন
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ListView.builder(
                               padding: EdgeInsets.all(0.0),
                               itemCount: hawalacurrencycontroller
-                                  .allcurrencylist.value.data!.rates!.length,
+                                  .allcurrencylist
+                                  .value
+                                  .data!
+                                  .rates!
+                                  .length,
                               itemBuilder: (context, index) {
                                 final data = hawalacurrencycontroller
-                                    .allcurrencylist.value.data!.rates![index];
+                                    .allcurrencylist
+                                    .value
+                                    .data!
+                                    .rates![index];
                                 return Container(
                                   margin: EdgeInsets.only(bottom: 5),
                                   width: screenWidth,
@@ -180,8 +182,9 @@ class _HawalaCurrencyScreenState extends State<HawalaCurrencyScreen> {
                                               data.toCurrency!.symbol
                                                   .toString() +
                                               " " +
-                                              languagesController
-                                                  .tr("SELLING") +
+                                              languagesController.tr(
+                                                "SELLING",
+                                              ) +
                                               " " +
                                               data.sellRate.toString() +
                                               " " +
@@ -190,12 +193,13 @@ class _HawalaCurrencyScreenState extends State<HawalaCurrencyScreen> {
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: screenHeight * 0.020,
-                                            fontFamily: box
+                                            fontFamily:
+                                                box
                                                         .read("language")
                                                         .toString() ==
                                                     "Fa"
                                                 ? Get.find<FontController>()
-                                                    .currentFont
+                                                      .currentFont
                                                 : null,
                                           ),
                                         ),

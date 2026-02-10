@@ -29,7 +29,7 @@ import '../controllers/slider_controller.dart';
 import '../global_controller/balance_controller.dart';
 import '../global_controller/page_controller.dart';
 import '../screens/order_details_screen.dart';
-import '../screens/service_screen.dart';
+import 'service_screen.dart';
 import '../utils/colors.dart';
 import '../widgets/drawer.dart';
 
@@ -104,33 +104,6 @@ class _HomepagesState extends State<Homepages> {
     ];
   }
 
-  //   Future<void> whatsapp() async {
-  //     String contact = "+93796321768";
-  //     String message = '''
-  // Your account has been created.
-  // Your ID is 2541241.
-  // Password: se45w1ew
-  // ''';
-
-  //     String encodedMessage = Uri.encodeComponent(message);
-
-  //     String androidUrl = "whatsapp://send?phone=$contact&text=$encodedMessage";
-  //     String iosUrl =
-  //         "https://wa.me/${contact.replaceAll('+', '')}?text=$encodedMessage";
-
-  //     try {
-  //       if (Platform.isIOS) {
-  //         await launchUrl(Uri.parse(iosUrl),
-  //             mode: LaunchMode.externalApplication);
-  //       } else {
-  //         await launchUrl(Uri.parse(androidUrl),
-  //             mode: LaunchMode.externalApplication);
-  //       }
-  //     } catch (e) {
-  //       print("❌ WhatsApp not found: $e");
-  //     }
-  //   }
-
   final ScrollController scrollController = ScrollController();
   Future<void> refresh() async {
     final int totalPages =
@@ -171,7 +144,8 @@ class _HomepagesState extends State<Homepages> {
     historyController.initialpage = 1;
     historyController.fetchHistory();
     scrollController.addListener(refresh);
-    // companyController.fetchCompany();
+    companyController.fetchCompany();
+
     countrylistController.fetchCountryData();
     dashboardController.fetchDashboardData();
 
@@ -222,7 +196,7 @@ class _HomepagesState extends State<Homepages> {
                 padding: EdgeInsets.only(left: 15, right: 15, top: 10),
                 child: Center(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0),
+                    padding: EdgeInsets.symmetric(horizontal: 0),
                     child: Row(
                       children: [
                         Obx(() {
@@ -350,7 +324,7 @@ class _HomepagesState extends State<Homepages> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: EdgeInsets.all(8.0),
                               child: Icon(Icons.menu, color: Colors.black),
                             ),
                           ),
@@ -366,7 +340,7 @@ class _HomepagesState extends State<Homepages> {
                   padding: EdgeInsets.all(0.0),
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      padding: EdgeInsets.symmetric(horizontal: 15),
                       child: Obx(() {
                         if (dashboardController.isLoading.value) {
                           return SizedBox(
@@ -403,7 +377,7 @@ class _HomepagesState extends State<Homepages> {
                                       as ImageProvider;
 
                             return Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 0),
+                              margin: EdgeInsets.symmetric(horizontal: 0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 image: DecorationImage(
@@ -411,31 +385,33 @@ class _HomepagesState extends State<Homepages> {
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              // child: Align(
-                              //   alignment: Alignment.bottomLeft,
-                              //   child: Container(
-                              //     width: double.infinity,
-                              //     padding:
-                              //         EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                              //     decoration: BoxDecoration(
-                              //       color: Colors.black.withOpacity(0.5),
-                              //       borderRadius: BorderRadius.only(
-                              //         bottomLeft: Radius.circular(10),
-                              //         bottomRight: Radius.circular(10),
-                              //       ),
-                              //     ),
-                              //     child: Text(
-                              //       item.advertisementTitle ?? '',
-                              //       style: TextStyle(
-                              //         color: Colors.white,
-                              //         fontSize: 14,
-                              //         fontWeight: FontWeight.w500,
-                              //       ),
-                              //       maxLines: 1,
-                              //       overflow: TextOverflow.ellipsis,
-                              //     ),
-                              //   ),
-                              // ),
+                              child: Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5),
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(10),
+                                      bottomRight: Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    item.advertisementTitle ?? '',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
                             );
                           },
                           options: CarouselOptions(
@@ -455,10 +431,8 @@ class _HomepagesState extends State<Homepages> {
                       padding: EdgeInsets.symmetric(horizontal: 13),
                       child: GestureDetector(
                         onTap: () {
-                          mypagecontroller.changePage(
-                            WalletScreen(),
-                            isMainPage: false,
-                          );
+                          // mypagecontroller.openSubPage(WalletScreen());
+                          dashboardController.fetchDashboardData();
                         },
                         child: Container(
                           width: screenWidth,
@@ -502,7 +476,7 @@ class _HomepagesState extends State<Homepages> {
                     ),
                     SizedBox(height: 6),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      padding: EdgeInsets.symmetric(horizontal: 15),
                       child: Container(
                         width: screenWidth,
                         decoration: BoxDecoration(
@@ -699,9 +673,7 @@ class _HomepagesState extends State<Homepages> {
                             ? RefreshIndicator(
                                 onRefresh: refresh,
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
                                   child: ListView.separated(
                                     padding: EdgeInsets.all(0.0),
                                     shrinkWrap: false,
@@ -795,7 +767,7 @@ class _HomepagesState extends State<Homepages> {
                                                 AppColors.listbuilderboxColor,
                                           ),
                                           child: Padding(
-                                            padding: const EdgeInsets.all(5.0),
+                                            padding: EdgeInsets.all(5.0),
                                             child: Row(
                                               children: [
                                                 Container(
@@ -821,10 +793,9 @@ class _HomepagesState extends State<Homepages> {
                                                 Expanded(
                                                   flex: 2,
                                                   child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                          left: 5,
-                                                        ),
+                                                    padding: EdgeInsets.only(
+                                                      left: 5,
+                                                    ),
                                                     child: Column(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
@@ -889,7 +860,7 @@ class _HomepagesState extends State<Homepages> {
                                                       Text(
                                                         " " +
                                                             box.read(
-                                                              "currency_code",
+                                                              "currency_symbol",
                                                             ),
                                                         style: TextStyle(
                                                           fontWeight:
@@ -967,9 +938,7 @@ class _HomepagesState extends State<Homepages> {
                             : RefreshIndicator(
                                 onRefresh: refresh,
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
                                   child: ListView.separated(
                                     padding: EdgeInsets.all(0.0),
                                     shrinkWrap: false,
@@ -1063,7 +1032,7 @@ class _HomepagesState extends State<Homepages> {
                                                 AppColors.listbuilderboxColor,
                                           ),
                                           child: Padding(
-                                            padding: const EdgeInsets.all(5.0),
+                                            padding: EdgeInsets.all(5.0),
                                             child: Row(
                                               children: [
                                                 Container(
@@ -1089,10 +1058,9 @@ class _HomepagesState extends State<Homepages> {
                                                 Expanded(
                                                   flex: 2,
                                                   child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                          left: 5,
-                                                        ),
+                                                    padding: EdgeInsets.only(
+                                                      left: 5,
+                                                    ),
                                                     child: Column(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
@@ -1157,7 +1125,7 @@ class _HomepagesState extends State<Homepages> {
                                                       Text(
                                                         " " +
                                                             box.read(
-                                                              "currency_code",
+                                                              "currency_symbol",
                                                             ),
                                                         style: TextStyle(
                                                           fontWeight:
@@ -1255,15 +1223,23 @@ class _HomepagesState extends State<Homepages> {
           fontSize: 16,
         ),
         Spacer(),
-        KText(
-          text: balance.toString(),
-          color: Colors.black,
-          fontWeight: FontWeight.w500,
-          fontSize: 16,
+        Text(
+          NumberFormat.currency(
+            locale: 'en_US',
+            symbol: '',
+            decimalDigits: 2,
+          ).format(double.parse(balance.toString())),
+
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+          ),
         ),
+
         SizedBox(width: 4),
         KText(
-          text: box.read("currencyName"),
+          text: box.read("currency_symbol"),
           fontSize: 10,
           color: Colors.black,
         ),

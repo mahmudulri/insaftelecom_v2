@@ -86,10 +86,7 @@ class _InternetPackState extends State<InternetPack> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.changePage(
-                            Homepages(),
-                            isMainPage: false,
-                          );
+                          mypagecontroller.handleBack();
                         },
                         child: Container(
                           height: 45,
@@ -221,9 +218,8 @@ class _InternetPackState extends State<InternetPack> {
                                       box.write("company_id", "");
                                       box.write("search_tag", "");
                                       bundleController.finalList.clear();
-                                      mypagecontroller.changePage(
+                                      mypagecontroller.openSubPage(
                                         RechargeScreen(),
-                                        isMainPage: false,
                                       );
                                     },
                                     child: Container(

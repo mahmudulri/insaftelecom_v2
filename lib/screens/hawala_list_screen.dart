@@ -81,7 +81,7 @@ class _HawalaListScreenState extends State<HawalaListScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          mypagecontroller.goBack();
+                          mypagecontroller.handleBack();
                         },
                         child: Container(
                           height: 45,
@@ -168,10 +168,7 @@ class _HawalaListScreenState extends State<HawalaListScreen> {
                       flex: 4,
                       child: GestureDetector(
                         onTap: () {
-                          mypagecontroller.changePage(
-                            HawalaScreen(),
-                            isMainPage: false,
-                          );
+                          mypagecontroller.openSubPage(HawalaScreen());
                         },
                         child: DefaultButton1(
                           width: double.maxFinite,
@@ -581,6 +578,9 @@ class HawalaDetailsDialog extends StatelessWidget {
 
   RxBool isopen = true.obs;
 
+  final GlobalKey captureKey = GlobalKey();
+  final GlobalKey shareKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
@@ -597,7 +597,7 @@ class HawalaDetailsDialog extends StatelessWidget {
           child: Column(
             children: [
               RepaintBoundary(
-                key: catpureKey,
+                key: captureKey,
                 child: RepaintBoundary(
                   key: shareKey,
                   child: Container(
@@ -953,7 +953,7 @@ class HawalaDetailsDialog extends StatelessWidget {
                       flex: 1,
                       child: GestureDetector(
                         onTap: () async {
-                          capturePng();
+                          capturePng(captureKey);
                         },
                         child: Container(
                           decoration: BoxDecoration(

@@ -77,7 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     countryListController.fetchCountryData();
     districtController.fetchDistrict();
     provinceController.fetchProvince();
-    currencyController.fetchCurrency();
+    currencyController.fetchCurrencyList();
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Colors.white, // Status bar background color
@@ -257,7 +257,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   // 1) Strongly type as List<Currency>
                                   final List<Currency> currencies =
                                       currencyController
-                                          .allcurrency
+                                          .allcurrencylist
                                           .value
                                           .data
                                           ?.currencies ??

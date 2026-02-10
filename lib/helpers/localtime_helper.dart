@@ -6,81 +6,30 @@ import 'package:insaftelecom/global_controller/time_zone_controller.dart';
 
 import '../global_controller/font_controller.dart';
 
-final TimeZoneController timeZoneController = Get.put(TimeZoneController());
-final box = GetStorage();
-Text convertToDate(
-  String utcTimeString, {
-  TextStyle? style, // optional TextStyle parameter
-}) {
-  String localTimeString;
+String convertToDate(String utcTimeString) {
   try {
-    // Parse the UTC time
     DateTime utcTime = DateTime.parse(utcTimeString);
 
-    // Calculate the offset duration
-    Duration offset = Duration(
-      hours: int.parse(timeZoneController.hour),
-      minutes: int.parse(timeZoneController.minute),
-    );
+    Duration offset = DateTime.now().timeZoneOffset;
 
-    // Apply the offset
-    DateTime localTime = timeZoneController.sign == "+"
-        ? utcTime.add(offset)
-        : utcTime.subtract(offset);
+    DateTime localTime = utcTime.add(offset);
 
-    localTimeString = DateFormat('yyyy-MM-dd', 'en_US').format(localTime);
+    return DateFormat('yyyy-MM-dd', 'en_US').format(localTime);
   } catch (e) {
-    localTimeString = '';
+    return "";
   }
-
-  // Default style if none provided
-  TextStyle defaultStyle = TextStyle(
-    fontSize: 12,
-    fontWeight: FontWeight.w500,
-    fontFamily: box.read("language").toString() == "Fa"
-        ? Get.find<FontController>().currentFont
-        : null,
-  );
-
-  return Text(localTimeString, style: style ?? defaultStyle);
 }
 
-Text convertToLocalTime(
-  String utcTimeString, {
-  TextStyle? style, // optional TextStyle parameter
-}) {
-  String localTimeString;
+String convertToLocalTime(String utcTimeString) {
   try {
-    // Parse the UTC time
     DateTime utcTime = DateTime.parse(utcTimeString);
 
-    // Calculate the offset duration
-    Duration offset = Duration(
-      hours: int.parse(timeZoneController.hour),
-      minutes: int.parse(timeZoneController.minute),
-    );
+    Duration offset = DateTime.now().timeZoneOffset;
 
-    // Apply the offset
-    DateTime localTime = timeZoneController.sign == "+"
-        ? utcTime.add(offset)
-        : utcTime.subtract(offset);
+    DateTime localTime = utcTime.add(offset);
 
-    localTimeString = DateFormat('hh:mm a', 'en_US').format(localTime);
+    return DateFormat('hh:mm:ss a', 'en_US').format(localTime);
   } catch (e) {
-    localTimeString = '';
+    return "";
   }
-
-  // Provide default style if none is passed
-  TextStyle defaultStyle = TextStyle(
-    fontSize: 12,
-    fontWeight: FontWeight.w500,
-    fontFamily: box.read("language").toString() == "Fa"
-        ? Get.find<FontController>().currentFont
-        : null,
-  );
-
-  return Text(
-    localTimeString,
-    style: style ?? defaultStyle, // use passed style or default
-  );
 }

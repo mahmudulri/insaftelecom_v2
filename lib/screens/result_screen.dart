@@ -42,6 +42,9 @@ class _ResultScreenState extends State<ResultScreen> {
 
   final Mypagecontroller mypagecontroller = Get.find();
 
+  final GlobalKey captureKey = GlobalKey();
+  final GlobalKey shareKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
@@ -79,7 +82,7 @@ class _ResultScreenState extends State<ResultScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RepaintBoundary(
-                    key: catpureKey,
+                    key: captureKey,
                     child: RepaintBoundary(
                       key: shareKey,
                       child: Container(
@@ -253,8 +256,10 @@ class _ResultScreenState extends State<ResultScreen> {
                                             fontWeight: FontWeight.w400,
                                           ),
                                           SizedBox(width: 5),
-                                          convertToDate(
-                                            order.createdAt.toString(),
+                                          Text(
+                                            convertToDate(
+                                              order.createdAt.toString(),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -271,8 +276,11 @@ class _ResultScreenState extends State<ResultScreen> {
                                             fontWeight: FontWeight.w400,
                                           ),
                                           SizedBox(width: 5),
-                                          convertToLocalTime(
-                                            order.createdAt.toString(),
+
+                                          Text(
+                                            convertToLocalTime(
+                                              order.createdAt.toString(),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -425,7 +433,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                   flex: 1,
                                   child: GestureDetector(
                                     onTap: () async {
-                                      capturePng();
+                                      capturePng(captureKey);
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
