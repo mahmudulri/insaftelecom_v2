@@ -115,8 +115,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     imagelink: "assets/icons/user.png",
                     menuname: languagesController.tr("PROFILE"),
                     onpressed: () {
-                      mypagecontroller.openSubPage(ProfileScreen());
                       Navigator.pop(context);
+                      mypagecontroller.openSubPage(ProfileScreen());
                     },
                   ),
                 ),
@@ -126,8 +126,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     imagelink: "assets/icons/set_sell_price.png",
                     menuname: languagesController.tr("SET_SALE_PRICE"),
                     onpressed: () {
-                      mypagecontroller.openSubPage(SellingPriceScreen());
                       Navigator.pop(context);
+                      mypagecontroller.openSubPage(SellingPriceScreen());
                     },
                   ),
                 ),
@@ -137,8 +137,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     imagelink: "assets/icons/sub_reseller.png",
                     menuname: languagesController.tr("NETWORK"),
                     onpressed: () {
-                      mypagecontroller.openSubPage(Network());
                       Navigator.pop(context);
+                      mypagecontroller.openSubPage(Network());
                     },
                   ),
                 ),
@@ -148,8 +148,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     imagelink: "assets/icons/set_vendor_sell_price.png",
                     menuname: languagesController.tr("COMMISSION_GROUP"),
                     onpressed: () {
-                      mypagecontroller.openSubPage(CommissionGroupScreen());
                       Navigator.pop(context);
+                      mypagecontroller.openSubPage(CommissionGroupScreen());
                     },
                   ),
                 ),
@@ -208,8 +208,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   imagelink: "assets/icons/security-safe.png",
                   menuname: languagesController.tr("CHANGE_PIN"),
                   onpressed: () {
-                    mypagecontroller.openSubPage(ChangePinScreen());
                     Navigator.pop(context);
+                    mypagecontroller.openSubPage(ChangePinScreen());
                   },
                 ),
                 SizedBox(height: screenHeight * 0.015),
@@ -217,8 +217,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   imagelink: "assets/icons/padlock.png",
                   menuname: languagesController.tr("CHANGE_PASSWORD"),
                   onpressed: () {
-                    mypagecontroller.openSubPage(ChangePasswordScreen());
                     Navigator.pop(context);
+                    mypagecontroller.openSubPage(ChangePasswordScreen());
                   },
                 ),
                 SizedBox(height: screenHeight * 0.015),
@@ -226,8 +226,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   imagelink: "assets/icons/note-text.png",
                   menuname: languagesController.tr("HELP"),
                   onpressed: () {
-                    mypagecontroller.openSubPage(Helpscreen());
                     Navigator.pop(context);
+                    mypagecontroller.openSubPage(Helpscreen());
                   },
                 ),
                 SizedBox(height: screenHeight * 0.015),

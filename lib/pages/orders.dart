@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:insaftelecom/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,6 +33,8 @@ class _OrdersState extends State<Orders> {
   String defaultValue = "";
 
   String secondDropDown = "";
+
+  Timer? _debounce;
 
   final orderlistController = Get.find<OrderlistController>();
 
@@ -104,7 +108,6 @@ class _OrdersState extends State<Orders> {
   MyDrawerController drawerController = Get.put(MyDrawerController());
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -274,7 +277,7 @@ class _OrdersState extends State<Orders> {
                                 orderlistController.finalList.clear();
                                 orderlistController.initialpage = 1;
                                 orderlistController.fetchOrderlistdata();
-                                print("selected Value $value");
+
                                 setState(() {
                                   defaultValue = value!;
                                 });
@@ -301,7 +304,9 @@ class _OrdersState extends State<Orders> {
                             children: [
                               Obx(
                                 () => KText(
-                                  text: languagesController.tr("DATE"),
+                                  text: selectedDate.value == ""
+                                      ? languagesController.tr("DATE")
+                                      : selectedDate.value.toString(),
                                   fontSize: screenWidth * 0.040,
                                 ),
                               ),
@@ -341,6 +346,26 @@ class _OrdersState extends State<Orders> {
                               Expanded(
                                 child: Obx(
                                   () => TextField(
+                                    keyboardType: TextInputType.phone,
+                                    onChanged: (value) {
+                                      // আগের timer থাকলে cancel
+                                      if (_debounce?.isActive ?? false)
+                                        _debounce!.cancel();
+
+                                      _debounce = Timer(
+                                        const Duration(seconds: 1),
+                                        () {
+                                          orderlistController.finalList.clear();
+                                          orderlistController.initialpage = 1;
+
+                                          box.write("search_target", value);
+
+                                          orderlistController
+                                              .fetchOrderlistdata();
+                                          print(value);
+                                        },
+                                      );
+                                    },
                                     decoration: InputDecoration(
                                       hintText: languagesController.tr(
                                         "SEARCH_BY_PHOENUMBER",

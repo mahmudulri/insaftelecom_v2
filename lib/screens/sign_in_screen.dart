@@ -353,34 +353,34 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          signInController.usernameController.text =
-                              "01986072587";
-                          signInController.passwordController.text = "00000000";
-                        },
-                        child: Text(
-                          "01986",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () {
-                          signInController.usernameController.text =
-                              "0796321768";
-                          signInController.passwordController.text = "00000000";
-                        },
-                        child: Text(
-                          "0796321",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     GestureDetector(
+                  //       onTap: () {
+                  //         signInController.usernameController.text =
+                  //             "01986072587";
+                  //         signInController.passwordController.text = "00000000";
+                  //       },
+                  //       child: Text(
+                  //         "01986",
+                  //         style: TextStyle(color: Colors.white),
+                  //       ),
+                  //     ),
+                  //     SizedBox(width: 10),
+                  //     GestureDetector(
+                  //       onTap: () {
+                  //         signInController.usernameController.text =
+                  //             "0796321768";
+                  //         signInController.passwordController.text = "00000000";
+                  //       },
+                  //       child: Text(
+                  //         "0796321",
+                  //         style: TextStyle(color: Colors.white),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),

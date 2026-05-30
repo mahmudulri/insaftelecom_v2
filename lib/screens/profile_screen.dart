@@ -320,6 +320,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
+            SizedBox(height: 70),
           ],
         ),
       ),
@@ -338,7 +339,7 @@ class Profilebox extends StatelessWidget {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     return Container(
-      height: screenHeight * 0.070,
+      height: screenHeight * 0.065,
       width: screenWidth,
       decoration: BoxDecoration(
         color: Colors.white,

@@ -274,7 +274,7 @@ class _ChangeBalanceState extends State<ChangeBalance> {
                             Expanded(
                               flex: 2,
                               child: Obx(
-                                () => Authtextfield(
+                                () => Amountextfield(
                                   hinttext: languagesController.tr(
                                     "ENTER_AMOUNT",
                                   ),

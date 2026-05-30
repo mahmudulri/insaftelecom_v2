@@ -431,8 +431,8 @@ class _HomepagesState extends State<Homepages> {
                       padding: EdgeInsets.symmetric(horizontal: 13),
                       child: GestureDetector(
                         onTap: () {
-                          // mypagecontroller.openSubPage(WalletScreen());
-                          dashboardController.fetchDashboardData();
+                          mypagecontroller.openSubPage(WalletScreen());
+                          // dashboardController.fetchDashboardData();
                         },
                         child: Container(
                           width: screenWidth,

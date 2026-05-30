@@ -8,16 +8,17 @@ import '../utils/api_endpoints.dart';
 
 class HawalalistApi {
   final box = GetStorage();
-  Future<HawalaModel> fetchhawala() async {
+  Future<HawalaModel> fetchhawala(int pageNo) async {
     final url = Uri.parse(
-        ApiEndPoints.baseUrl + ApiEndPoints.otherendpoints.hawalalist);
+      ApiEndPoints.baseUrl +
+          ApiEndPoints.otherendpoints.hawalalist +
+          "?page=$pageNo",
+    );
     print("hawala $url");
 
     var response = await http.get(
       url,
-      headers: {
-        'Authorization': 'Bearer ${box.read("userToken")}',
-      },
+      headers: {'Authorization': 'Bearer ${box.read("userToken")}'},
     );
 
     if (response.statusCode == 200) {

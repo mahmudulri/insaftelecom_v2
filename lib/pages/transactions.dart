@@ -757,7 +757,7 @@ class _TransactionsState extends State<Transactions> {
             ),
 
             SizedBox(height: 10),
-            SizedBox(height: 10),
+
             Obx(() {
               if (transactionController.isLoading.value) {
                 return const Center(child: CircularProgressIndicator());

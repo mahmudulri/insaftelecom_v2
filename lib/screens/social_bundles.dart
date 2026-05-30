@@ -47,6 +47,8 @@ class _SocialBundlesState extends State<SocialBundles> {
   int duration_selectedIndex = -1;
   final box = GetStorage();
 
+  final confirmPinController = Get.find<ConfirmPinController>();
+
   @override
   void initState() {
     super.initState();
@@ -57,6 +59,8 @@ class _SocialBundlesState extends State<SocialBundles> {
         statusBarBrightness: Brightness.light, // For iOS
       ),
     );
+
+    confirmPinController.numberController.clear();
     bundleController.finalList.clear();
     bundleController.initialpage = 1;
     scrollController.addListener(refresh);

@@ -271,7 +271,7 @@ class _AddNewUserState extends State<AddNewUser> {
                         ),
                       ),
                       SizedBox(height: 7),
-                      Authtextfield(
+                      Amountextfield(
                         hinttext: languagesController.tr("ENTER_PHONE_NUMBER"),
                         controller: addSubResellerController.phoneController,
                       ),

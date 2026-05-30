@@ -38,17 +38,52 @@ class _HawalaListScreenState extends State<HawalaListScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        statusBarColor: Color(0xff011A52), // Status bar background color
-        statusBarIconBrightness: Brightness.light, // For Android
-        statusBarBrightness: Brightness.light, // For iOS
+        statusBarColor: Color(0xff011A52),
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.light,
       ),
     );
+    hawalalistController.finalList.clear();
+    hawalalistController.initialpage = 1;
 
     hawalalistController.fetchhawala();
+    scrollController.addListener(refresh);
+  }
+
+  final ScrollController scrollController = ScrollController();
+
+  Future<void> refresh() async {
+    final int totalPages =
+        hawalalistController.allhawalalist.value.data!.pagination!.totalPages ??
+        0;
+    final int currentPage = hawalalistController.initialpage;
+
+    // Prevent loading more pages if we've reached the last page
+    if (currentPage >= totalPages) {
+      print(
+        "End..........................................End.....................",
+      );
+      return;
+    }
+
+    // Check if the scroll position is at the bottom
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      hawalalistController.initialpage++;
+
+      // Prevent fetching if the next page exceeds total pages
+      if (hawalalistController.initialpage <= totalPages) {
+        print("Load More...................");
+        hawalalistController.fetchhawala();
+      } else {
+        hawalalistController.initialpage =
+            totalPages; // Reset to the last valid page
+        print("Already on the last page");
+      }
+    }
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -186,338 +221,396 @@ class _HawalaListScreenState extends State<HawalaListScreen> {
               child: Obx(
                 () => hawalalistController.isLoading.value == false
                     ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: ListView.separated(
-                          padding: EdgeInsets.all(0),
-                          physics: BouncingScrollPhysics(),
-                          separatorBuilder: (context, index) {
-                            return SizedBox(height: 5);
-                          },
-                          itemCount: hawalalistController
-                              .allhawalalist
-                              .value
-                              .data!
-                              .orders!
-                              .length,
-                          itemBuilder: (context, index) {
-                            final data = hawalalistController
-                                .allhawalalist
-                                .value
-                                .data!
-                                .orders![index];
-                            return GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(17),
-                                      ),
-                                      contentPadding: EdgeInsets.all(0),
-                                      content: HawalaDetailsDialog(
-                                        id: data.id.toString(),
-                                        hawalaNumber: data.hawalaNumber,
-                                        hawalaCustomNumber:
-                                            data.hawalaCustomNumber,
-                                        status: data.status,
-                                        branchID: data.hawalaBranchId,
-                                        senderName: data.senderName,
-                                        receiverName: data.receiverName,
-                                        fatherName: data.receiverFatherName,
-                                        idcardnumber: data.receiverIdCardNumber,
-                                        amount: data.hawalaAmount,
-                                        hawalacurrencyRate:
-                                            data.hawalaAmountCurrencyRate,
-                                        hawalacurrencyCode:
-                                            data.hawalaAmountCurrencyCode,
-                                        resellercurrencyCode:
-                                            data.resellerPreferedCurrencyCode,
-                                        resellCurrencyRate:
-                                            data.resellerPreferedCurrencyRate,
-                                        paidbysender: data
-                                            .commissionPaidBySender
-                                            .toString(),
-                                        paidbyreceiver: data
-                                            .commissionPaidByReceiver
-                                            .toString(),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              child: Container(
-                                width: screenWidth,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    width: 1,
-                                    color: data.status.toString() == "pending"
-                                        ? Color(0xffFFC107)
-                                        : data.status.toString() == "confirmed"
-                                        ? Colors.green
-                                        : Color(0xffFF4842),
+                        padding: EdgeInsets.symmetric(horizontal: 15),
+                        child: RefreshIndicator(
+                          onRefresh: refresh,
+                          child: ListView.separated(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            controller: scrollController,
+                            padding: EdgeInsets.all(0),
+
+                            separatorBuilder: (context, index) {
+                              return SizedBox(height: 5);
+                            },
+                            itemCount: hawalalistController.finalList.length,
+                            itemBuilder: (context, index) {
+                              final data =
+                                  hawalalistController.finalList[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            17,
+                                          ),
+                                        ),
+                                        contentPadding: EdgeInsets.all(0),
+                                        content: HawalaDetailsDialog(
+                                          id: data.id.toString(),
+                                          hawalaNumber: data.hawalaNumber,
+                                          hawalaCustomNumber:
+                                              data.hawalaCustomNumber,
+                                          status: data.status,
+                                          branchID: data.hawalaBranchId,
+                                          senderName: data.senderName,
+                                          receiverName: data.receiverName,
+                                          fatherName: data.receiverFatherName,
+                                          idcardnumber:
+                                              data.receiverIdCardNumber,
+                                          amount: data.hawalaAmount,
+                                          hawalacurrencyRate:
+                                              data.hawalaAmountCurrencyRate,
+                                          hawalacurrencyCode:
+                                              data.hawalaAmountCurrencyCode,
+                                          resellercurrencyCode:
+                                              data.resellerPreferedCurrencyCode,
+                                          resellCurrencyRate:
+                                              data.resellerPreferedCurrencyRate,
+                                          paidbysender: data
+                                              .commissionPaidBySender
+                                              .toString(),
+                                          paidbyreceiver: data
+                                              .commissionPaidByReceiver
+                                              .toString(),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  width: screenWidth,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      width: 1,
+                                      color: data.status.toString() == "pending"
+                                          ? Color(0xffFFC107)
+                                          : data.status.toString() ==
+                                                "confirmed"
+                                          ? Colors.green
+                                          : Color(0xffFF4842),
+                                    ),
                                   ),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color:
-                                            data.status.toString() == "pending"
-                                            ? Color(0xffFFC107)
-                                            : data.status.toString() ==
-                                                  "confirmed"
-                                            ? Colors.green
-                                            : Color(0xffFF4842),
-                                        borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(10),
-                                          topLeft: Radius.circular(10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color:
+                                              data.status.toString() ==
+                                                  "pending"
+                                              ? Color(0xffFFC107)
+                                              : data.status.toString() ==
+                                                    "confirmed"
+                                              ? Colors.green
+                                              : Color(0xffFF4842),
+                                          borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(10),
+                                            topLeft: Radius.circular(10),
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 5,
+                                            vertical: 5,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              data.hawalaCustomNumber == null
+                                                  ? Text(
+                                                      languagesController.tr(
+                                                            "HAWALA_NUMBER",
+                                                          ) +
+                                                          " - " +
+                                                          data.hawalaNumber
+                                                              .toString(),
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontFamily:
+                                                            box
+                                                                    .read(
+                                                                      "language",
+                                                                    )
+                                                                    .toString() ==
+                                                                "Fa"
+                                                            ? Get.find<
+                                                                    FontController
+                                                                  >()
+                                                                  .currentFont
+                                                            : null,
+                                                      ),
+                                                    )
+                                                  : Text(
+                                                      languagesController.tr(
+                                                            "HAWALA_NUMBER",
+                                                          ) +
+                                                          " - " +
+                                                          data.hawalaCustomNumber
+                                                              .toString(),
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontFamily:
+                                                            box
+                                                                    .read(
+                                                                      "language",
+                                                                    )
+                                                                    .toString() ==
+                                                                "Fa"
+                                                            ? Get.find<
+                                                                    FontController
+                                                                  >()
+                                                                  .currentFont
+                                                            : null,
+                                                      ),
+                                                    ),
+                                              Text(
+                                                data.status.toString(),
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily:
+                                                      box
+                                                              .read("language")
+                                                              .toString() ==
+                                                          "Fa"
+                                                      ? Get.find<
+                                                              FontController
+                                                            >()
+                                                            .currentFont
+                                                      : null,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 5,
-                                          vertical: 5,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                      Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Column(
                                           children: [
-                                            Text(
-                                              languagesController.tr(
-                                                    "HAWALA_NUMBER",
-                                                  ) +
-                                                  " - " +
-                                                  data.hawalaNumber.toString(),
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily:
-                                                    box
-                                                            .read("language")
-                                                            .toString() ==
-                                                        "Fa"
-                                                    ? Get.find<FontController>()
-                                                          .currentFont
-                                                    : null,
-                                              ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  languagesController.tr(
+                                                    "SENDER_NAME",
+                                                  ),
+                                                  style: TextStyle(
+                                                    color: Colors.grey.shade700,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 15,
+                                                    fontFamily:
+                                                        box
+                                                                .read(
+                                                                  "language",
+                                                                )
+                                                                .toString() ==
+                                                            "Fa"
+                                                        ? Get.find<
+                                                                FontController
+                                                              >()
+                                                              .currentFont
+                                                        : null,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  data.senderName.toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 15,
+                                                    fontFamily:
+                                                        box
+                                                                .read(
+                                                                  "language",
+                                                                )
+                                                                .toString() ==
+                                                            "Fa"
+                                                        ? Get.find<
+                                                                FontController
+                                                              >()
+                                                              .currentFont
+                                                        : null,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            Text(
-                                              data.status.toString(),
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily:
-                                                    box
-                                                            .read("language")
-                                                            .toString() ==
-                                                        "Fa"
-                                                    ? Get.find<FontController>()
-                                                          .currentFont
-                                                    : null,
-                                              ),
+                                            SizedBox(height: 3),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  languagesController.tr(
+                                                    "RECEIVER_NAME",
+                                                  ),
+                                                  style: TextStyle(
+                                                    color: Colors.grey.shade700,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 15,
+                                                    fontFamily:
+                                                        box
+                                                                .read(
+                                                                  "language",
+                                                                )
+                                                                .toString() ==
+                                                            "Fa"
+                                                        ? Get.find<
+                                                                FontController
+                                                              >()
+                                                              .currentFont
+                                                        : null,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  data.receiverName.toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 15,
+                                                    fontFamily:
+                                                        box
+                                                                .read(
+                                                                  "language",
+                                                                )
+                                                                .toString() ==
+                                                            "Fa"
+                                                        ? Get.find<
+                                                                FontController
+                                                              >()
+                                                              .currentFont
+                                                        : null,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 3),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  languagesController.tr(
+                                                    "HAWALA_AMOUNT",
+                                                  ),
+                                                  style: TextStyle(
+                                                    color: Colors.grey.shade700,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 15,
+                                                    fontFamily:
+                                                        box
+                                                                .read(
+                                                                  "language",
+                                                                )
+                                                                .toString() ==
+                                                            "Fa"
+                                                        ? Get.find<
+                                                                FontController
+                                                              >()
+                                                              .currentFont
+                                                        : null,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  data.hawalaAmount.toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15,
+                                                    fontFamily:
+                                                        box
+                                                                .read(
+                                                                  "language",
+                                                                )
+                                                                .toString() ==
+                                                            "Fa"
+                                                        ? Get.find<
+                                                                FontController
+                                                              >()
+                                                              .currentFont
+                                                        : null,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 3),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  languagesController.tr(
+                                                    "PAYABLE_AMOUNT",
+                                                  ),
+                                                  style: TextStyle(
+                                                    color: Colors.grey.shade700,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 15,
+                                                    fontFamily:
+                                                        box
+                                                                .read(
+                                                                  "language",
+                                                                )
+                                                                .toString() ==
+                                                            "Fa"
+                                                        ? Get.find<
+                                                                FontController
+                                                              >()
+                                                              .currentFont
+                                                        : null,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  data.hawalaAmountCurrencyRate
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 15,
+                                                    fontFamily:
+                                                        box
+                                                                .read(
+                                                                  "language",
+                                                                )
+                                                                .toString() ==
+                                                            "Fa"
+                                                        ? Get.find<
+                                                                FontController
+                                                              >()
+                                                              .currentFont
+                                                        : null,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                languagesController.tr(
-                                                  "SENDER_NAME",
-                                                ),
-                                                style: TextStyle(
-                                                  color: Colors.grey.shade700,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 15,
-                                                  fontFamily:
-                                                      box
-                                                              .read("language")
-                                                              .toString() ==
-                                                          "Fa"
-                                                      ? Get.find<
-                                                              FontController
-                                                            >()
-                                                            .currentFont
-                                                      : null,
-                                                ),
-                                              ),
-                                              Text(
-                                                data.senderName.toString(),
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 15,
-                                                  fontFamily:
-                                                      box
-                                                              .read("language")
-                                                              .toString() ==
-                                                          "Fa"
-                                                      ? Get.find<
-                                                              FontController
-                                                            >()
-                                                            .currentFont
-                                                      : null,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 3),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                languagesController.tr(
-                                                  "RECEIVER_NAME",
-                                                ),
-                                                style: TextStyle(
-                                                  color: Colors.grey.shade700,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 15,
-                                                  fontFamily:
-                                                      box
-                                                              .read("language")
-                                                              .toString() ==
-                                                          "Fa"
-                                                      ? Get.find<
-                                                              FontController
-                                                            >()
-                                                            .currentFont
-                                                      : null,
-                                                ),
-                                              ),
-                                              Text(
-                                                data.receiverName.toString(),
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 15,
-                                                  fontFamily:
-                                                      box
-                                                              .read("language")
-                                                              .toString() ==
-                                                          "Fa"
-                                                      ? Get.find<
-                                                              FontController
-                                                            >()
-                                                            .currentFont
-                                                      : null,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 3),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                languagesController.tr(
-                                                  "HAWALA_AMOUNT",
-                                                ),
-                                                style: TextStyle(
-                                                  color: Colors.grey.shade700,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 15,
-                                                  fontFamily:
-                                                      box
-                                                              .read("language")
-                                                              .toString() ==
-                                                          "Fa"
-                                                      ? Get.find<
-                                                              FontController
-                                                            >()
-                                                            .currentFont
-                                                      : null,
-                                                ),
-                                              ),
-                                              Text(
-                                                data.hawalaAmount.toString(),
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15,
-                                                  fontFamily:
-                                                      box
-                                                              .read("language")
-                                                              .toString() ==
-                                                          "Fa"
-                                                      ? Get.find<
-                                                              FontController
-                                                            >()
-                                                            .currentFont
-                                                      : null,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 3),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                languagesController.tr(
-                                                  "PAYABLE_AMOUNT",
-                                                ),
-                                                style: TextStyle(
-                                                  color: Colors.grey.shade700,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 15,
-                                                  fontFamily:
-                                                      box
-                                                              .read("language")
-                                                              .toString() ==
-                                                          "Fa"
-                                                      ? Get.find<
-                                                              FontController
-                                                            >()
-                                                            .currentFont
-                                                      : null,
-                                                ),
-                                              ),
-                                              Text(
-                                                data.hawalaAmountCurrencyRate
-                                                    .toString(),
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 15,
-                                                  fontFamily:
-                                                      box
-                                                              .read("language")
-                                                              .toString() ==
-                                                          "Fa"
-                                                      ? Get.find<
-                                                              FontController
-                                                            >()
-                                                            .currentFont
-                                                      : null,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
                       )
                     : Center(child: CircularProgressIndicator()),

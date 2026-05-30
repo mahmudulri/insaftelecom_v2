@@ -376,6 +376,8 @@ class _CreditTransferState extends State<CreditTransfer> {
                           ),
                         ),
                       ),
+                      SizedBox(height: 8),
+
                       Obx(
                         () => Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -383,12 +385,15 @@ class _CreditTransferState extends State<CreditTransfer> {
                             Text(
                               "${controller.convertedAmount.value.toStringAsFixed(2)} " +
                                   "${controller.box.read("currency_symbol")}",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade500,
+                              ),
                             ),
                           ],
                         ),
                       ),
 
-                      SizedBox(height: 8),
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
