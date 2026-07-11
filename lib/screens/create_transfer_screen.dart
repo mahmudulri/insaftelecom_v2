@@ -31,7 +31,8 @@ class CreateTransferScreen extends StatefulWidget {
 }
 
 class _CreateTransferScreenState extends State<CreateTransferScreen> {
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   final dashboardController = Get.find<DashboardController>();
 

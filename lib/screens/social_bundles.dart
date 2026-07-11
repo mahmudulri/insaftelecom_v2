@@ -34,7 +34,8 @@ class _SocialBundlesState extends State<SocialBundles> {
   final serviceController = Get.find<ServiceController>();
 
   final bundleController = Get.find<BundleController>();
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   // final confirmPinController = Get.find<ConfirmPinController>();
 

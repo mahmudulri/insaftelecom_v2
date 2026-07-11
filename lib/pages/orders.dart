@@ -39,7 +39,8 @@ class _OrdersState extends State<Orders> {
   final orderlistController = Get.find<OrderlistController>();
 
   TextEditingController searchController = TextEditingController();
-  LanguagesController languagesController = Get.put(LanguagesController());
+
+  LanguagesController languagesController = Get.find<LanguagesController>();
 
   List orderStatus = [];
 
@@ -110,10 +111,14 @@ class _OrdersState extends State<Orders> {
   void initState() {
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Color(0xff011A52), // Status bar background color
-        statusBarIconBrightness: Brightness.light, // For Android
-        statusBarBrightness: Brightness.light, // For iOS
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xff011A52),
+
+        // Android status bar icon white
+        statusBarIconBrightness: Brightness.light,
+
+        // iOS status bar text/icon white
+        statusBarBrightness: Brightness.dark,
       ),
     );
     languagesController = Get.put(LanguagesController());

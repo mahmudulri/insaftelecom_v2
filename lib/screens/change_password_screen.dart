@@ -31,7 +31,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     ChangePasswordController(),
   );
 
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   final Mypagecontroller mypagecontroller = Get.find();
 

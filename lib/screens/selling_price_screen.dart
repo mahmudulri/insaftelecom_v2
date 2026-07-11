@@ -26,7 +26,8 @@ class SellingPriceScreen extends StatefulWidget {
 }
 
 class _SellingPriceScreenState extends State<SellingPriceScreen> {
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   final SellingPriceController sellingPriceController = Get.put(
     SellingPriceController(),

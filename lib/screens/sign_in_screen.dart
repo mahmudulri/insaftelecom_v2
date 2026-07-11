@@ -31,7 +31,8 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
   // final Mypagecontroller mypagecontroller = Get.find();
 
   // final Mypagecontroller mypagecontroller = Get.find();

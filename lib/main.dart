@@ -1,12 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:insaftelecom/controllers/network_checker.dart';
+import 'package:insaftelecom/global_controller/languages_controller.dart';
 import 'package:insaftelecom/routes/routes.dart';
 
 import 'controllers/currency_controller.dart';
+import 'controllers/wallets_controller.dart';
 import 'global_controller/afghan_recharge_controller.dart';
 import 'global_controller/recharge_config_controller.dart';
 import 'global_controller/time_zone_controller.dart';
@@ -14,9 +15,11 @@ import 'global_controller/time_zone_controller.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+
   Get.put(CurrencyController(), permanent: true);
   Get.put(RechargeConfigController(), permanent: true);
   Get.put(AfghanRechargeController(), permanent: true);
+  Get.put(LanguagesController(), permanent: true);
   await GetStorage.init();
   DependencyInjection.init();
 

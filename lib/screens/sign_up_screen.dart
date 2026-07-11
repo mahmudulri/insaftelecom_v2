@@ -38,7 +38,8 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
   SignUpController signUpController = Get.put(SignUpController());
 
   final CountryListController countryListController = Get.put(

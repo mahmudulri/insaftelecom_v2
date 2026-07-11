@@ -13,7 +13,8 @@ class PaymentButton extends StatelessWidget {
     this.imagelink,
   });
 
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   String? buttonName;
   String? imagelink;
@@ -60,9 +61,7 @@ class PaymentButton extends StatelessWidget {
                             height: 30,
                             color: Colors.white,
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
+                          SizedBox(width: 10),
                           KText(
                             text: buttonName.toString(),
                             color: Colors.white,

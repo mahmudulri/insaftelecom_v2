@@ -25,7 +25,8 @@ class InternetPack extends StatefulWidget {
 }
 
 class _InternetPackState extends State<InternetPack> {
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   CountryListController countrylistController = Get.put(
     CountryListController(),

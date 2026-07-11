@@ -24,7 +24,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.insaftelecom"
+    namespace = "com.insaftelecom.woosat"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -38,7 +38,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.insaftelecom"
+        applicationId = "com.insaftelecom.woosat"
         minSdk = flutter.minSdkVersion
         targetSdk = 35
         versionCode = flutterVersionCode

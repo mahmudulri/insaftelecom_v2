@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:insaftelecom/screens/wallet_screen.dart';
 import 'package:insaftelecom/widgets/custom_text.dart';
-import 'package:insaftelecom/widgets/default_button1.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,19 +15,16 @@ import 'package:insaftelecom/controllers/country_list_controller.dart';
 import 'package:insaftelecom/controllers/dashboard_controller.dart';
 import 'package:insaftelecom/controllers/drawer_controller.dart';
 import 'package:insaftelecom/global_controller/languages_controller.dart';
-import 'package:insaftelecom/screens/credit_transfer.dart';
-import 'package:insaftelecom/widgets/bottomsheet.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../controllers/categories_controller.dart';
 import '../controllers/company_controller.dart';
 import '../controllers/conversation_controller.dart';
 import '../controllers/custom_recharge_controller.dart';
 import '../controllers/history_controller.dart';
 import '../controllers/slider_controller.dart';
+import '../controllers/wallets_controller.dart';
 import '../global_controller/balance_controller.dart';
 import '../global_controller/page_controller.dart';
 import '../screens/order_details_screen.dart';
-import 'service_screen.dart';
 import '../utils/colors.dart';
 import '../widgets/drawer.dart';
 
@@ -60,7 +55,8 @@ class _HomepagesState extends State<Homepages> {
 
   final bundleController = Get.find<BundleController>();
 
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
   MyDrawerController drawerController = Get.put(MyDrawerController());
 
   CountryListController countrylistController = Get.put(
@@ -70,6 +66,8 @@ class _HomepagesState extends State<Homepages> {
   UserBalanceController userBalanceController = Get.put(
     UserBalanceController(),
   );
+
+  final WalletsController walletsController = Get.find<WalletsController>();
 
   final historyController = Get.find<HistoryController>();
 
@@ -138,8 +136,8 @@ class _HomepagesState extends State<Homepages> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    walletsController.fetchwalletsData();
     historyController.finalList.clear();
     historyController.initialpage = 1;
     historyController.fetchHistory();
@@ -150,10 +148,14 @@ class _HomepagesState extends State<Homepages> {
     dashboardController.fetchDashboardData();
 
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Color(0xff011A52), // Status bar background color
-        statusBarIconBrightness: Brightness.light, // For Android
-        statusBarBrightness: Brightness.light, // For iOS
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xff011A52),
+
+        // Android status bar icon white
+        statusBarIconBrightness: Brightness.light,
+
+        // iOS status bar text/icon white
+        statusBarBrightness: Brightness.dark,
       ),
     );
   }
@@ -257,57 +259,58 @@ class _HomepagesState extends State<Homepages> {
                         SizedBox(width: 10),
                         Obx(
                           () => dashboardController.isLoading.value == false
-                              ? Column(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        KText(
-                                          text: dashboardController
-                                              .alldashboardData
-                                              .value
-                                              .data!
-                                              .userInfo!
-                                              .resellerName
-                                              .toString(),
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
+                              ? GestureDetector(
+                                  onTap: () {
+                                    // walletsController.fetchwalletsData();
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      KText(
+                                        text: dashboardController
+                                            .alldashboardData
+                                            .value
+                                            .data!
+                                            .userInfo!
+                                            .resellerName
+                                            .toString(),
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
 
-                                        // only for reseller...................
-                                        Visibility(
-                                          visible:
-                                              dashboardController
-                                                      .alldashboardData
-                                                      .value
-                                                      .data
-                                                      ?.resellerGroup !=
-                                                  null &&
-                                              dashboardController
-                                                      .alldashboardData
-                                                      .value
-                                                      .data!
-                                                      .resellerGroup !=
-                                                  "null",
-                                          child: Text(
+                                      // only for reseller...................
+                                      Visibility(
+                                        visible:
                                             dashboardController
                                                     .alldashboardData
                                                     .value
                                                     .data
-                                                    ?.resellerGroup ??
-                                                '',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 13,
-                                            ),
+                                                    ?.resellerGroup !=
+                                                null &&
+                                            dashboardController
+                                                    .alldashboardData
+                                                    .value
+                                                    .data!
+                                                    .resellerGroup !=
+                                                "null",
+                                        child: Text(
+                                          dashboardController
+                                                  .alldashboardData
+                                                  .value
+                                                  .data
+                                                  ?.resellerGroup ??
+                                              '',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ],
+                                      ),
+                                    ],
+                                  ),
                                 )
                               : SizedBox(),
                         ),
@@ -373,51 +376,142 @@ class _HomepagesState extends State<Homepages> {
                             final ImageProvider imageProvider =
                                 (imageUrl != null && imageUrl.isNotEmpty)
                                 ? NetworkImage(imageUrl)
-                                : AssetImage("assets/images/demoslider.png")
+                                : const AssetImage(
+                                        "assets/images/demoslider.png",
+                                      )
                                       as ImageProvider;
 
                             return Container(
-                              margin: EdgeInsets.symmetric(horizontal: 0),
+                              margin: const EdgeInsets.symmetric(horizontal: 0),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(14),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.18),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 6),
+                                  ),
+                                ],
                                 image: DecorationImage(
                                   image: imageProvider,
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              child: Align(
-                                alignment: Alignment.bottomLeft,
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 5,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.5),
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(10),
-                                      bottomRight: Radius.circular(10),
+                              child: Stack(
+                                children: [
+                                  /// Bottom gradient overlay
+                                  Positioned.fill(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.black.withOpacity(0.10),
+                                            Colors.black.withOpacity(0.72),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  child: Text(
-                                    item.advertisementTitle ?? '',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
+
+                                  /// Slider title
+                                  Positioned(
+                                    left: 10,
+                                    right: 10,
+                                    bottom: 10,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: Colors.black.withOpacity(0.42),
+                                        border: Border.all(
+                                          color: Colors.white.withOpacity(0.18),
+                                          width: 1,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(
+                                              0.20,
+                                            ),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            height: 28,
+                                            width: 4,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              gradient: const LinearGradient(
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                                colors: [
+                                                  Color(0xff00C6FF),
+                                                  Color(0xff0072FF),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+
+                                          Container(
+                                            height: 28,
+                                            width: 28,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.white.withOpacity(
+                                                0.14,
+                                              ),
+                                              border: Border.all(
+                                                color: Colors.white.withOpacity(
+                                                  0.18,
+                                                ),
+                                              ),
+                                            ),
+                                            child: const Icon(
+                                              Icons.campaign_rounded,
+                                              color: Colors.white,
+                                              size: 16,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+
+                                          Expanded(
+                                            child: Text(
+                                              item.advertisementTitle ?? '',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14.5,
+                                                fontWeight: FontWeight.w700,
+                                                height: 1.2,
+                                                letterSpacing: 0.2,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ),
+                                ],
                               ),
                             );
                           },
                           options: CarouselOptions(
-                            height: 130,
+                            height: 135,
                             autoPlay: true,
-                            autoPlayInterval: Duration(seconds: 4),
+                            autoPlayInterval: const Duration(seconds: 4),
                             enlargeCenterPage: true,
                             viewportFraction: 0.87,
                             initialPage: 0,
@@ -427,780 +521,914 @@ class _HomepagesState extends State<Homepages> {
                       }),
                     ),
                     SizedBox(height: 10),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 13),
-                      child: GestureDetector(
-                        onTap: () {
-                          mypagecontroller.openSubPage(WalletScreen());
-                          // dashboardController.fetchDashboardData();
-                        },
-                        child: Container(
-                          width: screenWidth,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(
-                              12,
-                            ), // optional, makes it modern
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(
-                                  0.08,
-                                ), // light shadow
-                                spreadRadius: 4,
-                                blurRadius: 8,
-                                offset: Offset(0, 4), // shadow direction (x,y)
+
+                    SingleChildScrollView(
+                      padding: EdgeInsets.only(bottom: 20),
+                      child: Column(
+                        children: [
+                          /// Second Container: Selected wallet details
+                          ///
+                          SizedBox(height: 10),
+
+                          /// Wallet selector container
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 13),
+                            child: Container(
+                              width: screenWidth,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 10,
                               ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              SizedBox(width: 10),
-                              Image.asset("assets/icons/money.png", height: 60),
-                              SizedBox(width: 7),
-                              KText(
-                                text: languagesController.tr("VIEW_WALLET"),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    spreadRadius: 3,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
                               ),
-                              Spacer(),
-                              Icon(
-                                box.read("language").toString() == "Fa"
-                                    ? FontAwesomeIcons.chevronLeft
-                                    : FontAwesomeIcons.chevronRight,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      mypagecontroller.openSubPage(
+                                        WalletScreen(),
+                                      );
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Image.asset(
+                                          "assets/icons/money.png",
+                                          height: 60,
+                                        ),
+                                        SizedBox(width: 7),
+                                        KText(
+                                          text: languagesController.tr(
+                                            "VIEW_WALLET",
+                                          ),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        Spacer(),
+                                        Icon(
+                                          box.read("language").toString() ==
+                                                  "Fa"
+                                              ? FontAwesomeIcons.chevronLeft
+                                              : FontAwesomeIcons.chevronRight,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 8),
+
+                                  Divider(
+                                    height: 1,
+                                    color: Colors.grey.shade200,
+                                  ),
+
+                                  SizedBox(height: 12),
+
+                                  Obx(() {
+                                    if (walletsController.isLoading.value) {
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: AppColors.primaryColor,
+                                        ),
+                                      );
+                                    }
+
+                                    final wallets = walletsController.wallets;
+
+                                    if (wallets.isEmpty) {
+                                      return Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 8,
+                                        ),
+                                        child: Text(
+                                          "No wallet found",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                      );
+                                    }
+
+                                    final selectedId =
+                                        wallets.any(
+                                          (wallet) =>
+                                              wallet.walletId ==
+                                              walletsController
+                                                  .selectedWalletId
+                                                  .value,
+                                        )
+                                        ? walletsController
+                                              .selectedWalletId
+                                              .value
+                                        : null;
+
+                                    return DropdownButtonFormField<int>(
+                                      value: selectedId,
+                                      isExpanded: true,
+                                      hint: Text(
+                                        languagesController.tr("SELECT_WALLET"),
+                                      ),
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 10,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.shade300,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: AppColors.primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                      items: wallets.map((wallet) {
+                                        return DropdownMenuItem<int>(
+                                          value: wallet.walletId,
+                                          child: Text(
+                                            "${wallet.currency?.code ?? ''} (${wallet.currency?.symbol ?? ''})",
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        );
+                                      }).toList(),
+                                      onChanged: (value) {
+                                        if (value != null) {
+                                          walletsController.selectWallet(value);
+                                        }
+                                      },
+                                    );
+                                  }),
+                                ],
                               ),
-                              SizedBox(width: 10),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 6),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      child: Container(
-                        width: screenWidth,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(
-                            12,
-                          ), // optional, makes it modern
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(
-                                0.08,
-                              ), // light shadow
-                              spreadRadius: 4,
-                              blurRadius: 8,
-                              offset: Offset(0, 4), // shadow direction (x,y)
                             ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(15.0),
-                          child: Obx(
-                            () => dashboardController.isLoading.value == false
-                                ? Column(
+                          ),
+
+                          SizedBox(height: 10),
+
+                          /// Main dashboard container
+                          /// All data from dashboard
+                          /// Only balance from selected wallet if wallet selected
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: Container(
+                              width: screenWidth,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    spreadRadius: 4,
+                                    blurRadius: 8,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(15.0),
+                                child: Obx(() {
+                                  if (dashboardController.isLoading.value) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+
+                                  final dashboardData = dashboardController
+                                      .alldashboardData
+                                      .value
+                                      .data;
+
+                                  if (dashboardData == null) {
+                                    return SizedBox();
+                                  }
+
+                                  final selectedWallet =
+                                      walletsController.selectedWallet;
+
+                                  final bool hasSelectedWallet =
+                                      selectedWallet != null;
+
+                                  /// Balance logic:
+                                  /// wallet thakle selected wallet balance + selected currency
+                                  /// wallet na thakle dashboard balance + default currency
+                                  final String balanceValue = hasSelectedWallet
+                                      ? selectedWallet.balance?.toString() ??
+                                            "0"
+                                      : dashboardData.balance?.toString() ??
+                                            "0";
+
+                                  final String balanceCurrencySymbol =
+                                      hasSelectedWallet
+                                      ? selectedWallet.currency?.symbol ?? ""
+                                      : box
+                                                .read("currency_symbol")
+                                                ?.toString() ??
+                                            "";
+
+                                  final String dashboardCurrencySymbol =
+                                      box.read("currency_symbol")?.toString() ??
+                                      "";
+
+                                  return Column(
                                     children: [
-                                      balanceBox(
+                                      balanceBox2(
                                         "assets/icons/balance.png",
                                         languagesController.tr("BALANCE"),
-                                        dashboardController
-                                            .alldashboardData
-                                            .value
-                                            .data!
-                                            .balance
-                                            .toString(),
+                                        balanceValue,
+                                        symbol: balanceCurrencySymbol,
                                       ),
-                                      SizedBox(height: 6),
-                                      Container(
-                                        height: 1,
-                                        width: screenWidth,
-                                        color: Colors.grey.shade100,
-                                      ),
-                                      SizedBox(height: 6),
-                                      balanceBox(
+
+                                      dividerLine(screenWidth),
+
+                                      balanceBox2(
                                         "assets/icons/profit.png",
                                         languagesController.tr("PROFIT"),
-                                        dashboardController
-                                            .alldashboardData
-                                            .value
-                                            .data!
-                                            .totalRevenue
-                                            .toString(),
+                                        dashboardData.totalRevenue.toString(),
+                                        symbol: dashboardCurrencySymbol,
                                       ),
-                                      SizedBox(height: 6),
-                                      Container(
-                                        height: 1,
-                                        width: screenWidth,
-                                        color: Colors.grey.shade100,
-                                      ),
-                                      SizedBox(height: 6),
-                                      balanceBox(
+
+                                      dividerLine(screenWidth),
+
+                                      balanceBox2(
                                         "assets/icons/profit.png",
                                         languagesController.tr("TODAY_PROFIT"),
-                                        dashboardController
-                                            .alldashboardData
-                                            .value
-                                            .data!
-                                            .todayProfit
-                                            .toString(),
+                                        dashboardData.todayProfit.toString(),
+                                        symbol: dashboardCurrencySymbol,
                                       ),
-                                      SizedBox(height: 6),
-                                      Container(
-                                        height: 1,
-                                        width: screenWidth,
-                                        color: Colors.grey.shade100,
-                                      ),
-                                      SizedBox(height: 6),
-                                      balanceBox(
+
+                                      dividerLine(screenWidth),
+
+                                      balanceBox2(
                                         "assets/icons/sale.png",
                                         languagesController.tr("SALE"),
-                                        dashboardController
-                                            .alldashboardData
-                                            .value
-                                            .data!
-                                            .totalSoldAmount
+                                        dashboardData.totalSoldAmount
                                             .toString(),
+                                        symbol: dashboardCurrencySymbol,
                                       ),
-                                      SizedBox(height: 6),
-                                      Container(
-                                        height: 1,
-                                        width: screenWidth,
-                                        color: Colors.grey.shade100,
-                                      ),
-                                      SizedBox(height: 6),
-                                      balanceBox(
+
+                                      dividerLine(screenWidth),
+
+                                      balanceBox2(
                                         "assets/icons/sale.png",
                                         languagesController.tr("TODAY_SALE"),
-                                        dashboardController
-                                            .alldashboardData
-                                            .value
-                                            .data!
-                                            .todaySale
-                                            .toString(),
+                                        dashboardData.todaySale.toString(),
+                                        symbol: dashboardCurrencySymbol,
                                       ),
-                                      SizedBox(height: 6),
-                                      Container(
-                                        height: 1,
-                                        width: screenWidth,
-                                        color: Colors.grey.shade100,
-                                      ),
-                                      SizedBox(height: 6),
-                                      balanceBox(
+
+                                      dividerLine(screenWidth),
+
+                                      balanceBox2(
                                         "assets/icons/loan_balance.png",
                                         languagesController.tr("LOAN_BALANCE"),
-                                        dashboardController
-                                            .alldashboardData
-                                            .value
-                                            .data!
-                                            .loanBalance
-                                            .toString(),
+                                        dashboardData.loanBalance.toString(),
+                                        symbol: dashboardCurrencySymbol,
                                       ),
-                                      SizedBox(height: 6),
-                                      Container(
-                                        height: 1,
-                                        width: screenWidth,
-                                        color: Colors.grey.shade100,
-                                      ),
-                                      SizedBox(height: 6),
-                                      balanceBox(
+
+                                      dividerLine(screenWidth),
+
+                                      balanceBox2(
                                         "assets/icons/comission.png",
                                         languagesController.tr("COMISSION"),
-                                        dashboardController
-                                            .alldashboardData
-                                            .value
-                                            .data!
-                                            .userInfo!
-                                            .totalearning
-                                            .toString(),
+                                        dashboardData.userInfo?.totalearning
+                                                .toString() ??
+                                            "0",
+                                        symbol: dashboardCurrencySymbol,
+                                      ),
+                                    ],
+                                  );
+                                }),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 20),
+
+                          SizedBox(height: 8),
+                          Obx(
+                            () => historyController.isLoading.value == true
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Center(
+                                        child: CircularProgressIndicator(
+                                          color: AppColors.primaryColor,
+                                        ),
                                       ),
                                     ],
                                   )
-                                : Center(child: CircularProgressIndicator()),
+                                : SizedBox(),
                           ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Obx(
-                      () => historyController.isLoading.value == true
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Center(
-                                  child: CircularProgressIndicator(
-                                    color: AppColors.primaryColor,
-                                  ),
-                                ),
-                              ],
-                            )
-                          : SizedBox(),
-                    ),
-                    Obx(
-                      () => historyController.isLoading.value == false
-                          ? Container(
-                              child:
-                                  historyController
-                                      .allorderlist
-                                      .value
-                                      .data!
-                                      .orders
-                                      .isNotEmpty
-                                  ? SizedBox()
-                                  : Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Image.asset(
-                                            "assets/icons/empty.png",
-                                            height: 80,
+                          Obx(
+                            () => historyController.isLoading.value == false
+                                ? Container(
+                                    child:
+                                        historyController
+                                            .allorderlist
+                                            .value
+                                            .data!
+                                            .orders
+                                            .isNotEmpty
+                                        ? SizedBox()
+                                        : Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Image.asset(
+                                                  "assets/icons/empty.png",
+                                                  height: 80,
+                                                ),
+                                                Text("No Data found"),
+                                              ],
+                                            ),
                                           ),
-                                          Text("No Data found"),
-                                        ],
+                                  )
+                                : SizedBox(),
+                          ),
+                          Container(
+                            height: 400,
+                            width: screenWidth,
+                            child: Obx(
+                              () =>
+                                  historyController.isLoading.value == false &&
+                                      historyController.finalList.isNotEmpty
+                                  ? RefreshIndicator(
+                                      onRefresh: refresh,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        child: ListView.separated(
+                                          padding: EdgeInsets.all(0.0),
+                                          shrinkWrap: false,
+                                          physics:
+                                              AlwaysScrollableScrollPhysics(),
+                                          controller: scrollController,
+                                          separatorBuilder: (context, index) {
+                                            return SizedBox(height: 5);
+                                          },
+                                          itemCount: historyController
+                                              .finalList
+                                              .length,
+                                          itemBuilder: (context, index) {
+                                            final data = historyController
+                                                .finalList[index];
+                                            return GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => OrderDetailsScreen(
+                                                      createDate: data.createdAt
+                                                          .toString(),
+                                                      status: data.status
+                                                          .toString(),
+                                                      rejectReason: data
+                                                          .rejectReason
+                                                          .toString(),
+                                                      companyName: data
+                                                          .bundle!
+                                                          .service!
+                                                          .company!
+                                                          .companyName
+                                                          .toString(),
+                                                      bundleTitle: data
+                                                          .bundle!
+                                                          .bundleTitle!
+                                                          .toString(),
+                                                      rechargebleAccount: data
+                                                          .rechargebleAccount!
+                                                          .toString(),
+                                                      validityType:
+                                                          data
+                                                              .bundle
+                                                              ?.validityType
+                                                              ?.toString() ??
+                                                          "",
+                                                      sellingPrice: data
+                                                          .bundle!
+                                                          .sellingPrice
+                                                          .toString(),
+                                                      orderID: data.id!
+                                                          .toString(),
+                                                      resellerName:
+                                                          dashboardController
+                                                              .alldashboardData
+                                                              .value
+                                                              .data!
+                                                              .userInfo!
+                                                              .contactName
+                                                              .toString(),
+                                                      resellerPhone:
+                                                          dashboardController
+                                                              .alldashboardData
+                                                              .value
+                                                              .data!
+                                                              .userInfo!
+                                                              .phone
+                                                              .toString(),
+                                                      companyLogo: data
+                                                          .bundle!
+                                                          .service!
+                                                          .company!
+                                                          .companyLogo
+                                                          .toString(),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Container(
+                                                height: 60,
+                                                width: screenWidth,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    width: 1,
+                                                    color: Colors.grey.shade200,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: AppColors
+                                                      .listbuilderboxColor,
+                                                ),
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(5.0),
+                                                  child: Row(
+                                                    children: [
+                                                      Container(
+                                                        height: 40,
+                                                        width: 40,
+                                                        decoration: BoxDecoration(
+                                                          image: DecorationImage(
+                                                            fit: BoxFit.fill,
+                                                            image: CachedNetworkImageProvider(
+                                                              data
+                                                                  .bundle!
+                                                                  .service!
+                                                                  .company!
+                                                                  .companyLogo
+                                                                  .toString(),
+                                                            ),
+                                                          ),
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 5),
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                left: 5,
+                                                              ),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Flexible(
+                                                                child: Text(
+                                                                  data
+                                                                      .bundle!
+                                                                      .bundleTitle
+                                                                      .toString(),
+                                                                  style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontSize:
+                                                                        14,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                data.rechargebleAccount
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 5),
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              NumberFormat.currency(
+                                                                locale: 'en_US',
+                                                                symbol: '',
+                                                                decimalDigits:
+                                                                    2,
+                                                              ).format(
+                                                                double.parse(
+                                                                  data
+                                                                      .bundle!
+                                                                      .sellingPrice
+                                                                      .toString(),
+                                                                ),
+                                                              ),
+                                                              style: TextStyle(
+                                                                fontSize: 11,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 2),
+                                                            Text(
+                                                              " " +
+                                                                  box.read(
+                                                                    "currency_symbol",
+                                                                  ),
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 11,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Container(
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              // Icon(
+                                                              //   Icons.check,
+                                                              //   color: Colors.green,
+                                                              //   size: 14,
+                                                              // ),
+                                                              Text(
+                                                                data.status
+                                                                            .toString() ==
+                                                                        "0"
+                                                                    ? languagesController.tr(
+                                                                        "PENDING",
+                                                                      )
+                                                                    : data.status
+                                                                              .toString() ==
+                                                                          "1"
+                                                                    ? languagesController.tr(
+                                                                        "CONFIRMED",
+                                                                      )
+                                                                    : languagesController.tr(
+                                                                        "REJECTED",
+                                                                      ),
+                                                                style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                ),
+                                                              ),
+                                                              // Text(
+                                                              //   "2 days ago",
+                                                              //   style: TextStyle(
+                                                              //     color: Colors.green,
+                                                              //     fontSize: 10,
+                                                              //     fontWeight:
+                                                              //         FontWeight.w600,
+                                                              //   ),
+                                                              // ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    )
+                                  : historyController.finalList.isEmpty
+                                  ? SizedBox()
+                                  : RefreshIndicator(
+                                      onRefresh: refresh,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        child: ListView.separated(
+                                          padding: EdgeInsets.all(0.0),
+                                          shrinkWrap: false,
+                                          physics:
+                                              AlwaysScrollableScrollPhysics(),
+                                          controller: scrollController,
+                                          separatorBuilder: (context, index) {
+                                            return SizedBox(height: 5);
+                                          },
+                                          itemCount: historyController
+                                              .finalList
+                                              .length,
+                                          itemBuilder: (context, index) {
+                                            final data = historyController
+                                                .finalList[index];
+                                            return GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => OrderDetailsScreen(
+                                                      createDate: data.createdAt
+                                                          .toString(),
+                                                      status: data.status
+                                                          .toString(),
+                                                      rejectReason: data
+                                                          .rejectReason
+                                                          .toString(),
+                                                      companyName: data
+                                                          .bundle!
+                                                          .service!
+                                                          .company!
+                                                          .companyName
+                                                          .toString(),
+                                                      bundleTitle: data
+                                                          .bundle!
+                                                          .bundleTitle!
+                                                          .toString(),
+                                                      rechargebleAccount: data
+                                                          .rechargebleAccount!
+                                                          .toString(),
+                                                      validityType:
+                                                          data
+                                                              .bundle
+                                                              ?.validityType
+                                                              ?.toString() ??
+                                                          "",
+                                                      sellingPrice: data
+                                                          .bundle!
+                                                          .sellingPrice
+                                                          .toString(),
+                                                      orderID: data.id!
+                                                          .toString(),
+                                                      resellerName:
+                                                          dashboardController
+                                                              .alldashboardData
+                                                              .value
+                                                              .data!
+                                                              .userInfo!
+                                                              .contactName
+                                                              .toString(),
+                                                      resellerPhone:
+                                                          dashboardController
+                                                              .alldashboardData
+                                                              .value
+                                                              .data!
+                                                              .userInfo!
+                                                              .phone
+                                                              .toString(),
+                                                      companyLogo: data
+                                                          .bundle!
+                                                          .service!
+                                                          .company!
+                                                          .companyLogo
+                                                          .toString(),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Container(
+                                                height: 60,
+                                                width: screenWidth,
+                                                decoration: BoxDecoration(
+                                                  // border: Border.all(
+                                                  //   width: 1,
+                                                  //   color: Colors.grey,
+                                                  // ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: AppColors
+                                                      .listbuilderboxColor,
+                                                ),
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(5.0),
+                                                  child: Row(
+                                                    children: [
+                                                      Container(
+                                                        height: 40,
+                                                        width: 40,
+                                                        decoration: BoxDecoration(
+                                                          image: DecorationImage(
+                                                            fit: BoxFit.fill,
+                                                            image: CachedNetworkImageProvider(
+                                                              data
+                                                                  .bundle!
+                                                                  .service!
+                                                                  .company!
+                                                                  .companyLogo
+                                                                  .toString(),
+                                                            ),
+                                                          ),
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 5),
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                left: 5,
+                                                              ),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Flexible(
+                                                                child: Text(
+                                                                  data
+                                                                      .bundle!
+                                                                      .bundleTitle
+                                                                      .toString(),
+                                                                  style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontSize:
+                                                                        14,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                data.rechargebleAccount
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 5),
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              NumberFormat.currency(
+                                                                locale: 'en_US',
+                                                                symbol: '',
+                                                                decimalDigits:
+                                                                    2,
+                                                              ).format(
+                                                                double.parse(
+                                                                  data
+                                                                      .bundle!
+                                                                      .sellingPrice
+                                                                      .toString(),
+                                                                ),
+                                                              ),
+                                                              style: TextStyle(
+                                                                fontSize: 11,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 2),
+                                                            Text(
+                                                              " " +
+                                                                  box.read(
+                                                                    "currency_symbol",
+                                                                  ),
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 11,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Container(
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              // Icon(
+                                                              //   Icons.check,
+                                                              //   color: Colors.green,
+                                                              //   size: 14,
+                                                              // ),
+                                                              Text(
+                                                                data.status
+                                                                            .toString() ==
+                                                                        "0"
+                                                                    ? languagesController.tr(
+                                                                        "PENDING",
+                                                                      )
+                                                                    : data.status
+                                                                              .toString() ==
+                                                                          "1"
+                                                                    ? languagesController.tr(
+                                                                        "CONFIRMED",
+                                                                      )
+                                                                    : languagesController.tr(
+                                                                        "REJECTED",
+                                                                      ),
+                                                                style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                ),
+                                                              ),
+                                                              // Text(
+                                                              //   "2 days ago",
+                                                              //   style: TextStyle(
+                                                              //     color: Colors.green,
+                                                              //     fontSize: 10,
+                                                              //     fontWeight:
+                                                              //         FontWeight.w600,
+                                                              //   ),
+                                                              // ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
-                            )
-                          : SizedBox(),
-                    ),
-                    Container(
-                      height: 400,
-                      width: screenWidth,
-                      child: Obx(
-                        () =>
-                            historyController.isLoading.value == false &&
-                                historyController.finalList.isNotEmpty
-                            ? RefreshIndicator(
-                                onRefresh: refresh,
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: ListView.separated(
-                                    padding: EdgeInsets.all(0.0),
-                                    shrinkWrap: false,
-                                    physics: AlwaysScrollableScrollPhysics(),
-                                    controller: scrollController,
-                                    separatorBuilder: (context, index) {
-                                      return SizedBox(height: 5);
-                                    },
-                                    itemCount:
-                                        historyController.finalList.length,
-                                    itemBuilder: (context, index) {
-                                      final data =
-                                          historyController.finalList[index];
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  OrderDetailsScreen(
-                                                    createDate: data.createdAt
-                                                        .toString(),
-                                                    status: data.status
-                                                        .toString(),
-                                                    rejectReason: data
-                                                        .rejectReason
-                                                        .toString(),
-                                                    companyName: data
-                                                        .bundle!
-                                                        .service!
-                                                        .company!
-                                                        .companyName
-                                                        .toString(),
-                                                    bundleTitle: data
-                                                        .bundle!
-                                                        .bundleTitle!
-                                                        .toString(),
-                                                    rechargebleAccount: data
-                                                        .rechargebleAccount!
-                                                        .toString(),
-                                                    validityType:
-                                                        data
-                                                            .bundle
-                                                            ?.validityType
-                                                            ?.toString() ??
-                                                        "",
-                                                    sellingPrice: data
-                                                        .bundle!
-                                                        .sellingPrice
-                                                        .toString(),
-                                                    orderID: data.id!
-                                                        .toString(),
-                                                    resellerName:
-                                                        dashboardController
-                                                            .alldashboardData
-                                                            .value
-                                                            .data!
-                                                            .userInfo!
-                                                            .contactName
-                                                            .toString(),
-                                                    resellerPhone:
-                                                        dashboardController
-                                                            .alldashboardData
-                                                            .value
-                                                            .data!
-                                                            .userInfo!
-                                                            .phone
-                                                            .toString(),
-                                                    companyLogo: data
-                                                        .bundle!
-                                                        .service!
-                                                        .company!
-                                                        .companyLogo
-                                                        .toString(),
-                                                  ),
-                                            ),
-                                          );
-                                        },
-                                        child: Container(
-                                          height: 60,
-                                          width: screenWidth,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              width: 1,
-                                              color: Colors.grey.shade200,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                            color:
-                                                AppColors.listbuilderboxColor,
-                                          ),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(5.0),
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  height: 40,
-                                                  width: 40,
-                                                  decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                      fit: BoxFit.fill,
-                                                      image:
-                                                          CachedNetworkImageProvider(
-                                                            data
-                                                                .bundle!
-                                                                .service!
-                                                                .company!
-                                                                .companyLogo
-                                                                .toString(),
-                                                          ),
-                                                    ),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 5),
-                                                Expanded(
-                                                  flex: 2,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                      left: 5,
-                                                    ),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Flexible(
-                                                          child: Text(
-                                                            data
-                                                                .bundle!
-                                                                .bundleTitle
-                                                                .toString(),
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 14,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          data.rechargebleAccount
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontSize: 12,
-                                                            color: Colors.grey,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(width: 5),
-                                                Expanded(
-                                                  flex: 2,
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        NumberFormat.currency(
-                                                          locale: 'en_US',
-                                                          symbol: '',
-                                                          decimalDigits: 2,
-                                                        ).format(
-                                                          double.parse(
-                                                            data
-                                                                .bundle!
-                                                                .sellingPrice
-                                                                .toString(),
-                                                          ),
-                                                        ),
-                                                        style: TextStyle(
-                                                          fontSize: 11,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 2),
-                                                      Text(
-                                                        " " +
-                                                            box.read(
-                                                              "currency_symbol",
-                                                            ),
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 11,
-                                                          color: Colors.grey,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 2,
-                                                  child: Container(
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        // Icon(
-                                                        //   Icons.check,
-                                                        //   color: Colors.green,
-                                                        //   size: 14,
-                                                        // ),
-                                                        Text(
-                                                          data.status
-                                                                      .toString() ==
-                                                                  "0"
-                                                              ? languagesController
-                                                                    .tr(
-                                                                      "PENDING",
-                                                                    )
-                                                              : data.status
-                                                                        .toString() ==
-                                                                    "1"
-                                                              ? languagesController
-                                                                    .tr(
-                                                                      "CONFIRMED",
-                                                                    )
-                                                              : languagesController
-                                                                    .tr(
-                                                                      "REJECTED",
-                                                                    ),
-                                                          style: TextStyle(
-                                                            fontSize: 12,
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                        // Text(
-                                                        //   "2 days ago",
-                                                        //   style: TextStyle(
-                                                        //     color: Colors.green,
-                                                        //     fontSize: 10,
-                                                        //     fontWeight:
-                                                        //         FontWeight.w600,
-                                                        //   ),
-                                                        // ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              )
-                            : historyController.finalList.isEmpty
-                            ? SizedBox()
-                            : RefreshIndicator(
-                                onRefresh: refresh,
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: ListView.separated(
-                                    padding: EdgeInsets.all(0.0),
-                                    shrinkWrap: false,
-                                    physics: AlwaysScrollableScrollPhysics(),
-                                    controller: scrollController,
-                                    separatorBuilder: (context, index) {
-                                      return SizedBox(height: 5);
-                                    },
-                                    itemCount:
-                                        historyController.finalList.length,
-                                    itemBuilder: (context, index) {
-                                      final data =
-                                          historyController.finalList[index];
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  OrderDetailsScreen(
-                                                    createDate: data.createdAt
-                                                        .toString(),
-                                                    status: data.status
-                                                        .toString(),
-                                                    rejectReason: data
-                                                        .rejectReason
-                                                        .toString(),
-                                                    companyName: data
-                                                        .bundle!
-                                                        .service!
-                                                        .company!
-                                                        .companyName
-                                                        .toString(),
-                                                    bundleTitle: data
-                                                        .bundle!
-                                                        .bundleTitle!
-                                                        .toString(),
-                                                    rechargebleAccount: data
-                                                        .rechargebleAccount!
-                                                        .toString(),
-                                                    validityType:
-                                                        data
-                                                            .bundle
-                                                            ?.validityType
-                                                            ?.toString() ??
-                                                        "",
-                                                    sellingPrice: data
-                                                        .bundle!
-                                                        .sellingPrice
-                                                        .toString(),
-                                                    orderID: data.id!
-                                                        .toString(),
-                                                    resellerName:
-                                                        dashboardController
-                                                            .alldashboardData
-                                                            .value
-                                                            .data!
-                                                            .userInfo!
-                                                            .contactName
-                                                            .toString(),
-                                                    resellerPhone:
-                                                        dashboardController
-                                                            .alldashboardData
-                                                            .value
-                                                            .data!
-                                                            .userInfo!
-                                                            .phone
-                                                            .toString(),
-                                                    companyLogo: data
-                                                        .bundle!
-                                                        .service!
-                                                        .company!
-                                                        .companyLogo
-                                                        .toString(),
-                                                  ),
-                                            ),
-                                          );
-                                        },
-                                        child: Container(
-                                          height: 60,
-                                          width: screenWidth,
-                                          decoration: BoxDecoration(
-                                            // border: Border.all(
-                                            //   width: 1,
-                                            //   color: Colors.grey,
-                                            // ),
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                            color:
-                                                AppColors.listbuilderboxColor,
-                                          ),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(5.0),
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  height: 40,
-                                                  width: 40,
-                                                  decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                      fit: BoxFit.fill,
-                                                      image:
-                                                          CachedNetworkImageProvider(
-                                                            data
-                                                                .bundle!
-                                                                .service!
-                                                                .company!
-                                                                .companyLogo
-                                                                .toString(),
-                                                          ),
-                                                    ),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 5),
-                                                Expanded(
-                                                  flex: 2,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                      left: 5,
-                                                    ),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Flexible(
-                                                          child: Text(
-                                                            data
-                                                                .bundle!
-                                                                .bundleTitle
-                                                                .toString(),
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 14,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          data.rechargebleAccount
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontSize: 12,
-                                                            color: Colors.grey,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(width: 5),
-                                                Expanded(
-                                                  flex: 2,
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        NumberFormat.currency(
-                                                          locale: 'en_US',
-                                                          symbol: '',
-                                                          decimalDigits: 2,
-                                                        ).format(
-                                                          double.parse(
-                                                            data
-                                                                .bundle!
-                                                                .sellingPrice
-                                                                .toString(),
-                                                          ),
-                                                        ),
-                                                        style: TextStyle(
-                                                          fontSize: 11,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 2),
-                                                      Text(
-                                                        " " +
-                                                            box.read(
-                                                              "currency_symbol",
-                                                            ),
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 11,
-                                                          color: Colors.grey,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 2,
-                                                  child: Container(
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        // Icon(
-                                                        //   Icons.check,
-                                                        //   color: Colors.green,
-                                                        //   size: 14,
-                                                        // ),
-                                                        Text(
-                                                          data.status
-                                                                      .toString() ==
-                                                                  "0"
-                                                              ? languagesController
-                                                                    .tr(
-                                                                      "PENDING",
-                                                                    )
-                                                              : data.status
-                                                                        .toString() ==
-                                                                    "1"
-                                                              ? languagesController
-                                                                    .tr(
-                                                                      "CONFIRMED",
-                                                                    )
-                                                              : languagesController
-                                                                    .tr(
-                                                                      "REJECTED",
-                                                                    ),
-                                                          style: TextStyle(
-                                                            fontSize: 12,
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                        // Text(
-                                                        //   "2 days ago",
-                                                        //   style: TextStyle(
-                                                        //     color: Colors.green,
-                                                        //     fontSize: 10,
-                                                        //     fontWeight:
-                                                        //         FontWeight.w600,
-                                                        //   ),
-                                                        // ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
+                            ),
+                          ),
+                          SizedBox(height: 80),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 80),
                   ],
                 ),
               ),
@@ -1211,25 +1439,84 @@ class _HomepagesState extends State<Homepages> {
     );
   }
 
-  Widget balanceBox(String imagelink, String name, String balance) {
+  Widget balanceBox(
+    String imagelink,
+    String name,
+    String balance,
+    String symbol,
+  ) {
+    final amount = double.tryParse(balance.replaceAll(",", "")) ?? 0.0;
+
     return Row(
       children: [
-        Image.asset(imagelink.toString(), height: 20, width: 20),
+        Image.asset(imagelink, height: 20, width: 20),
         SizedBox(width: 6),
-        KText(
-          text: name.toString(),
-          color: Colors.black,
-          fontWeight: FontWeight.w500,
-          fontSize: 16,
+        Expanded(
+          child: KText(
+            text: name,
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+          ),
         ),
-        Spacer(),
         Text(
           NumberFormat.currency(
             locale: 'en_US',
             symbol: '',
             decimalDigits: 2,
-          ).format(double.parse(balance.toString())),
+          ).format(amount),
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+          ),
+        ),
+        SizedBox(width: 4),
+        KText(text: symbol, fontSize: 12, color: Colors.black),
+      ],
+    );
+  }
 
+  Widget dividerLine(double screenWidth) {
+    return Column(
+      children: [
+        SizedBox(height: 10),
+        Container(height: 1, width: screenWidth, color: Colors.grey.shade100),
+        SizedBox(height: 10),
+      ],
+    );
+  }
+
+  Widget balanceBox2(
+    String imagelink,
+    String name,
+    dynamic balance, {
+    String? symbol,
+  }) {
+    final String cleanBalance = balance.toString().replaceAll(",", "").trim();
+
+    final double amount = double.tryParse(cleanBalance) ?? 0.0;
+
+    return Row(
+      children: [
+        Image.asset(imagelink, height: 20, width: 20),
+        SizedBox(width: 6),
+
+        Expanded(
+          child: KText(
+            text: name,
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+          ),
+        ),
+
+        Text(
+          NumberFormat.currency(
+            locale: 'en_US',
+            symbol: '',
+            decimalDigits: 2,
+          ).format(amount),
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w500,
@@ -1238,8 +1525,9 @@ class _HomepagesState extends State<Homepages> {
         ),
 
         SizedBox(width: 4),
+
         KText(
-          text: box.read("currency_symbol"),
+          text: symbol ?? box.read("currency_symbol")?.toString() ?? "",
           fontSize: 10,
           color: Colors.black,
         ),

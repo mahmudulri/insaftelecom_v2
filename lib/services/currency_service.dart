@@ -11,13 +11,12 @@ class CurrencyApi {
   final box = GetStorage();
   Future<CurrencyModel> fetchcurrency() async {
     final url = Uri.parse(
-        "https://app-api-vpro-wl-waslat.milliekit.com/api/public/currencies");
+      "https://app-api-vpro-as-afghanstore.milliekit.com/api/public/currencies",
+    );
 
     var response = await http.get(
       url,
-      headers: {
-        'Authorization': 'Bearer ${box.read("userToken")}',
-      },
+      headers: {'Authorization': 'Bearer ${box.read("userToken")}'},
     );
 
     if (response.statusCode == 200) {

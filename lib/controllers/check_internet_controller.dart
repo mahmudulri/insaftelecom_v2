@@ -37,8 +37,8 @@ class NetworkController extends GetxController {
       );
     } else {
       hasinternet.value = true;
-      if (Get.isDialogOpen!) {
-        Get.back(); // Close the dialog when internet is restored
+      if (Get.isDialogOpen == true) {
+        Get.back();
       }
     }
   }

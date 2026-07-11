@@ -34,7 +34,8 @@ class _HawalaListScreenState extends State<HawalaListScreen> {
 
   final Mypagecontroller mypagecontroller = Get.find();
 
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   @override
   void initState() {

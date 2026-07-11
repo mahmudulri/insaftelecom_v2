@@ -29,7 +29,8 @@ class CreateSellingPriceScreen extends StatefulWidget {
 }
 
 class _CreateSellingPriceScreenState extends State<CreateSellingPriceScreen> {
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   final categorisListController = Get.find<CategorisListController>();
   List commissiontype = [];

@@ -26,7 +26,8 @@ class CommissionGroupScreen extends StatefulWidget {
 class _CommissionGroupScreenState extends State<CommissionGroupScreen> {
   final box = GetStorage();
 
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   final commissionlistController = Get.find<CommissionGroupController>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();

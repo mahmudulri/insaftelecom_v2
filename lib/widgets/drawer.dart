@@ -39,7 +39,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
   final dashboardController = Get.find<DashboardController>();
 
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   @override
   Widget build(BuildContext context) {

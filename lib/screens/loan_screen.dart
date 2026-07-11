@@ -29,7 +29,7 @@ class RequestLoanScreen extends StatefulWidget {
 
 final Mypagecontroller mypagecontroller = Get.find();
 
-LanguagesController languagesController = Get.put(LanguagesController());
+final LanguagesController languagesController = Get.find<LanguagesController>();
 
 class _RequestLoanScreenState extends State<RequestLoanScreen> {
   List orderStatus = [];

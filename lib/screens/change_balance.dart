@@ -31,7 +31,8 @@ class _ChangeBalanceState extends State<ChangeBalance> {
   final BalanceController balanceController = Get.put(BalanceController());
   final box = GetStorage();
 
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   @override
   void initState() {

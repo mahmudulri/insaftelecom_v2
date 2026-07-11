@@ -49,7 +49,8 @@ class _HawalaScreenState extends State<HawalaScreen> {
 
   RxString person = "".obs;
   final pageController = Get.find<Mypagecontroller>();
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   ConversationController conversationController = Get.put(
     ConversationController(),

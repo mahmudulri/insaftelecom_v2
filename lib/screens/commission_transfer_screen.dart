@@ -32,7 +32,8 @@ class CommissionTransferScreen extends StatefulWidget {
 }
 
 class _CommissionTransferScreenState extends State<CommissionTransferScreen> {
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   TransferlistController transferlistController = Get.put(
     TransferlistController(),

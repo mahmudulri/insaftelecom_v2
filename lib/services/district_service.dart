@@ -11,7 +11,7 @@ class DistrictApi {
   final box = GetStorage();
   Future<DistrictModel> fetchDistrict() async {
     final url = Uri.parse(
-      "https://app-api-vpro-wl-waslat.milliekit.com/api/public/districts",
+      "https://app-api-vpro-as-afghanstore.milliekit.com/api/public/districts",
     );
 
     var response = await http.get(

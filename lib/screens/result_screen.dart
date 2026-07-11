@@ -35,7 +35,8 @@ class _ResultScreenState extends State<ResultScreen> {
 
   final countryListController = Get.find<CountryListController>();
 
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   final box = GetStorage();
   final TimeZoneController timeZoneController = Get.put(TimeZoneController());

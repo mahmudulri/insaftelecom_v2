@@ -26,7 +26,7 @@ class ReceiptsScreen extends StatefulWidget {
 
 final Mypagecontroller mypagecontroller = Get.find();
 
-LanguagesController languagesController = Get.put(LanguagesController());
+final LanguagesController languagesController = Get.find<LanguagesController>();
 
 class _ReceiptsScreenState extends State<ReceiptsScreen> {
   List orderStatus = [];

@@ -21,6 +21,7 @@ import '../controllers/sign_in_controller.dart';
 import '../controllers/slider_controller.dart';
 import '../controllers/sub_reseller_controller.dart';
 import '../controllers/transaction_controller.dart';
+import '../controllers/wallets_controller.dart';
 
 class Basebinding implements Bindings {
   @override
@@ -51,5 +52,6 @@ class Basebinding implements Bindings {
     Get.lazyPut<CompanyController>(() => CompanyController());
     Get.lazyPut<HelpController>(() => HelpController());
     Get.lazyPut<HistoryController>(() => HistoryController());
+    Get.lazyPut<WalletsController>(() => WalletsController());
   }
 }

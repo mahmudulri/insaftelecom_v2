@@ -8,7 +8,7 @@ class ProvinceApi {
   final box = GetStorage();
   Future<ProvincesModel> fetchProvince() async {
     final url = Uri.parse(
-      "https://app-api-vpro-wl-waslat.milliekit.com/api/public/provinces",
+      "https://app-api-vpro-as-afghanstore.milliekit.com/api/public/provinces",
     );
 
     var response = await http.get(

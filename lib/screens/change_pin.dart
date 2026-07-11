@@ -30,7 +30,8 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
     ChangePinController(),
   );
 
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   final Mypagecontroller mypagecontroller = Get.find();
 

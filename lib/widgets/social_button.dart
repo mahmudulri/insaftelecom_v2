@@ -7,7 +7,8 @@ import 'package:get_storage/get_storage.dart';
 class SocialButton extends StatelessWidget {
   SocialButton({super.key});
 
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
   final box = GetStorage();
   @override
   Widget build(BuildContext context) {

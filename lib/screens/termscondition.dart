@@ -11,7 +11,8 @@ import '../pages/homepages.dart';
 class Termscondition extends StatelessWidget {
   Termscondition({super.key});
 
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   final Mypagecontroller mypagecontroller = Get.find();
 

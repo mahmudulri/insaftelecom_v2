@@ -20,7 +20,8 @@ class Helpscreen extends StatefulWidget {
 class _HelpscreenState extends State<Helpscreen> {
   final helpController = Get.find<HelpController>();
 
-  final languagesController = Get.find<LanguagesController>();
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   String helpdata =
       "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look";

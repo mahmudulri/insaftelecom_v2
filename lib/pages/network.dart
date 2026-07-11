@@ -34,7 +34,7 @@ class Network extends StatefulWidget {
 final Mypagecontroller mypagecontroller = Get.find();
 
 final subresellercontroller = Get.find<SubresellerController>();
-LanguagesController languagesController = Get.put(LanguagesController());
+final LanguagesController languagesController = Get.find<LanguagesController>();
 final detailsController = Get.find<SubresellerDetailsController>();
 
 final DeleteSubResellerController deleteSubResellerController = Get.put(

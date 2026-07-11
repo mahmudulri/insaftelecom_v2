@@ -51,9 +51,8 @@ class _AddNewUserState extends State<AddNewUser> {
   final box = GetStorage();
   final Mypagecontroller mypagecontroller = Get.find();
 
-  final LanguagesController languagesController = Get.put(
-    LanguagesController(),
-  );
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
   final AddSubResellerController addSubResellerController = Get.put(
     AddSubResellerController(),
   );

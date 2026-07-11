@@ -36,7 +36,8 @@ class _BaseScreenState extends State<BaseScreen> {
     dashboardController.fetchDashboardData();
   }
 
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   MyDrawerController drawerController = Get.put(MyDrawerController());

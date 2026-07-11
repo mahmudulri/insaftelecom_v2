@@ -44,7 +44,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
   final customhistoryController = Get.find<CustomHistoryController>();
 
   final countryListController = Get.find<CountryListController>();
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
   CurrencyController currencyController = Get.put(CurrencyController());
   CustomRechargeController customRechargeController = Get.put(
     CustomRechargeController(),

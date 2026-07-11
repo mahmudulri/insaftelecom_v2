@@ -57,7 +57,8 @@ class _CreatePaymentsScreenState extends State<CreatePaymentsScreen> {
 
   RxString person = "".obs;
   final pageController = Get.find<Mypagecontroller>();
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   AddPaymentController addPaymentController = Get.put(AddPaymentController());
 

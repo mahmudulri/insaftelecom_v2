@@ -29,7 +29,8 @@ class SetSubresellerPin extends StatefulWidget {
 class _SetSubresellerPinState extends State<SetSubresellerPin> {
   final ChangePinController setpinController = Get.put(ChangePinController());
 
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override

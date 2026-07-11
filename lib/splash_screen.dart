@@ -17,7 +17,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final dashboardController = Get.find<DashboardController>();
   final box = GetStorage();
-  LanguagesController languagesController = Get.put(LanguagesController());
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   checkData() async {
     String languageShortName = box.read("language") ?? "Fa";

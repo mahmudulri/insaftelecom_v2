@@ -40,7 +40,9 @@ class OtherendPoints {
   final String hawalacurrency = "hawala-currency";
   final String earningtransfer = "earning-transfer";
   final String companies = "companies";
+  final String wallets = "wallets";
   final String loanbalance = "reseller-balances";
   final String appsetting = "app-setting";
   final String rechargeconfig = "get-afg-custom-recharge-config";
+  final String walletsettings = "wallet-settings";
 }
