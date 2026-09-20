@@ -10,7 +10,7 @@ import 'package:get_storage/get_storage.dart';
 import '../controllers/drawer_controller.dart';
 
 class BaseScreen extends StatefulWidget {
-  BaseScreen({super.key});
+  const BaseScreen({super.key});
 
   @override
   State<BaseScreen> createState() => _BaseScreenState();
@@ -19,7 +19,9 @@ class BaseScreen extends StatefulWidget {
 class _BaseScreenState extends State<BaseScreen> {
   final dashboardController = Get.find<DashboardController>();
 
-  final Mypagecontroller mypagecontroller = Get.put(Mypagecontroller());
+  final Mypagecontroller mypagecontroller = Get.isRegistered<Mypagecontroller>()
+      ? Get.find<Mypagecontroller>()
+      : Get.put(Mypagecontroller(), permanent: true);
 
   void _onTabTap(int index) {
     if (mypagecontroller.selectedIndex.value == index) return;
@@ -40,11 +42,13 @@ class _BaseScreenState extends State<BaseScreen> {
       Get.find<LanguagesController>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  MyDrawerController drawerController = Get.put(MyDrawerController());
+  final MyDrawerController drawerController =
+      Get.isRegistered<MyDrawerController>()
+      ? Get.find<MyDrawerController>()
+      : Get.put(MyDrawerController());
 
   @override
   Widget build(BuildContext context) {
-    double displayWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 

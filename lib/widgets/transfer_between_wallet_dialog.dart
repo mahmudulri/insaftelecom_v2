@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../controllers/transfer_between_wallet_controller.dart';
 import '../controllers/wallets_controller.dart';
+import '../global_controller/languages_controller.dart';
 
 class TransferBetweenWalletDialog extends StatefulWidget {
   const TransferBetweenWalletDialog({super.key});
@@ -23,6 +24,9 @@ class _TransferBetweenWalletDialogState
   );
 
   final TextEditingController amountController = TextEditingController();
+
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   @override
   void initState() {
@@ -139,12 +143,12 @@ class _TransferBetweenWalletDialogState
             ),
           ),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Exchange Wallet",
+                  languagesController.tr("EXCHANGE"),
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w900,
@@ -153,7 +157,7 @@ class _TransferBetweenWalletDialogState
                 ),
                 SizedBox(height: 3),
                 Text(
-                  "Transfer amount between wallets",
+                  languagesController.tr("TRANSFER_AMOUNT_BETWEEN_WALLET"),
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -205,7 +209,7 @@ class _TransferBetweenWalletDialogState
             children: [
               Expanded(
                 child: _amountBox(
-                  title: "From Wallet",
+                  title: languagesController.tr("FROM"),
                   amount: balanceAmount,
                   symbol: currencySymbol,
                   icon: Icons.account_balance_wallet_rounded,
@@ -216,7 +220,7 @@ class _TransferBetweenWalletDialogState
               const SizedBox(width: 10),
               Expanded(
                 child: _amountBox(
-                  title: "Available",
+                  title: languagesController.tr("AVAILABLE"),
                   amount: availableAmount,
                   symbol: currencySymbol,
                   icon: Icons.verified_rounded,
@@ -315,8 +319,8 @@ class _TransferBetweenWalletDialogState
           borderRadius: BorderRadius.circular(18),
           border: Border.all(color: const Color(0xffFDA29B)),
         ),
-        child: const Text(
-          "No other wallet found",
+        child: Text(
+          languagesController.tr("NO_OTHER_WALLET_FOUND"),
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w800,
@@ -343,8 +347,8 @@ class _TransferBetweenWalletDialogState
             Icons.keyboard_arrow_down_rounded,
             color: Color(0xff12B76A),
           ),
-          decoration: const InputDecoration(
-            labelText: "To Wallet",
+          decoration: InputDecoration(
+            labelText: languagesController.tr("TO"),
             labelStyle: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
@@ -399,7 +403,7 @@ class _TransferBetweenWalletDialogState
       decoration: InputDecoration(
         filled: true,
         fillColor: const Color(0xffF8FAFC),
-        hintText: "Enter amount",
+        hintText: languagesController.tr("ENTER_AMOUNT"),
         hintStyle: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w600,
@@ -448,8 +452,8 @@ class _TransferBetweenWalletDialogState
                 borderRadius: BorderRadius.circular(15),
               ),
             ),
-            child: const Text(
-              "Cancel",
+            child: Text(
+              languagesController.tr("CANCEL"),
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w800,
@@ -544,8 +548,8 @@ class _TransferBetweenWalletDialogState
                         color: Colors.white,
                       ),
                     )
-                  : const Text(
-                      "Exchange",
+                  : Text(
+                      languagesController.tr("EXCHANGE"),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w900,

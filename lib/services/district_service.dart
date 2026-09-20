@@ -10,9 +10,7 @@ import '../utils/api_endpoints.dart';
 class DistrictApi {
   final box = GetStorage();
   Future<DistrictModel> fetchDistrict() async {
-    final url = Uri.parse(
-      "https://app-api-vpro-as-afghanstore.milliekit.com/api/public/districts",
-    );
+    final url = Uri.parse(ApiEndPoints.publicUrl + "districts");
 
     var response = await http.get(
       url,

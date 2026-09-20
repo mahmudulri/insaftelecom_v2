@@ -488,9 +488,7 @@ class _ResultScreenState extends State<ResultScreen> {
                             onTap: () {
                               historyController.finalList.clear();
                               historyController.initialpage = 1;
-                              mypagecontroller.goToMainPageByIndex(
-                                0,
-                              ); // Set homepage at index 0
+                              mypagecontroller.goToMainPageByIndex(0);
                               Get.to(() => BaseScreen());
                             },
                             child: Container(

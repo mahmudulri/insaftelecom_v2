@@ -10,9 +10,9 @@ import '../utils/api_endpoints.dart';
 class CurrencyApi {
   final box = GetStorage();
   Future<CurrencyModel> fetchcurrency() async {
-    final url = Uri.parse(
-      "https://app-api-vpro-as-afghanstore.milliekit.com/api/public/currencies",
-    );
+    final url = Uri.parse(ApiEndPoints.publicUrl + "currencies");
+
+    print(url);
 
     var response = await http.get(
       url,
@@ -20,7 +20,6 @@ class CurrencyApi {
     );
 
     if (response.statusCode == 200) {
-      // print(response.body.toString());
       final currencyModel = CurrencyModel.fromJson(json.decode(response.body));
 
       return currencyModel;

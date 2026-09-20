@@ -1,44 +1,70 @@
 import 'package:get/get.dart';
-import 'package:insaftelecom/services/country_list_service.dart';
 import 'package:get_storage/get_storage.dart';
+
 import '../models/country_list_model.dart';
+import '../services/country_list_service.dart';
 
 class CountryListController extends GetxController {
-  final box = GetStorage();
-  var isLoading = false.obs;
-  var finalCountryList = [];
-  var countrycodelist = <String>[].obs;
-  var flagimageurl = "";
+  final GetStorage box = GetStorage();
 
-  var allcountryListData = CountryListModel().obs;
+  final RxBool isLoading = false.obs;
 
-  void fetchCountryData() async {
+  final RxList<Country> finalCountryList = <Country>[].obs;
+
+  final RxList<String> countrycodelist = <String>[].obs;
+
+  final RxString flagimageurl = "".obs;
+
+  final Rx<CountryListModel> allcountryListData = CountryListModel().obs;
+
+  Future<void> fetchCountryData() async {
+    if (isLoading.value) {
+      return;
+    }
+
     try {
-      isLoading(true);
-      await CountryListApi().fetchCountryList().then((value) {
-        allcountryListData.value = value;
+      isLoading.value = true;
 
-        finalCountryList = allcountryListData.toJson()['data']['countries'];
-        final storedCountryId = box.read("countryID");
-        // 🔹 Find the matching country
-        final matchedCountry = finalCountryList.firstWhere(
-          (country) => country['id'].toString() == storedCountryId.toString(),
-          orElse: () => null,
-        );
-        if (matchedCountry != null) {
-          flagimageurl = matchedCountry['country_flag_image_url'] ?? "";
+      final CountryListModel response = await CountryListApi()
+          .fetchCountryList();
+
+      allcountryListData.value = response;
+
+      final List<Country> countries = response.data?.countries ?? <Country>[];
+
+      finalCountryList.assignAll(countries);
+
+      final dynamic storedCountryId = box.read("countryID");
+
+      Country? matchedCountry;
+
+      for (final Country country in countries) {
+        if (country.id.toString() == storedCountryId.toString()) {
+          matchedCountry = country;
+          break;
         }
+      }
 
-        countrycodelist.value = finalCountryList
-            .map((country) => country['country_telecom_code']?.toString() ?? "")
-            .toList();
+      flagimageurl.value = matchedCountry?.countryFlagImageUrl ?? "";
 
-        isLoading(false);
-      });
+      countrycodelist.assignAll(
+        countries
+            .map((Country country) => country.countryTelecomCode ?? "")
+            .toList(),
+      );
+    } catch (e, stackTrace) {
+      print("Country list API error: $e");
 
-      isLoading(false);
-    } catch (e) {
-      print(e.toString());
+      print(
+        "Country list stack trace: "
+        "$stackTrace",
+      );
+
+      finalCountryList.clear();
+      countrycodelist.clear();
+      flagimageurl.value = "";
+    } finally {
+      isLoading.value = false;
     }
   }
 }

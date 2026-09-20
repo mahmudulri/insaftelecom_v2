@@ -8,20 +8,20 @@ class ServiceListApi {
   final box = GetStorage();
   Future<ServiceModel> fetchservicelist() async {
     final url = Uri.parse(
-        "${ApiEndPoints.baseUrl}services?service_category_id=${box.read("service_category_id")}&country_id=${box.read("country_id")}");
+      "${ApiEndPoints.baseUrl}services?service_category_id=${box.read("service_category_id")}&country_id=${box.read("country_id")}",
+    );
     print(url);
 
     var response = await http.get(
       url,
-      headers: {
-        'Authorization': 'Bearer ${box.read("userToken")}',
-      },
+      headers: {'Authorization': 'Bearer ${box.read("userToken")}'},
     );
 
     if (response.statusCode == 200) {
-      print(response.body.toString());
-      final servicelistModel =
-          ServiceModel.fromJson(json.decode(response.body));
+      // print(response.body.toString());
+      final servicelistModel = ServiceModel.fromJson(
+        json.decode(response.body),
+      );
 
       return servicelistModel;
     } else {

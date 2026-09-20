@@ -7,14 +7,13 @@ import '../utils/api_endpoints.dart';
 class ProvinceApi {
   final box = GetStorage();
   Future<ProvincesModel> fetchProvince() async {
-    final url = Uri.parse(
-      "https://app-api-vpro-as-afghanstore.milliekit.com/api/public/provinces",
-    );
+    final url = Uri.parse(ApiEndPoints.publicUrl + "provinces");
 
     var response = await http.get(
       url,
       headers: {'Authorization': 'Bearer ${box.read("userToken")}'},
     );
+    print(url);
 
     if (response.statusCode == 200) {
       // print(response.body.toString());

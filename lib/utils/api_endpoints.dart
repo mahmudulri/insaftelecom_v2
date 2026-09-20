@@ -1,15 +1,15 @@
 class ApiEndPoints {
-  // static String baseUrl =
-  //     "https://app-api-vpro-wl-waslat.milliekit.com/api/reseller/";
-
-  // static String publicUrl =
-  //     "https://app-api-vpro-wl-waslat.milliekit.com/api/public/";
-
   static String baseUrl =
-      "https://app-api-vpro-as-afghanstore.milliekit.com/api/reseller/";
+      "https://app-api-vpro-wl-waslat.milliekit.com/api/reseller/";
 
   static String publicUrl =
-      "https://app-api-vpro-as-afghanstore.milliekit.com/api/public/";
+      "https://app-api-vpro-wl-waslat.milliekit.com/api/public/";
+
+  // static String baseUrl =
+  //     "https://app-api-vpro-as-afghanstore.milliekit.com/api/reseller/";
+
+  // static String publicUrl =
+  //     "https://app-api-vpro-as-afghanstore.milliekit.com/api/public/";
 
   static OtherendPoints otherendpoints = OtherendPoints();
 }

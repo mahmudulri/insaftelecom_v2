@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/wallet_summary_controller.dart';
+import '../global_controller/languages_controller.dart';
 
 class WalletSummaryDialog extends StatelessWidget {
   WalletSummaryDialog({super.key});
 
   final WalletSummaryController walletSummaryController =
       Get.find<WalletSummaryController>();
+
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +43,8 @@ class WalletSummaryDialog extends StatelessWidget {
               color: Colors.white,
               borderRadius: BorderRadius.circular(24),
             ),
-            child: const Text(
-              "No summary found",
+            child: Text(
+              languagesController.tr("NO_SUMMARY_FOUND"),
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
           );
@@ -85,12 +89,12 @@ class WalletSummaryDialog extends StatelessWidget {
 
                     const SizedBox(width: 12),
 
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Wallet Summary",
+                            languagesController.tr("WALLET_SUMMARY"),
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w800,
@@ -99,7 +103,7 @@ class WalletSummaryDialog extends StatelessWidget {
                           ),
                           SizedBox(height: 3),
                           Text(
-                            "All wallet overview",
+                            languagesController.tr("ALL_WALLET_OVERVIEW"),
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
@@ -147,8 +151,8 @@ class WalletSummaryDialog extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Net Worth",
+                      Text(
+                        languagesController.tr("NET_WORTH"),
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
@@ -175,7 +179,7 @@ class WalletSummaryDialog extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          "Available: ${summary.availableBalance ?? "0.00"} $symbol",
+                          "${languagesController.tr("AVAILABLE")}: ${summary.availableBalance ?? "0.00"} $symbol",
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -194,7 +198,7 @@ class WalletSummaryDialog extends StatelessWidget {
                     Expanded(
                       child: _summaryMiniBox(
                         icon: Icons.account_balance_wallet_rounded,
-                        title: "Balance",
+                        title: languagesController.tr("BALANCE"),
                         value: "${summary.totalBalance ?? "0.00"} $symbol",
                         iconColor: const Color(0xff004AAD),
                       ),
@@ -203,7 +207,7 @@ class WalletSummaryDialog extends StatelessWidget {
                     Expanded(
                       child: _summaryMiniBox(
                         icon: Icons.payments_rounded,
-                        title: "Payment",
+                        title: languagesController.tr("PAYMENT"),
                         value: "${summary.totalPayment ?? "0.00"} $symbol",
                         iconColor: const Color(0xff12B76A),
                       ),
@@ -218,7 +222,7 @@ class WalletSummaryDialog extends StatelessWidget {
                     Expanded(
                       child: _summaryMiniBox(
                         icon: Icons.trending_down_rounded,
-                        title: "Loan",
+                        title: languagesController.tr("LOAN"),
                         value: "${summary.totalLoan ?? "0.00"} $symbol",
                         iconColor: const Color(0xffF79009),
                       ),
@@ -227,7 +231,7 @@ class WalletSummaryDialog extends StatelessWidget {
                     Expanded(
                       child: _summaryMiniBox(
                         icon: Icons.trending_up_rounded,
-                        title: "Earning",
+                        title: languagesController.tr("EARNING"),
                         value: "${summary.totalEarning ?? "0.00"} $symbol",
                         iconColor: const Color(0xff12B76A),
                       ),
@@ -239,7 +243,7 @@ class WalletSummaryDialog extends StatelessWidget {
 
                 _summaryRow(
                   icon: Icons.call_made_rounded,
-                  title: "Total Hawala Sent",
+                  title: languagesController.tr("TOTAL_HAWALA_SENT"),
                   value: "${summary.totalHawalaSent ?? "0.00"} $symbol",
                 ),
 
@@ -247,7 +251,7 @@ class WalletSummaryDialog extends StatelessWidget {
 
                 _summaryRow(
                   icon: Icons.call_received_rounded,
-                  title: "Total Hawala Received",
+                  title: languagesController.tr("TOTAL_HAWALA_RECEIVED"),
                   value: "${summary.totalHawalaReceived ?? "0.00"} $symbol",
                 ),
               ],

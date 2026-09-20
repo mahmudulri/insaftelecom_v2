@@ -100,7 +100,7 @@ class _WalletTransScreenState extends State<WalletTransScreen> {
             ),
           ],
         ),
-        child: const Column(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
@@ -113,7 +113,7 @@ class _WalletTransScreenState extends State<WalletTransScreen> {
             ),
             SizedBox(height: 14),
             Text(
-              "Loading transactions...",
+              languagesController.tr("LOADING_TRANSACTIONS"),
               style: TextStyle(
                 color: Color(0xff101828),
                 fontSize: 14,
@@ -314,8 +314,10 @@ class _WalletTransScreenState extends State<WalletTransScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
-                                        "Current Balance",
+                                      Text(
+                                        languagesController.tr(
+                                          "CURRENT_BALANCE",
+                                        ),
                                         style: TextStyle(
                                           color: Color(0xff667085),
                                           fontSize: 13,
@@ -362,7 +364,7 @@ class _WalletTransScreenState extends State<WalletTransScreen> {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    "${transactions.length} Transactions",
+                                    "${transactions.length} ${languagesController.tr("TRANSACTIONS")}",
                                     style: const TextStyle(
                                       color: Color(0xff175CD3),
                                       fontWeight: FontWeight.w700,
@@ -371,7 +373,7 @@ class _WalletTransScreenState extends State<WalletTransScreen> {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    "Wallet ID: ${wallet?.id ?? ""}",
+                                    "${languagesController.tr("WALLET_ID")}: ${wallet?.id ?? ""}",
                                     style: const TextStyle(
                                       color: Color(0xff667085),
                                       fontWeight: FontWeight.w500,
@@ -400,7 +402,7 @@ class _WalletTransScreenState extends State<WalletTransScreen> {
                                 vertical: 5,
                               ),
                               child: Text(
-                                "Transaction History",
+                                languagesController.tr("TRANSACTIONS_HISTORY"),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -447,8 +449,8 @@ class _WalletTransScreenState extends State<WalletTransScreen> {
                                 ),
                               ),
                               const SizedBox(height: 12),
-                              const Text(
-                                "No transactions found",
+                              Text(
+                                languagesController.tr("NO_TRANSACTIONS_FOUND"),
                                 style: TextStyle(
                                   color: Color(0xff101828),
                                   fontSize: 16,
@@ -456,8 +458,11 @@ class _WalletTransScreenState extends State<WalletTransScreen> {
                                 ),
                               ),
                               const SizedBox(height: 5),
-                              const Text(
-                                "Your wallet transaction history will appear here.",
+                              Text(
+                                languagesController.tr(
+                                  "YOUR_WALLET_TRANSACTION_HISTORY_WILL_APEAR_HERE",
+                                ),
+
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Color(0xff667085),
@@ -611,8 +616,8 @@ class _WalletTransScreenState extends State<WalletTransScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            const Text(
-                                              "Before",
+                                            Text(
+                                              languagesController.tr("BEFORE"),
                                               style: TextStyle(
                                                 color: Color(0xff98A2B3),
                                                 fontSize: 11,
@@ -645,8 +650,8 @@ class _WalletTransScreenState extends State<WalletTransScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            const Text(
-                                              "Amount",
+                                            Text(
+                                              languagesController.tr("AMOUNT"),
                                               style: TextStyle(
                                                 color: Color(0xff98A2B3),
                                                 fontSize: 11,
@@ -679,8 +684,8 @@ class _WalletTransScreenState extends State<WalletTransScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
                                           children: [
-                                            const Text(
-                                              "After",
+                                            Text(
+                                              languagesController.tr("AFTER"),
                                               style: TextStyle(
                                                 color: Color(0xff98A2B3),
                                                 fontSize: 11,

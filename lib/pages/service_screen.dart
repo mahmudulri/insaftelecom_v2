@@ -1,4 +1,5 @@
 import 'package:insaftelecom/controllers/currency_controller.dart';
+import 'package:insaftelecom/models/country_list_model.dart';
 import 'package:insaftelecom/widgets/custom_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -266,24 +267,50 @@ class _ServiceScreenState extends State<ServiceScreen> {
                 width: screenWidth,
                 buttonName: languagesController.tr("CREDIT_TRANSFER"),
                 onpressed: () {
-                  if (countrylistController.finalCountryList.isNotEmpty) {
-                    // Find the country where the name is "Afghanistan"
-                    var afghanistan = countrylistController.finalCountryList
-                        .firstWhere(
-                          (country) => country['country_name'] == "Afghanistan",
-                          orElse: () => null, // Return null if not found
-                        );
+                  Country? afghanistan;
+
+                  if (countryListController.finalCountryList.isNotEmpty) {
+                    try {
+                      afghanistan = countryListController.finalCountryList
+                          .firstWhere(
+                            (country) =>
+                                country.countryName?.trim().toLowerCase() ==
+                                "afghanistan",
+                          );
+                    } catch (e) {
+                      afghanistan = null;
+                    }
 
                     if (afghanistan != null) {
-                      print("The ID for Afghanistan is: ${afghanistan['id']}");
-                      box.write("country_id", "${afghanistan['id']}");
-                      box.write("maxlength", "10");
+                      print("The ID for Afghanistan is: ${afghanistan.id}");
+
+                      box.write("country_id", afghanistan.id);
+
+                      box.write(
+                        "countryName",
+                        afghanistan.countryName ?? "Afghanistan",
+                      );
+
+                      box.write(
+                        "maxlength",
+                        afghanistan.phoneNumberLength ?? "10",
+                      );
+
+                      box.write(
+                        "enable_operator_lookup",
+                        afghanistan.enableOperatorLookup,
+                      );
+
+                      box.write("validity_type", "");
+                      box.write("company_id", "");
+                      box.write("search_tag", "");
                     } else {
-                      print("Afghanistan not found in the list");
+                      print("Afghanistan not found in the country list.");
                     }
                   } else {
                     print("Country list is empty.");
                   }
+
                   mypagecontroller.openSubPage(CreditTransfer());
                 },
               ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -19,12 +21,13 @@ import 'package:insaftelecom/widgets/number_textfield.dart';
 import '../controllers/service_controller.dart';
 import '../global_controller/font_controller.dart';
 import '../global_controller/page_controller.dart';
-import '../pages/homepages.dart';
 import '../widgets/custom_text.dart';
 import 'country_selection.dart';
 
 class RechargeScreen extends StatefulWidget {
-  RechargeScreen({super.key});
+  const RechargeScreen({super.key, required this.enableOperatorLookup});
+
+  final bool enableOperatorLookup;
 
   @override
   State<RechargeScreen> createState() => _RechargeScreenState();
@@ -53,6 +56,40 @@ class _RechargeScreenState extends State<RechargeScreen> {
 
   String search = "";
   String inputNumber = "";
+  bool isOperatorLookupConfirmed = false;
+
+  Timer? _lookupDebounce;
+
+  String? originalCompanyId;
+  String? detectedCompanyId;
+  bool get isOperatorLookupEnabled {
+    final dynamic storedValue = box.read("enable_operator_lookup");
+
+    if (storedValue is bool) {
+      return storedValue;
+    }
+
+    if (storedValue is int) {
+      return storedValue == 1;
+    }
+
+    final String normalizedValue =
+        storedValue?.toString().trim().toLowerCase() ?? "";
+
+    if (normalizedValue == "true" ||
+        normalizedValue == "1" ||
+        normalizedValue == "yes") {
+      return true;
+    }
+
+    if (normalizedValue == "false" ||
+        normalizedValue == "0" ||
+        normalizedValue == "no") {
+      return false;
+    }
+
+    return widget.enableOperatorLookup;
+  }
 
   final box = GetStorage();
 
@@ -64,93 +101,334 @@ class _RechargeScreenState extends State<RechargeScreen> {
 
   final serviceController = Get.find<ServiceController>();
   final bundleController = Get.find<BundleController>();
-  MyDrawerController drawerController = Get.put(MyDrawerController());
+  final MyDrawerController drawerController =
+      Get.isRegistered<MyDrawerController>()
+      ? Get.find<MyDrawerController>()
+      : Get.put(MyDrawerController());
 
   Future<void> refresh() async {
+    if (bundleController.isLoading.value ||
+        bundleController.isLookupLoading.value) {
+      return;
+    }
+
+    if (!scrollController.hasClients) {
+      return;
+    }
+
+    final bool reachedBottom =
+        scrollController.position.pixels >=
+        scrollController.position.maxScrollExtent;
+
+    if (!reachedBottom) {
+      return;
+    }
+
+    final String phoneNumber = confirmPinController.numberController.text
+        .trim();
+
+    final int requiredLength = _maximumPhoneLength;
+
+    /// Lookup mode সত্যিকার অর্থে তখনই active,
+    /// যখন full phone number দেওয়া হয়েছে।
+    final bool isLookupModeActive =
+        isOperatorLookupEnabled &&
+        requiredLength > 0 &&
+        phoneNumber.length == requiredLength;
+
+    print("======================================");
+    print("🔽 Bottom reached");
+    print("Lookup enabled     : $isOperatorLookupEnabled");
+    print("Lookup mode active : $isLookupModeActive");
+    print("Phone length       : ${phoneNumber.length}/$requiredLength");
+    print("======================================");
+
+    /// Full number দিয়ে lookup result দেখালে
+    /// normal pagination করা হবে না।
+    if (isLookupModeActive) {
+      print("⛔ Pagination skipped because lookup mode is active");
+      return;
+    }
+
     final int totalPages =
         bundleController.allbundleslist.value.payload?.pagination.totalPages ??
         0;
-    final int currentPage = bundleController.initialpage;
 
-    // Prevent loading more pages if we've reached the last page
-    if (currentPage >= totalPages) {
+    print("📄 Current Page : ${bundleController.initialpage}");
+    print("📚 Total Pages  : $totalPages");
+
+    if (bundleController.initialpage >= totalPages) {
+      print("✅ Last page reached");
+      return;
+    }
+
+    bundleController.initialpage++;
+
+    print("🚀 Loading Next Page : ${bundleController.initialpage}/$totalPages");
+
+    await bundleController.fetchallbundles();
+  }
+
+  String _lastProcessedNumber = "";
+  void _onTextChanged() {
+    if (!mounted) return;
+
+    final String number = confirmPinController.numberController.text.trim();
+
+    // IMPORTANT:
+    // TextEditingController listener selection/cursor change হলেও fire করতে পারে.
+    // Long press / Paste menu open করলে text same থাকলে ignore করবো.
+    if (number == _lastProcessedNumber) {
+      return;
+    }
+
+    _lastProcessedNumber = number;
+
+    final int requiredLength = _maximumPhoneLength;
+
+    final services =
+        serviceController.allserviceslist.value.data?.services ?? [];
+
+    String? matchedOriginalCompanyId;
+
+    // Prefix অনুযায়ী original operator detect
+    for (final service in services) {
+      final companyCodes = service.company?.companycodes ?? [];
+
+      for (final code in companyCodes) {
+        final String reservedDigit =
+            code.reservedDigit?.toString().trim() ?? "";
+
+        if (reservedDigit.isEmpty) {
+          continue;
+        }
+
+        final String normalizedNumber = number.startsWith("0")
+            ? number.substring(1)
+            : number;
+
+        final String normalizedReservedDigit = reservedDigit.startsWith("0")
+            ? reservedDigit.substring(1)
+            : reservedDigit;
+
+        final bool prefixMatched =
+            number.startsWith(reservedDigit) ||
+            normalizedNumber.startsWith(normalizedReservedDigit);
+
+        if (prefixMatched) {
+          matchedOriginalCompanyId = service.companyId?.toString();
+          break;
+        }
+      }
+
+      if (matchedOriginalCompanyId != null) {
+        break;
+      }
+    }
+
+    _lookupDebounce?.cancel();
+
+    setState(() {
+      inputNumber = number;
+      originalCompanyId = matchedOriginalCompanyId;
+
+      detectedCompanyId = null;
+      isOperatorLookupConfirmed = false;
+    });
+
+    print("Original company id: $originalCompanyId");
+
+    if (!isOperatorLookupEnabled) {
+      _handleNormalNumber(number);
+      return;
+    }
+
+    if (number.isEmpty) {
+      setState(() {
+        originalCompanyId = null;
+        detectedCompanyId = null;
+        isOperatorLookupConfirmed = false;
+        selectedIndex = -1;
+      });
+
+      bundleController.initialpage = 1;
+      bundleController.finalList.clear();
+
+      bundleController.fetchallbundles();
+      return;
+    }
+
+    // Full number না হওয়া পর্যন্ত lookup API call হবে না
+    if (requiredLength <= 0 || number.length != requiredLength) {
       print(
-        "End..........................................End.....................",
+        "Waiting for full number: "
+        "${number.length}/$requiredLength",
       );
       return;
     }
 
-    // Check if the scroll position is at the bottom
-    if (scrollController.position.pixels ==
-        scrollController.position.maxScrollExtent) {
-      bundleController.initialpage++;
+    // Full number হলে lookup API call
+    _lookupDebounce = Timer(const Duration(milliseconds: 500), () async {
+      if (!mounted) return;
 
-      // Prevent fetching if the next page exceeds total pages
-      if (bundleController.initialpage <= totalPages) {
-        print("Load More...................");
-        bundleController.fetchallbundles();
-      } else {
-        bundleController.initialpage =
-            totalPages; // Reset to the last valid page
-        print("Already on the last page");
+      final String requestedNumber = confirmPinController.numberController.text
+          .trim();
+
+      // Text পরিবর্তন হয়ে গেলে old request ignore
+      if (requestedNumber != number) {
+        return;
       }
-    }
-  }
 
-  void _onTextChanged() {
-    if (!mounted) return;
+      if (requestedNumber.length != requiredLength) {
+        return;
+      }
 
-    setState(() {
-      inputNumber = confirmPinController.numberController.text;
+      bundleController.initialpage = 1;
+      bundleController.finalList.clear();
 
-      // Print debug information
-      print("Input Number: $inputNumber");
+      try {
+        await bundleController.fetchlookupbundles(requestedNumber);
 
-      if (inputNumber.isEmpty) {
-        box.write("company_id", "");
-        bundleController.initialpage = 1;
-        bundleController.finalList.clear();
-        bundleController.fetchallbundles();
-        // Handle case where text field is cleared
-        print("Text field is empty. Showing all services.");
+        if (!mounted) return;
 
-        // Clear the company_id from the box
+        final String latestNumber = confirmPinController.numberController.text
+            .trim();
 
-        // Reset bundleController and fetch all bundles
-      } else if (inputNumber.length == 3 || inputNumber.length == 4) {
-        final services = serviceController.allserviceslist.value.data!.services;
-
-        // Print number of services for debugging
-        print("Number of services: ${services.length}");
-
-        bool matchFound = false;
-
-        for (var service in services) {
-          for (var code in service.company!.companycodes!) {
-            // Print reservedDigit for debugging
-            print("Checking reservedDigit: ${code.reservedDigit}");
-
-            if (code.reservedDigit == inputNumber) {
-              box.write("company_id", service.companyId);
-              bundleController.initialpage = 1;
-              bundleController.finalList.clear();
-              setState(() {
-                bundleController.fetchallbundles();
-              });
-
-              print("Matched company_id: ${service.companyId}");
-              matchFound = true;
-              break; // Exit the inner loop
-            }
-          }
-          if (matchFound) break; // Exit the outer loop
+        if (latestNumber != requestedNumber) {
+          return;
         }
 
-        if (!matchFound) {
-          print("No match found for input number: $inputNumber");
+        String? lookupCompanyId;
+
+        if (bundleController.finalList.isNotEmpty) {
+          final firstBundle = bundleController.finalList.first;
+
+          lookupCompanyId = firstBundle.service?.company?.id?.toString();
         }
+
+        setState(() {
+          detectedCompanyId = lookupCompanyId;
+          isOperatorLookupConfirmed = lookupCompanyId != null;
+        });
+
+        final bool isPorted =
+            isOperatorLookupConfirmed &&
+            originalCompanyId != null &&
+            detectedCompanyId != null &&
+            originalCompanyId != detectedCompanyId;
+
+        print("Full number lookup completed");
+        print("Original company id: $originalCompanyId");
+        print("Detected company id: $detectedCompanyId");
+        print("Is ported number: $isPorted");
+      } catch (e) {
+        if (!mounted) return;
+
+        setState(() {
+          detectedCompanyId = null;
+          isOperatorLookupConfirmed = false;
+        });
+
+        print("Operator lookup failed: $e");
       }
     });
+  }
+
+  Future<void> _handleNormalNumber(String number) async {
+    _lookupDebounce?.cancel();
+
+    final String cleanNumber = number.trim();
+
+    if (cleanNumber.isEmpty) {
+      box.write("company_id", "");
+
+      setState(() {
+        selectedIndex = -1;
+      });
+
+      bundleController.initialpage = 1;
+      bundleController.finalList.clear();
+
+      await bundleController.fetchallbundles();
+
+      return;
+    }
+
+    final services =
+        serviceController.allserviceslist.value.data?.services ?? [];
+
+    String? matchedCompanyId;
+
+    for (final service in services) {
+      final companyCodes = service.company?.companycodes ?? [];
+
+      for (final code in companyCodes) {
+        final String reservedDigit =
+            code.reservedDigit?.toString().trim() ?? "";
+
+        if (reservedDigit.isEmpty) {
+          continue;
+        }
+
+        final String normalizedNumber = cleanNumber.startsWith("0")
+            ? cleanNumber.substring(1)
+            : cleanNumber;
+
+        final String normalizedReservedDigit = reservedDigit.startsWith("0")
+            ? reservedDigit.substring(1)
+            : reservedDigit;
+
+        final bool matched =
+            cleanNumber.startsWith(reservedDigit) ||
+            normalizedNumber.startsWith(normalizedReservedDigit);
+
+        if (matched) {
+          matchedCompanyId = service.companyId?.toString();
+
+          print(
+            "✅ Company matched: $matchedCompanyId "
+            "with reserved digit: $reservedDigit "
+            "for number: $cleanNumber",
+          );
+
+          break;
+        }
+      }
+
+      if (matchedCompanyId != null) {
+        break;
+      }
+    }
+
+    if (matchedCompanyId == null) {
+      print("❌ No company matched for number: $cleanNumber");
+      return;
+    }
+
+    // একই company হলে প্রত্যেক digit change-এ API আবার call করবে না
+    final String currentCompanyId = box.read("company_id")?.toString() ?? "";
+
+    if (currentCompanyId == matchedCompanyId) {
+      print("ℹ️ Same company already selected: $matchedCompanyId");
+      return;
+    }
+
+    await box.write("company_id", matchedCompanyId);
+
+    bundleController.initialpage = 1;
+    bundleController.finalList.clear();
+
+    print("🚀 Calling normal bundle API");
+    print("Company ID: ${box.read("company_id")}");
+    print("Number: $cleanNumber");
+
+    await bundleController.fetchallbundles();
+  }
+
+  int get _maximumPhoneLength {
+    final dynamic storedLength = box.read("maxlength");
+
+    return int.tryParse(storedLength?.toString() ?? "") ?? 0;
   }
 
   @override
@@ -163,6 +441,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
         statusBarBrightness: Brightness.light, // For iOS
       ),
     );
+    box.write("company_id", "");
     confirmPinController.numberController.clear();
 
     bundleController.initialpage = 1;
@@ -176,13 +455,18 @@ class _RechargeScreenState extends State<RechargeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
     });
-    // Use addPostFrameCallback to ensure this runs after the initial build
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   @override
   void dispose() {
+    _lookupDebounce?.cancel();
+
     confirmPinController.numberController.removeListener(_onTextChanged);
+
+    scrollController.removeListener(refresh);
+    scrollController.dispose();
+
+    _focusNode.dispose();
 
     super.dispose();
   }
@@ -215,8 +499,8 @@ class _RechargeScreenState extends State<RechargeScreen> {
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            mypagecontroller.openSubPage(InternetPack());
+                          onTap: () async {
+                            await mypagecontroller.handleBack();
                           },
                           child: Container(
                             height: 45,
@@ -295,7 +579,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
                         ),
                         SizedBox(height: 15),
                         Container(
-                          height: 50,
+                          height: 62,
                           color: Colors.transparent,
                           width: screenWidth,
                           child: Obx(() {
@@ -308,18 +592,41 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                     ?.services ??
                                 [];
 
-                            // Show all services if input is empty, otherwise filter
+                            final bool isFullNumber =
+                                _maximumPhoneLength > 0 &&
+                                inputNumber.length == _maximumPhoneLength;
+
                             final filteredServices = inputNumber.isEmpty
                                 ? services
+                                : isOperatorLookupEnabled
+                                ? services.where((service) {
+                                    final String currentCompanyId =
+                                        service.companyId?.toString() ?? "";
+
+                                    final bool isOriginal =
+                                        originalCompanyId != null &&
+                                        currentCompanyId == originalCompanyId;
+
+                                    final bool isDetected =
+                                        isFullNumber &&
+                                        isOperatorLookupConfirmed &&
+                                        detectedCompanyId != null &&
+                                        currentCompanyId == detectedCompanyId;
+
+                                    return isOriginal || isDetected;
+                                  }).toList()
                                 : services.where((service) {
                                     return service.company?.companycodes?.any((
                                           code,
                                         ) {
-                                          final reservedDigit =
-                                              code.reservedDigit ?? '';
-                                          return inputNumber.startsWith(
-                                            reservedDigit,
-                                          );
+                                          final String reservedDigit =
+                                              code.reservedDigit?.toString() ??
+                                              "";
+
+                                          return reservedDigit.isNotEmpty &&
+                                              inputNumber.startsWith(
+                                                reservedDigit,
+                                              );
                                         }) ??
                                         false;
                                   }).toList();
@@ -336,56 +643,180 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                       itemBuilder: (context, index) {
                                         final data = filteredServices[index];
 
+                                        final String currentCompanyId =
+                                            data.companyId?.toString() ?? "";
+
+                                        final bool isDetectedOperator =
+                                            isOperatorLookupEnabled &&
+                                            isOperatorLookupConfirmed &&
+                                            inputNumber.length ==
+                                                _maximumPhoneLength &&
+                                            detectedCompanyId != null &&
+                                            currentCompanyId ==
+                                                detectedCompanyId;
+
+                                        final bool isPorted =
+                                            isOperatorLookupConfirmed &&
+                                            inputNumber.length ==
+                                                _maximumPhoneLength &&
+                                            originalCompanyId != null &&
+                                            detectedCompanyId != null &&
+                                            originalCompanyId !=
+                                                detectedCompanyId;
+
+                                        final bool showPortedBadge =
+                                            isDetectedOperator && isPorted;
+
+                                        final bool isSelected =
+                                            isOperatorLookupEnabled &&
+                                                isOperatorLookupConfirmed &&
+                                                inputNumber.length ==
+                                                    _maximumPhoneLength
+                                            ? isDetectedOperator
+                                            : selectedIndex == index;
+
                                         return GestureDetector(
-                                          onTap: () {
+                                          onTap: () async {
+                                            final bool isFullNumber =
+                                                _maximumPhoneLength > 0 &&
+                                                inputNumber.length ==
+                                                    _maximumPhoneLength;
+
+                                            final bool
+                                            shouldLockOperatorSelection =
+                                                isOperatorLookupEnabled &&
+                                                isFullNumber &&
+                                                isOperatorLookupConfirmed;
+
+                                            if (shouldLockOperatorSelection) {
+                                              return;
+                                            }
+
                                             setState(() {
                                               bundleController.initialpage = 1;
                                               bundleController.finalList
                                                   .clear();
+
                                               selectedIndex = index;
+
                                               box.write(
                                                 "company_id",
                                                 data.companyId,
                                               );
-                                              bundleController
-                                                  .fetchallbundles();
                                             });
+
+                                            await bundleController
+                                                .fetchallbundles();
                                           },
-                                          child: Container(
-                                            height: 50,
-                                            width: 50,
-                                            decoration: BoxDecoration(
-                                              color: selectedIndex == index
-                                                  ? Color(0xff34495e)
-                                                  : Colors.grey.shade100,
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 5,
-                                                vertical: 5,
-                                              ),
-                                              child: CachedNetworkImage(
-                                                imageUrl:
-                                                    data.company?.companyLogo ??
-                                                    '',
-                                                placeholder: (context, url) {
-                                                  print('Loading image: $url');
-                                                  return Center(
-                                                    child:
-                                                        CircularProgressIndicator(
+                                          child: SizedBox(
+                                            width: showPortedBadge ? 67 : 52,
+                                            height: 62,
+                                            child: Stack(
+                                              clipBehavior: Clip.none,
+                                              children: [
+                                                Positioned(
+                                                  left: 1,
+                                                  bottom: 1,
+                                                  child: Container(
+                                                    height: 50,
+                                                    width: 50,
+                                                    decoration: BoxDecoration(
+                                                      // ONLY COLOR REVERSED
+                                                      color: isSelected
+                                                          ? Colors.grey.shade300
+                                                          : const Color(
+                                                              0xffFFFFFF,
+                                                            ),
+
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                      border: Border.all(
+                                                        color: showPortedBadge
+                                                            ? Colors.orange
+                                                            : Colors
+                                                                  .transparent,
+                                                        width: showPortedBadge
+                                                            ? 1.5
+                                                            : 0,
+                                                      ),
+                                                    ),
+                                                    padding:
+                                                        const EdgeInsets.all(5),
+                                                    child: CachedNetworkImage(
+                                                      imageUrl:
+                                                          data
+                                                              .company
+                                                              ?.companyLogo ??
+                                                          "",
+                                                      fit: BoxFit.contain,
+                                                      placeholder: (_, __) {
+                                                        return const Center(
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                                strokeWidth: 1,
+                                                              ),
+                                                        );
+                                                      },
+                                                      errorWidget: (_, __, ___) {
+                                                        return const Icon(
+                                                          Icons.error_outline,
+                                                          size: 20,
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                if (showPortedBadge)
+                                                  Positioned(
+                                                    right: 0,
+                                                    top: 0,
+                                                    child: Container(
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 4,
+                                                            vertical: 2,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.orange,
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              5,
+                                                            ),
+                                                        border: Border.all(
                                                           color: Colors.white,
+                                                          width: 1,
                                                         ),
-                                                  );
-                                                },
-                                                errorWidget: (context, url, error) {
-                                                  print(
-                                                    'Error loading image: $url, error: $error',
-                                                  );
-                                                  return Icon(Icons.error);
-                                                },
-                                              ),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                  0.12,
+                                                                ),
+                                                            blurRadius: 3,
+                                                            offset:
+                                                                const Offset(
+                                                                  0,
+                                                                  1,
+                                                                ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: const Text(
+                                                        "PORTED",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 7,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          letterSpacing: 0.2,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
                                             ),
                                           ),
                                         );
@@ -400,6 +831,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                   );
                           }),
                         ),
+
                         SizedBox(height: 15),
                         SizedBox(
                           height: 35,
@@ -853,9 +1285,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                                                                   width: 4,
                                                                                 ),
                                                                                 Text(
-                                                                                  box.read(
-                                                                                    "currency_code",
-                                                                                  ),
+                                                                                  data.currencyCode,
                                                                                   style: TextStyle(
                                                                                     fontSize: 12,
                                                                                     fontWeight: FontWeight.w600,
@@ -921,9 +1351,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                                                                   width: 4,
                                                                                 ),
                                                                                 Text(
-                                                                                  box.read(
-                                                                                    "currency_code",
-                                                                                  ),
+                                                                                  data.currencyCode,
                                                                                   style: TextStyle(
                                                                                     fontSize: 12,
                                                                                     fontWeight: FontWeight.w600,
@@ -1347,13 +1775,24 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      KText(
-                                                        text: data.bundleTitle
-                                                            .toString(),
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontSize: 10,
+                                                      Flexible(
+                                                        child: Text(
+                                                          data.bundleTitle
+                                                              .toString(),
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize: 10,
+                                                                height: 1.1,
+                                                              ),
+                                                        ),
                                                       ),
+                                                      const SizedBox(height: 2),
                                                       Obx(
                                                         () => KText(
                                                           text:
@@ -1361,7 +1800,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                                                   .tr("SALE"),
                                                           fontWeight:
                                                               FontWeight.w500,
-                                                          fontSize: 12,
+                                                          fontSize: 11,
                                                           color: Colors.grey,
                                                         ),
                                                       ),
@@ -1381,17 +1820,6 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                                       mainAxisAlignment:
                                                           MainAxisAlignment.end,
                                                       children: [
-                                                        // Text(
-                                                        //   data.validityType
-                                                        //       .toString(),
-                                                        //   style: TextStyle(
-                                                        //     fontSize: 14,
-                                                        //     color: Colors
-                                                        //         .grey.shade600,
-                                                        //     fontWeight:
-                                                        //         FontWeight.w600,
-                                                        //   ),
-                                                        // ),
                                                         Obx(
                                                           () => KText(
                                                             text:
@@ -1469,9 +1897,20 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                                                 : null,
                                                           ),
                                                         ),
-                                                        SizedBox(width: 2),
+                                                        SizedBox(width: 4),
+                                                        // Text(
+                                                        //   " ${box.read("currency_code")}",
+                                                        //   style: TextStyle(
+                                                        //     fontSize: 12,
+                                                        //     fontWeight:
+                                                        //         FontWeight.w500,
+                                                        //     color: Colors
+                                                        //         .grey
+                                                        //         .shade600,
+                                                        //   ),
+                                                        // ),
                                                         Text(
-                                                          " ${box.read("currency_code")}",
+                                                          data.currencyCode,
                                                           style: TextStyle(
                                                             fontSize: 12,
                                                             fontWeight:
@@ -1524,6 +1963,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                             textColor: Colors.white,
                                             fontSize: 16.0,
                                           );
+                                          print(data.id.toString());
                                         } else {
                                           if (box.read("permission") == "no" ||
                                               confirmPinController
@@ -1865,9 +2305,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                                                                   width: 4,
                                                                                 ),
                                                                                 Text(
-                                                                                  box.read(
-                                                                                    "currency_code",
-                                                                                  ),
+                                                                                  data.currencyCode,
                                                                                   style: TextStyle(
                                                                                     fontSize: 12,
                                                                                     fontWeight: FontWeight.w600,
@@ -1933,9 +2371,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                                                                   width: 4,
                                                                                 ),
                                                                                 Text(
-                                                                                  box.read(
-                                                                                    "currency_code",
-                                                                                  ),
+                                                                                  data.currencyCode,
                                                                                   style: TextStyle(
                                                                                     fontSize: 12,
                                                                                     fontWeight: FontWeight.w600,
@@ -2359,13 +2795,24 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      KText(
-                                                        text: data.bundleTitle
-                                                            .toString(),
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontSize: 10,
+                                                      Flexible(
+                                                        child: Text(
+                                                          data.bundleTitle
+                                                              .toString(),
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize: 10,
+                                                                height: 1.1,
+                                                              ),
+                                                        ),
                                                       ),
+                                                      const SizedBox(height: 2),
                                                       Obx(
                                                         () => KText(
                                                           text:
@@ -2373,7 +2820,7 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                                                   .tr("SALE"),
                                                           fontWeight:
                                                               FontWeight.w500,
-                                                          fontSize: 12,
+                                                          fontSize: 11,
                                                           color: Colors.grey,
                                                         ),
                                                       ),
@@ -2393,17 +2840,6 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                                       mainAxisAlignment:
                                                           MainAxisAlignment.end,
                                                       children: [
-                                                        // Text(
-                                                        //   data.validityType
-                                                        //       .toString(),
-                                                        //   style: TextStyle(
-                                                        //     fontSize: 14,
-                                                        //     color: Colors
-                                                        //         .grey.shade600,
-                                                        //     fontWeight:
-                                                        //         FontWeight.w600,
-                                                        //   ),
-                                                        // ),
                                                         Obx(
                                                           () => KText(
                                                             text:
@@ -2481,9 +2917,20 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                                                 : null,
                                                           ),
                                                         ),
-                                                        SizedBox(width: 2),
+                                                        SizedBox(width: 4),
+                                                        // Text(
+                                                        //   " ${box.read("currency_code")}",
+                                                        //   style: TextStyle(
+                                                        //     fontSize: 12,
+                                                        //     fontWeight:
+                                                        //         FontWeight.w500,
+                                                        //     color: Colors
+                                                        //         .grey
+                                                        //         .shade600,
+                                                        //   ),
+                                                        // ),
                                                         Text(
-                                                          " ${box.read("currency_code")}",
+                                                          data.currencyCode,
                                                           style: TextStyle(
                                                             fontSize: 12,
                                                             fontWeight:

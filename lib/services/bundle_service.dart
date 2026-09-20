@@ -7,26 +7,75 @@ import 'package:insaftelecom/models/bundle_model.dart';
 import '../utils/api_endpoints.dart';
 
 class BundlesApi {
-  final box = GetStorage();
-  Future<BundleModel> fetchBundles(int pageNo) async {
-    final url = Uri.parse(
-      "${ApiEndPoints.baseUrl}bundles?page=$pageNo&country_id=${box.read("country_id")}&validity_type=${box.read("validity_type")}&per_page=15&company_id=${box.read("company_id")}&service_category_id=${box.read("service_category_id")}&search_tag=${box.read("search_tag")}",
-    );
-    print("bundles $url");
+  final GetStorage box = GetStorage();
 
-    var response = await http.get(
+  /// Initial / normal bundle API
+  Future<BundleModel> fetchBundles(int pageNo) async {
+    final Uri url = Uri.parse("${ApiEndPoints.baseUrl}bundles").replace(
+      queryParameters: {
+        "page": pageNo.toString(),
+        "country_id": box.read("country_id")?.toString() ?? "",
+        "validity_type": box.read("validity_type")?.toString() ?? "",
+        "per_page": "15",
+        "company_id": box.read("company_id")?.toString() ?? "",
+        "service_category_id":
+            box.read("service_category_id")?.toString() ?? "",
+        "search_tag": box.read("search_tag")?.toString() ?? "",
+      },
+    );
+
+    print("Normal bundles URL: $url");
+
+    final http.Response response = await http.get(
       url,
-      headers: {'Authorization': 'Bearer ${box.read("userToken")}'},
+      headers: {
+        "Authorization": "Bearer ${box.read("userToken")}",
+        "Accept": "application/json",
+      },
     );
 
     if (response.statusCode == 200) {
-      print(response.statusCode.toString());
-      // print("body   ... " + response.body.toString());
-      final bundleModel = BundleModel.fromJson(json.decode(response.body));
-
-      return bundleModel;
-    } else {
-      throw Exception('Failed to fetch gateway');
+      return BundleModel.fromJson(json.decode(response.body));
     }
+
+    throw Exception("Failed to fetch bundles: ${response.statusCode}");
+  }
+
+  Future<BundleModel> fetchlookupBundles(String phoneNumber) async {
+    final String cleanPhoneNumber = phoneNumber
+        .trim()
+        .replaceAll(" ", "")
+        .replaceAll("-", "")
+        .replaceAll("(", "")
+        .replaceAll(")", "");
+
+    if (cleanPhoneNumber.isEmpty) {
+      throw Exception("Phone number is required for operator lookup.");
+    }
+
+    final Uri url = Uri.parse("${ApiEndPoints.baseUrl}bundles").replace(
+      queryParameters: {
+        "country_id": box.read("country_id")?.toString() ?? "",
+        "service_category_id":
+            box.read("service_category_id")?.toString() ?? "",
+        "rechargeable_account": cleanPhoneNumber,
+      },
+    );
+
+    print("Lookup bundles URL: $url");
+
+    final http.Response response = await http.get(
+      url,
+      headers: {
+        "Authorization": "Bearer ${box.read("userToken")}",
+        "Accept": "application/json",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return BundleModel.fromJson(json.decode(response.body));
+    }
+
+    throw Exception("Failed to fetch lookup bundles: ${response.statusCode}");
   }
 }

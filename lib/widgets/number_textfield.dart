@@ -15,20 +15,25 @@ class PasteRestrictionFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    // Check if new value comes from pasting
-    if (newValue.text.length > oldValue.text.length) {
-      // Try parsing the new value to an integer
-      if (int.tryParse(newValue.text) == null) {
-        // If it's not an integer, return the old value (block paste)
-        Get.snackbar(
-          "Error",
-          "Only allow english number format",
-          colorText: Colors.white,
-          duration: Duration(milliseconds: 1000),
-          backgroundColor: Colors.black,
-        );
-        return oldValue;
-      }
+    if (newValue.text.isEmpty) {
+      return newValue;
+    }
+
+    final bool containsOnlyEnglishDigits = RegExp(
+      r'^[0-9]+$',
+    ).hasMatch(newValue.text);
+
+    if (!containsOnlyEnglishDigits) {
+      Get.snackbar(
+        "Error",
+        "Only English number format is allowed",
+        colorText: Colors.white,
+        duration: const Duration(milliseconds: 1000),
+        backgroundColor: Colors.black,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+
+      return oldValue;
     }
 
     return newValue;
@@ -36,108 +41,73 @@ class PasteRestrictionFormatter extends TextInputFormatter {
 }
 
 class CustomTextField extends StatefulWidget {
-  final TextEditingController confirmPinController;
-
-  final String languageData;
-
-  CustomTextField({
+  const CustomTextField({
+    super.key,
     required this.confirmPinController,
     required this.languageData,
   });
+
+  final TextEditingController confirmPinController;
+  final String languageData;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  final box = GetStorage();
+  final GetStorage box = GetStorage();
 
-  final serviceController = Get.find<ServiceController>();
-  final bundleController = Get.find<BundleController>();
+  final FocusNode _numberFocusNode = FocusNode();
 
   String? errorMessage;
 
+  int get maximumLength {
+    return int.tryParse(box.read("maxlength")?.toString() ?? "") ?? 20;
+  }
+
   void validateInput(String input) {
-    // If input is empty, clear the company_id, reset permission, and fetch all bundles
-    if (input.isEmpty) {
+    if (!mounted) return;
+
+    final String cleanInput = input.trim();
+
+    if (cleanInput.isEmpty) {
       setState(() {
-        box.write("company_id", "");
-        box.write("permission", "no");
         errorMessage = null;
       });
-      bundleController.finalList.clear();
-      bundleController.initialpage = 1;
-      bundleController.fetchallbundles();
-      print("Input is empty. Cleared company_id and fetched all bundles.");
-      return; // Exit the method early
+
+      box.write("permission", "no");
+      return;
     }
 
-    // Continue with validation if input is not empty
-    bool isValid = serviceController.reserveDigit.any(
-      (digit) => input.startsWith(digit),
-    );
-
-    if (!isValid) {
+    if (cleanInput.length == maximumLength) {
       setState(() {
-        errorMessage =
-            "Please enter a correct ${box.read("maxlength")} digit Number";
-        box.write("permission", "no");
+        errorMessage = null;
       });
-    } else {
-      setState(() {
-        box.write("permission", "yes");
-        errorMessage = null; // Clear error when valid
-      });
+
+      box.write("permission", "yes");
+      return;
     }
 
-    // Only proceed when the input length is 3, 4, or 10
-    if (input.length == 3 || input.length == 4 || input.length == 10) {
-      final services = serviceController.allserviceslist.value.data!.services;
-      bool matchFound = false;
+    setState(() {
+      errorMessage = null;
+    });
 
-      for (var service in services) {
-        for (var code in service.company!.companycodes!) {
-          print("Checking reservedDigit: ${code.reservedDigit}");
+    box.write("permission", "no");
+  }
 
-          // Check if the input starts with the reservedDigit
-          if (input.startsWith(code.reservedDigit.toString())) {
-            // Set the matched company_id
-            box.write("company_id", service.companyId);
-            bundleController.initialpage = 1;
-
-            // Clear and fetch bundles
-            bundleController.finalList.clear();
-            serviceController.fetchservices();
-            bundleController.fetchallbundles();
-
-            print(
-              "Matched company_id: ${service.companyId} with input: $input",
-            );
-            matchFound = true;
-            break;
-          }
-        }
-        if (matchFound) break;
-      }
-
-      // If no match is found, clear the list and fetch all bundles
-      if (!matchFound) {
-        bundleController.finalList.clear();
-        bundleController.initialpage = 1;
-        bundleController.fetchallbundles();
-
-        print(
-          "No match found for input: $input. Cleared the finalList and fetched all bundles.",
-        );
-      }
-    }
+  @override
+  void dispose() {
+    _numberFocusNode.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    final double screenWidth = MediaQuery.of(context).size.width;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           height: 50,
@@ -151,41 +121,47 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: TextField(
-              maxLength: int.parse(box.read("maxlength").toString()),
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                fontFamily: box.read("language").toString() == "Fa"
-                    ? Get.find<FontController>().currentFont
-                    : null,
-              ),
               controller: widget.confirmPinController,
+              focusNode: _numberFocusNode,
+              autofocus: false,
+              maxLength: maximumLength,
               keyboardType: TextInputType.phone,
+              textInputAction: TextInputAction.done,
+              style: TextStyle(color: Colors.grey.shade600),
               inputFormatters: [
-                PasteRestrictionFormatter(), // Custom formatter to restrict paste
-                FilteringTextInputFormatter.digitsOnly, // Allow digits only
+                PasteRestrictionFormatter(),
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(maximumLength),
               ],
               decoration: InputDecoration(
                 counterText: "",
                 border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(vertical: 15),
                 hintText: widget.languageData,
                 hintStyle: TextStyle(
                   color: Colors.grey.shade600,
-                  fontFamily: box.read("language").toString() == "Fa"
+                  fontFamily: box.read("language")?.toString() == "Fa"
                       ? Get.find<FontController>().currentFont
                       : null,
                   fontSize: 14,
                 ),
               ),
-              onChanged: (value) {
-                validateInput(value);
+              onChanged: validateInput,
+              onSubmitted: (_) {
+                _numberFocusNode.unfocus();
               },
             ),
           ),
         ),
-        if (errorMessage != null)
-          KText(text: errorMessage!, color: Colors.white, fontSize: 12),
+        if (errorMessage != null) ...[
+          const SizedBox(height: 5),
+          KText(text: errorMessage!, color: Colors.red, fontSize: 12),
+        ],
       ],
     );
   }

@@ -13,6 +13,11 @@ class KText extends StatelessWidget {
   final String? fontFamily;
   final TextAlign? textAlign;
 
+  final double? height;
+  final double? letterSpacing;
+  final int? maxLines;
+  final TextOverflow? overflow;
+
   const KText({
     Key? key,
     required this.text,
@@ -21,6 +26,10 @@ class KText extends StatelessWidget {
     this.fontWeight = FontWeight.normal,
     this.fontFamily,
     this.textAlign,
+    this.height,
+    this.letterSpacing,
+    this.maxLines,
+    this.overflow,
   }) : super(key: key);
 
   @override
@@ -33,9 +42,11 @@ class KText extends StatelessWidget {
         fontSize: fontSize,
         color: color ?? Colors.black,
         fontWeight: fontWeight,
+        height: height,
+        letterSpacing: letterSpacing,
         fontFamily: box.read("language").toString() == "Fa"
             ? Get.find<FontController>().currentFont
-            : null,
+            : fontFamily,
       ),
     );
   }

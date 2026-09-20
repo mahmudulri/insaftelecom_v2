@@ -1,8 +1,3 @@
-// To parse this JSON data, do
-//
-//     final countryListModel = countryListModelFromJson(jsonString);
-
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 CountryListModel countryListModelFromJson(String str) =>
@@ -10,6 +5,22 @@ CountryListModel countryListModelFromJson(String str) =>
 
 String countryListModelToJson(CountryListModel data) =>
     json.encode(data.toJson());
+
+bool parseBoolean(dynamic value) {
+  if (value == true || value == 1) {
+    return true;
+  }
+
+  if (value == false || value == 0 || value == null) {
+    return false;
+  }
+
+  final String normalizedValue = value.toString().trim().toLowerCase();
+
+  return normalizedValue == "true" ||
+      normalizedValue == "1" ||
+      normalizedValue == "yes";
+}
 
 class CountryListModel {
   final bool? success;
@@ -26,39 +37,51 @@ class CountryListModel {
     this.payload,
   });
 
-  factory CountryListModel.fromJson(Map<String, dynamic> json) =>
-      CountryListModel(
-        success: json["success"],
-        code: json["code"],
-        message: json["message"],
-        data: Data.fromJson(json["data"]),
-        payload: List<dynamic>.from(json["payload"].map((x) => x)),
-      );
+  factory CountryListModel.fromJson(Map<String, dynamic> json) {
+    return CountryListModel(
+      success: json["success"],
+      code: json["code"],
+      message: json["message"],
+      data: json["data"] != null ? Data.fromJson(json["data"]) : null,
+      payload: json["payload"] != null
+          ? List<dynamic>.from(json["payload"])
+          : <dynamic>[],
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        "success": success,
-        "code": code,
-        "message": message,
-        "data": data!.toJson(),
-        "payload": List<dynamic>.from(payload!.map((x) => x)),
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      "success": success,
+      "code": code,
+      "message": message,
+      "data": data?.toJson(),
+      "payload": payload ?? <dynamic>[],
+    };
+  }
 }
 
 class Data {
   final List<Country> countries;
 
-  Data({
-    required this.countries,
-  });
+  Data({required this.countries});
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
-        countries: List<Country>.from(
-            json["countries"].map((x) => Country.fromJson(x))),
-      );
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return Data(
+      countries: json["countries"] != null
+          ? List<Country>.from(
+              json["countries"].map((x) => Country.fromJson(x)),
+            )
+          : <Country>[],
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        "countries": List<dynamic>.from(countries.map((x) => x.toJson())),
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      "countries": List<dynamic>.from(
+        countries.map((country) => country.toJson()),
+      ),
+    };
+  }
 }
 
 class Country {
@@ -66,11 +89,12 @@ class Country {
   final String? countryName;
   final String? countryFlagImageUrl;
   final String? languageId;
-  String? phoneNumberLength;
+  final String? phoneNumberLength;
   final String? countryTelecomCode;
   final DateTime? createdAt;
   final DateTime? updatedAt;
-  final dynamic? deletedAt;
+  final dynamic deletedAt;
+  final bool enableOperatorLookup;
 
   Country({
     this.id,
@@ -82,35 +106,40 @@ class Country {
     this.createdAt,
     this.updatedAt,
     this.deletedAt,
+    this.enableOperatorLookup = false,
   });
 
-  factory Country.fromJson(Map<String, dynamic> json) => Country(
-        id: json["id"] == null ? null : json["id"],
-        countryName: json["country_name"] == null ? null : json["country_name"],
-        countryFlagImageUrl: json["country_flag_image_url"] == null
-            ? null
-            : json["country_flag_image_url"],
-        languageId: json["language_id"] == null ? null : json["language_id"],
-        phoneNumberLength: json["phone_number_length"] == null
-            ? null
-            : json["phone_number_length"],
-        countryTelecomCode: json["country_telecom_code"] == null
-            ? null
-            : json["country_telecom_code"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        deletedAt: json["deleted_at"] == null ? null : json["deleted_at"],
-      );
+  factory Country.fromJson(Map<String, dynamic> json) {
+    return Country(
+      id: int.tryParse(json["id"]?.toString() ?? ""),
+      countryName: json["country_name"]?.toString(),
+      countryFlagImageUrl: json["country_flag_image_url"]?.toString(),
+      languageId: json["language_id"]?.toString(),
+      phoneNumberLength: json["phone_number_length"]?.toString(),
+      countryTelecomCode: json["country_telecom_code"]?.toString(),
+      createdAt: json["created_at"] != null
+          ? DateTime.tryParse(json["created_at"].toString())
+          : null,
+      updatedAt: json["updated_at"] != null
+          ? DateTime.tryParse(json["updated_at"].toString())
+          : null,
+      deletedAt: json["deleted_at"],
+      enableOperatorLookup: parseBoolean(json["enable_operator_lookup"]),
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "country_name": countryName,
-        "country_flag_image_url": countryFlagImageUrl,
-        "language_id": languageId,
-        "phone_number_length": phoneNumberLength,
-        "country_telecom_code": countryTelecomCode,
-        "created_at": createdAt!.toIso8601String(),
-        "updated_at": updatedAt!.toIso8601String(),
-        "deleted_at": deletedAt,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "country_name": countryName,
+      "country_flag_image_url": countryFlagImageUrl,
+      "language_id": languageId,
+      "phone_number_length": phoneNumberLength,
+      "country_telecom_code": countryTelecomCode,
+      "created_at": createdAt?.toIso8601String(),
+      "updated_at": updatedAt?.toIso8601String(),
+      "deleted_at": deletedAt,
+      "enable_operator_lookup": enableOperatorLookup,
+    };
+  }
 }

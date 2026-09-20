@@ -1,48 +1,99 @@
 import 'package:get/get.dart';
-import 'package:insaftelecom/models/bundle_model.dart';
 import 'package:insaftelecom/services/bundle_service.dart';
 
+import '../models/bundle_model.dart';
+
 class BundleController extends GetxController {
-  // @override
-  // void onInit() {
-  //   fetchbundles();
-  //   super.onInit();
-  // }
   int initialpage = 1;
 
-  RxList<Bundle> finalList = <Bundle>[].obs;
-  var isLoading = false.obs;
+  final RxList<Bundle> finalList = <Bundle>[].obs;
 
-  var allbundleslist = BundleModel().obs;
+  final RxBool isLoading = false.obs;
+  final RxBool isLookupLoading = false.obs;
 
-  void fetchallbundles() async {
+  final Rx<BundleModel> allbundleslist = BundleModel().obs;
+
+  /// Normal bundle API
+  Future<void> fetchallbundles() async {
+    if (isLoading.value) return;
+
     try {
-      isLoading(true);
-      await BundlesApi().fetchBundles(initialpage).then((value) {
-        allbundleslist.value = value;
+      isLoading.value = true;
 
-        if (allbundleslist.value.data != null &&
-            allbundleslist.value.data!.bundles != null) {
-          if (initialpage == 1) {
-            finalList.clear();
-          } else {
-            print("object");
-          }
-          finalList.addAll(allbundleslist.value.data!.bundles!);
-        }
+      final BundleModel response = await BundlesApi().fetchBundles(initialpage);
 
-        // print(finalList.length.toString());
-        // finalList.forEach((order) {
-        //   print(order.id.toString());
-        // });
+      allbundleslist.value = response;
 
-        isLoading(false);
-      });
-      ;
+      final List<Bundle> bundles = response.data?.bundles ?? <Bundle>[];
 
-      isLoading(false);
+      final int totalPages = response.payload?.pagination.totalPages ?? 0;
+
+      print("✅ Bundle API Response");
+      print("📄 Current Page : $initialpage");
+      print("📚 Total Pages  : $totalPages");
+      print("📦 Bundles received : ${bundles.length}");
+
+      if (initialpage == 1) {
+        finalList.clear();
+      }
+
+      finalList.addAll(bundles);
+
+      print("📦 Total bundles in list : ${finalList.length}");
+      print("======================================");
     } catch (e) {
-      print(e.toString());
+      if (initialpage == 1) {
+        finalList.clear();
+      }
+
+      print("❌ Normal bundle API error: $e");
+    } finally {
+      isLoading.value = false;
     }
+  }
+
+  /// Operator lookup bundle API
+  Future<void> fetchlookupbundles(String phoneNumber) async {
+    final String cleanPhoneNumber = phoneNumber.trim();
+
+    if (cleanPhoneNumber.isEmpty) {
+      return;
+    }
+
+    if (isLookupLoading.value) {
+      return;
+    }
+
+    try {
+      isLookupLoading.value = true;
+
+      final BundleModel response = await BundlesApi().fetchlookupBundles(
+        cleanPhoneNumber,
+      );
+
+      allbundleslist.value = response;
+
+      final List<Bundle> bundles = response.data?.bundles ?? <Bundle>[];
+
+      // Lookup result সবসময় নতুন result হিসেবে দেখাবে।
+      initialpage = 1;
+      finalList.clear();
+      finalList.addAll(bundles);
+    } catch (e) {
+      finalList.clear();
+
+      print("Lookup bundle API error: $e");
+    } finally {
+      isLookupLoading.value = false;
+    }
+  }
+
+  void resetBundles() {
+    initialpage = 1;
+    finalList.clear();
+    allbundleslist.value = BundleModel();
+
+    isLoading.value = false;
+    isLookupLoading.value = false;
   }
 }

@@ -3,12 +3,16 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../controllers/wallet_details_controller.dart';
+import '../global_controller/languages_controller.dart';
 
 class WalletDetailsDialog extends StatelessWidget {
   WalletDetailsDialog({super.key});
 
   final WalletDetailsController walletDetailsController =
       Get.find<WalletDetailsController>();
+
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +46,8 @@ class WalletDetailsDialog extends StatelessWidget {
               color: Colors.white,
               borderRadius: BorderRadius.circular(24),
             ),
-            child: const Text(
-              "No wallet details found",
+            child: Text(
+              languagesController.tr("NO_WALLET_DETAILS_FOUND"),
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
             ),
           );
@@ -105,8 +109,8 @@ class WalletDetailsDialog extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  "Wallet Details",
+                                Text(
+                                  languagesController.tr("WALLET_DETAILS"),
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w900,
@@ -153,14 +157,14 @@ class WalletDetailsDialog extends StatelessWidget {
                         children: [
                           Expanded(
                             child: _topAmountBox(
-                              title: "Balance",
+                              title: languagesController.tr("BALANCE"),
                               value: "${wallet.balance ?? "0.00"} $symbol",
                             ),
                           ),
                           const SizedBox(width: 10),
                           Expanded(
                             child: _topAmountBox(
-                              title: "Available",
+                              title: languagesController.tr("AVAILABLE"),
                               value:
                                   "${wallet.availableBalance ?? "0.00"} $symbol",
                             ),
@@ -181,7 +185,7 @@ class WalletDetailsDialog extends StatelessWidget {
                             Expanded(
                               child: _infoBox(
                                 icon: Icons.payments_rounded,
-                                title: "Payment",
+                                title: languagesController.tr("PAYMENT"),
                                 value: "${wallet.payment ?? "0.00"} $symbol",
                                 iconColor: const Color(0xff12B76A),
                               ),
@@ -190,7 +194,7 @@ class WalletDetailsDialog extends StatelessWidget {
                             Expanded(
                               child: _infoBox(
                                 icon: Icons.trending_down_rounded,
-                                title: "Loan",
+                                title: languagesController.tr("LOAN"),
                                 value:
                                     "${wallet.loanBalance ?? "0.00"} $symbol",
                                 iconColor: const Color(0xffF79009),
@@ -206,7 +210,7 @@ class WalletDetailsDialog extends StatelessWidget {
                             Expanded(
                               child: _infoBox(
                                 icon: Icons.trending_up_rounded,
-                                title: "Earning",
+                                title: languagesController.tr("EARNING"),
                                 value:
                                     "${wallet.totalEarnings ?? "0.00"} $symbol",
                                 iconColor: const Color(0xff12B76A),
@@ -218,7 +222,7 @@ class WalletDetailsDialog extends StatelessWidget {
                                 icon: wallet.isActive == true
                                     ? Icons.verified_rounded
                                     : Icons.block_rounded,
-                                title: "Status",
+                                title: languagesController.tr("STATUS"),
                                 value: wallet.isActive == true
                                     ? "Active"
                                     : "Inactive",
@@ -234,7 +238,7 @@ class WalletDetailsDialog extends StatelessWidget {
 
                         _detailsRow(
                           icon: Icons.call_made_rounded,
-                          title: "Total Hawala Sent",
+                          title: languagesController.tr("TOTAL_HAWALA_SENT"),
                           value: "${wallet.totalHawalaSent ?? "0.00"} $symbol",
                         ),
 
@@ -242,7 +246,9 @@ class WalletDetailsDialog extends StatelessWidget {
 
                         _detailsRow(
                           icon: Icons.call_received_rounded,
-                          title: "Total Hawala Received",
+                          title: languagesController.tr(
+                            "TOTAL_HAWALA_RECEIVED",
+                          ),
                           value:
                               "${wallet.totalHawalaReceived ?? "0.00"} $symbol",
                         ),
@@ -251,9 +257,9 @@ class WalletDetailsDialog extends StatelessWidget {
 
                         Row(
                           children: [
-                            const Expanded(
+                            Expanded(
                               child: Text(
-                                "Recent Transactions",
+                                languagesController.tr("RECENT_TRANSACTIONS"),
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w900,
@@ -295,9 +301,11 @@ class WalletDetailsDialog extends StatelessWidget {
                                 color: const Color(0xffEAECF0),
                               ),
                             ),
-                            child: const Center(
+                            child: Center(
                               child: Text(
-                                "No recent transactions",
+                                languagesController.tr(
+                                  "NO_RECENT_TRANSACTIONS",
+                                ),
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,

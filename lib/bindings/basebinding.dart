@@ -9,6 +9,7 @@ import '../controllers/categories_controller.dart';
 import '../controllers/commission_group_controller.dart';
 import '../controllers/company_controller.dart';
 import '../controllers/country_list_controller.dart';
+import '../controllers/currency_controller.dart';
 import '../controllers/dashboard_controller.dart';
 import '../controllers/district_controller.dart';
 import '../controllers/hawala_list_controller.dart';
@@ -36,6 +37,7 @@ class Basebinding implements Bindings {
     );
 
     Get.lazyPut<AddSubResellerController>(() => AddSubResellerController());
+    Get.lazyPut<CurrencyController>(() => CurrencyController(), fenix: true);
 
     Get.lazyPut<CountryListController>(() => CountryListController());
     Get.lazyPut<ProvinceController>(() => ProvinceController());

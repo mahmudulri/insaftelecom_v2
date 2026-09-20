@@ -2,9 +2,11 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
+
 import 'package:get_storage/get_storage.dart';
 import 'package:insaftelecom/pages/network.dart';
+import 'package:insaftelecom/widgets/accounting_pin_pad.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/dashboard_controller.dart';
@@ -14,15 +16,14 @@ import '../global_controller/font_controller.dart';
 import '../global_controller/languages_controller.dart';
 import '../global_controller/page_controller.dart';
 import '../screens/change_password_screen.dart';
-
 import '../screens/change_pin.dart';
 import '../screens/commission_group_screen.dart';
-import '../screens/hawala_list_screen.dart';
 import '../screens/helpscreen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/selling_price_screen.dart';
 import '../screens/sign_in_screen.dart';
 import '../utils/colors.dart';
+
 import 'custom_text.dart';
 
 class DrawerWidget extends StatefulWidget {
@@ -159,49 +160,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   imagelink: "assets/icons/accounting.png",
                   menuname: languagesController.tr("ACCOUNTING"),
                   onpressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          backgroundColor: Colors.white,
-                          title: Row(
-                            children: [
-                              Icon(
-                                Icons.hourglass_empty,
-                                color: Colors.deepPurple,
-                                size: 28,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                languagesController.tr("COMMING_SOON"),
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.deepPurple,
-                                ),
-                              ),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor: Colors.deepPurple,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(languagesController.tr("CLOSE")),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                    AccountingPinPad.show(context);
                   },
                 ),
                 SizedBox(height: screenHeight * 0.015),
@@ -403,7 +362,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
 class drawermenu extends StatelessWidget {
   drawermenu({super.key, this.menuname, this.imagelink, this.onpressed});
-
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
   String? menuname;
   String? imagelink;
   VoidCallback? onpressed;
