@@ -1649,9 +1649,6 @@ class _HomepagesState extends State<Homepages> {
 
                     const SizedBox(width: 8),
 
-                    // =========================
-                    // AMOUNT + CURRENCY
-                    // =========================
                     Expanded(
                       flex: 3,
                       child: Row(
@@ -1660,23 +1657,13 @@ class _HomepagesState extends State<Homepages> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Flexible(
-                            child: Text(
-                              NumberFormat.currency(
-                                locale: 'en_US',
-                                symbol: '',
-                                decimalDigits: 2,
-                              ).format(
-                                double.parse(
-                                  data.bundle!.sellingPrice.toString(),
-                                ),
-                              ),
+                            child: NText(
+                              text: data.bundle!.sellingPrice.toString(),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 11.5,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black87,
-                              ),
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black87,
                             ),
                           ),
 

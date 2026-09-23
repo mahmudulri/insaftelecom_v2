@@ -23,50 +23,43 @@ class _SplashScreenState extends State<SplashScreen> {
   checkData() async {
     String languageShortName = box.read("language") ?? "Fa";
 
-    // Find selected language details from the list
+    /// Find language information
     final matchedLang = languagesController.alllanguagedata.firstWhere(
       (lang) => lang["name"] == languageShortName,
-      orElse: () => {"isoCode": "fa", "direction": "rtl"},
+      orElse: () => {
+        "name": "En",
+        "fullname": "English",
+        "isoCode": "en",
+        "region": "US",
+        "direction": "ltr",
+      },
     );
 
-    final isoCode = matchedLang["isoCode"] ?? "fa";
-    final direction = matchedLang["direction"] ?? "rtl";
+    final String isoCode = matchedLang["isoCode"] ?? "en";
 
-    // Save language and direction
-    box.write("language", languageShortName);
-    box.write("direction", direction);
+    final String region = matchedLang["region"] ?? "US";
+
+    final String direction = matchedLang["direction"] ?? "ltr";
+
+    /// Save language information
+    await box.write("language", languageShortName);
+
+    await box.write("language_iso", isoCode);
+
+    await box.write("language_region", region);
+
+    await box.write("direction", direction);
 
     // Load translations manually
     languagesController.changeLanguage(languageShortName);
 
-    // Set EasyLocalization locale using proper region code
-    Locale locale;
-    switch (isoCode) {
-      case "fa":
-        locale = Locale("fa", "IR");
-        break;
-      case "en":
-        locale = Locale("en", "US");
-        break;
-      case "ar":
-        locale = Locale("ar", "AE");
-        break;
-      case "ps":
-        locale = Locale("ps", "AF");
-        break;
-      case "tr":
-        locale = Locale("tr", "TR");
-        break;
-      case "bn":
-        locale = Locale("bn", "BD");
-        break;
-      default:
-        locale = Locale("fa", "IR");
-    }
+    final Locale locale = Locale(isoCode, region);
 
-    setState(() {
-      EasyLocalization.of(context)!.setLocale(locale);
-    });
+    if (!mounted) return;
+
+    await EasyLocalization.of(context)!.setLocale(locale);
+
+    print("🌐 API Language: ${box.read("language_iso")}");
 
     // If no token, go to onboarding
     if (box.read('userToken') == null) {
