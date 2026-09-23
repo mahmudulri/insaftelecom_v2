@@ -429,6 +429,7 @@
     "UNNAMED_CURRENCY": "بې نومه اسعار",
     "EDIT": "سمول",
     "EXCHANGE_RATE_PER_USD": "د هر ډالر د تبادلې نرخ",
+    "IN_LETTER": "په تورو",
     "ADD_NEW_CURRENCY": "نوي اسعار اضافه کړئ",
     "CURRENCY_NAME": "د اسعارو نوم",
     "EXAMPLE_AFGHANI": "بېلګه: افغانۍ",
@@ -546,5 +547,9 @@
     "RECEIVABLES_CREATED": "جوړ شوي ترلاسه کېدونکي",
     "RECEIVABLE_PAYMENTS": "د ترلاسه کېدونکو تادیات",
     "ADJUSTMENT_EFFECT": "د سمون اغېز",
-    "REVERSAL_EFFECT": "د بېرته ګرځولو اغېز"
+    "REVERSAL_EFFECT": "د بېرته ګرځولو اغېز",
+    "VIEW_ALL": "ټول وګورئ",
+    "NOTIFICATIONS": "خبرتیاوې",
+    "NOTIFICATIONS_DETAILS": "د خبرتیا جزئیات",
+    "NEW": "نوی"
 }

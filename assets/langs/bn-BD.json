@@ -429,6 +429,7 @@
     "UNNAMED_CURRENCY": "নামবিহীন কারেন্সি",
     "EDIT": "সম্পাদনা",
     "EXCHANGE_RATE_PER_USD": "প্রতি USD বিনিময় হার",
+    "IN_LETTER": "কথায়",
     "ADD_NEW_CURRENCY": "নতুন কারেন্সি যোগ করুন",
     "CURRENCY_NAME": "কারেন্সির নাম",
     "EXAMPLE_AFGHANI": "উদাহরণ: আফগানি",
@@ -546,5 +547,9 @@
     "RECEIVABLES_CREATED": "তৈরি হওয়া পাওনা",
     "RECEIVABLE_PAYMENTS": "পাওনা পরিশোধ",
     "ADJUSTMENT_EFFECT": "সমন্বয়ের প্রভাব",
-    "REVERSAL_EFFECT": "বাতিলের প্রভাব"
+    "REVERSAL_EFFECT": "বাতিলের প্রভাব",
+    "VIEW_ALL": "সব দেখুন",
+    "NOTIFICATIONS": "নোটিফিকেশন",
+    "NOTIFICATIONS_DETAILS": "নোটিফিকেশনের বিস্তারিত",
+    "NEW": "নতুন"
 }

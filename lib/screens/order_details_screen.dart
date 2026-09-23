@@ -30,6 +30,7 @@ class OrderDetailsScreen extends StatefulWidget {
     this.resellerPhone,
     this.companyLogo,
     this.amount,
+    this.currencyCode,
   });
   String? createDate;
   String? status;
@@ -45,6 +46,7 @@ class OrderDetailsScreen extends StatefulWidget {
   String? resellerPhone;
   String? companyLogo;
   String? amount;
+  String? currencyCode;
   @override
   State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
 }
@@ -291,7 +293,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 Row(
                                   children: [
                                     KText(
-                                      text: box.read("currency_code"),
+                                      text: widget.currencyCode.toString(),
                                       fontSize: 14,
                                       color: Colors.grey,
                                     ),

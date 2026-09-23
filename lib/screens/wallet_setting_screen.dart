@@ -8,6 +8,7 @@ import '../controllers/wallet_setting_controller.dart';
 import '../global_controller/languages_controller.dart';
 import '../global_controller/page_controller.dart';
 import '../widgets/drawer.dart';
+import '../widgets/switch_active_wallet_dialog.dart';
 
 class WalletSettingScreen extends StatefulWidget {
   const WalletSettingScreen({super.key});
@@ -250,22 +251,61 @@ class _WalletSettingScreenState extends State<WalletSettingScreen> {
               ],
             ),
           ),
-          if (activeWallet?.isDefault == true)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(.16),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                languagesController.tr("DEFAULT"),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
+          const SizedBox(width: 10),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              TextButton.icon(
+                onPressed: () async {
+                  await Get.dialog(
+                    const SwitchActiveWalletDialog(),
+                    barrierDismissible: false,
+                  );
+                  if (!mounted) return;
+                  walletSettingController.fetchsettings();
+                },
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.white.withOpacity(.16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 8,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                icon: const Icon(Icons.swap_horiz_rounded, size: 20),
+                label: Text(
+                  languagesController.tr("SWITCH"),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
-            ),
+              if (activeWallet?.isDefault == true)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 9,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(.16),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    languagesController.tr("DEFAULT"),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ],
       ),
     );

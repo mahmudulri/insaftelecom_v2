@@ -429,6 +429,7 @@
     "UNNAMED_CURRENCY": "ارز بدون نام",
     "EDIT": "ویرایش",
     "EXCHANGE_RATE_PER_USD": "نرخ تبدیل در برابر دلار",
+    "IN_LETTER": "به حروف",
     "ADD_NEW_CURRENCY": "افزودن ارز جدید",
     "CURRENCY_NAME": "نام ارز",
     "EXAMPLE_AFGHANI": "مثال: افغانی",
@@ -544,5 +545,9 @@
     "RECEIVABLES_CREATED": "مطالبات ایجادشده",
     "RECEIVABLE_PAYMENTS": "پرداخت مطالبات",
     "ADJUSTMENT_EFFECT": "تأثیر تعدیل",
-    "REVERSAL_EFFECT": "تأثیر برگشت"
+    "REVERSAL_EFFECT": "تأثیر برگشت",
+    "VIEW_ALL": "مشاهده همه",
+    "NOTIFICATIONS": "اعلان‌ها",
+    "NOTIFICATIONS_DETAILS": "جزئیات اعلان",
+    "NEW": "جدید"
 }

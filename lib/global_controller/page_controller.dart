@@ -1,19 +1,20 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:insaftelecom/pages/network.dart';
-import 'package:insaftelecom/pages/orders.dart';
-import 'package:insaftelecom/pages/transaction_type.dart';
+
 import '../controllers/dashboard_controller.dart';
-import '../controllers/order_list_controller.dart';
 import '../pages/hawala_page.dart';
 import '../pages/homepages.dart';
 import '../pages/service_screen.dart';
+import '../pages/transaction_type.dart';
+import 'languages_controller.dart';
 
 class Mypagecontroller extends GetxController {
-  final selectedIndex = 0.obs;
-
-  final navigatorKey = GlobalKey<NavigatorState>();
+  final RxInt selectedIndex = 0.obs;
+  final LanguagesController languagesController =
+      Get.find<LanguagesController>();
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   final List<Widget> mainPages = [
     Homepages(),
@@ -22,44 +23,76 @@ class Mypagecontroller extends GetxController {
     TransactionsType(),
   ];
 
-  void onTabSelected(int index) {
-    if (selectedIndex.value == index) return;
+  int _tabChangeVersion = 0;
 
-    if (index == 0) {
-      Get.find<DashboardController>().onhomeTabOpened();
-    } else if (index == 1) {
-      Get.find<OrderlistController>().onOrdersTabOpened();
-    } else if (index == 2) {
-      print(".............");
-    } else if (index == 3) {
-      print(".............");
-    } else {
-      print("object");
-    }
+  /// Call from the bottom navigation's onTap.
+  void onTabSelected(int index) {
+    goToMainPageByIndex(index);
   }
 
-  /// Bottom nav switch
+  /// Switch tab and close any open subpages.
   void goToMainPageByIndex(int index) {
+    if (isClosed || index < 0 || index >= mainPages.length) {
+      return;
+    }
+
+    navigatorKey.currentState?.popUntil((route) => route.isFirst);
+
+    if (selectedIndex.value == index) {
+      return;
+    }
+
     selectedIndex.value = index;
 
-    // pop all sub pages when switching tab
-    navigatorKey.currentState?.popUntil((route) => route.isFirst);
+    final int changeVersion = ++_tabChangeVersion;
+
+    // Refresh after the tab's build has finished.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (isClosed ||
+          changeVersion != _tabChangeVersion ||
+          selectedIndex.value != index) {
+        return;
+      }
+
+      switch (index) {
+        case 0:
+          if (Get.isRegistered<DashboardController>()) {
+            Get.find<DashboardController>().onhomeTabOpened();
+          }
+          break;
+
+        case 1:
+          // ServiceScreen
+          break;
+
+        case 2:
+          // HawalaPage
+          break;
+
+        case 3:
+          // TransactionsType
+          break;
+      }
+    });
   }
 
   void openSubPage(Widget page) {
-    navigatorKey.currentState?.push(MaterialPageRoute(builder: (_) => page));
+    if (isClosed) return;
+
+    navigatorKey.currentState?.push(
+      MaterialPageRoute<void>(builder: (_) => page),
+    );
   }
 
   Future<bool> handleBack() async {
-    final navigator = navigatorKey.currentState;
+    final NavigatorState? navigator = navigatorKey.currentState;
 
     if (navigator != null && navigator.canPop()) {
       navigator.pop();
       return false;
     }
 
-    // if main page  → exit dialog
-    final result = await Get.dialog<bool>(
+    final bool? result = await Get.dialog<bool>(
       AlertDialog(
         title: Text(languagesController.tr("EXIT_APP")),
         content: Text(languagesController.tr("DO_YOU_WANT_TO_EXIT_APP")),

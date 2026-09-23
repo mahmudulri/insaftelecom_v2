@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "184550288122",
+    "project_id": "manshorpay",
+    "storage_bucket": "manshorpay.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184550288122:android:62a833505a160fad3c3743",
+        "android_client_info": {
+          "package_name": "com.afrapay.woosat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfEt2OBqDASn9QMgA_OIHJNSHfrK_ez4U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184550288122:android:874d3dadf1d7279a3c3743",
+        "android_client_info": {
+          "package_name": "com.insaftelecom.woosat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfEt2OBqDASn9QMgA_OIHJNSHfrK_ez4U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184550288122:android:d11fe8652ef395543c3743",
+        "android_client_info": {
+          "package_name": "com.woosat.manshorpay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfEt2OBqDASn9QMgA_OIHJNSHfrK_ez4U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -429,6 +429,7 @@
     "EDIT": "تعديل",
     "EXCHANGE_RATE_PER_USD": "سعر الصرف مقابل الدولار",
     "ADD_NEW_CURRENCY": "إضافة عملة جديدة",
+    "IN_LETTER": "المبلغ كتابةً",
     "CURRENCY_NAME": "اسم العملة",
     "EXAMPLE_AFGHANI": "مثال: أفغاني",
     "CURRENCY_CODE": "رمز العملة",
@@ -545,5 +546,9 @@
     "RECEIVABLES_CREATED": "المستحقات المنشأة",
     "RECEIVABLE_PAYMENTS": "مدفوعات المستحقات",
     "ADJUSTMENT_EFFECT": "تأثير التسوية",
-    "REVERSAL_EFFECT": "تأثير العكس"
+    "REVERSAL_EFFECT": "تأثير العكس",
+    "VIEW_ALL": "عرض الكل",
+    "NOTIFICATIONS": "الإشعارات",
+    "NOTIFICATIONS_DETAILS": "تفاصيل الإشعار",
+    "NEW": "جديد"
 }

@@ -17,7 +17,7 @@ class WalletService {
     );
 
     if (response.statusCode == 200) {
-      // print(response.body.toString());
+      print(response.body.toString());
       final walletsModel = WalletsModel.fromJson(json.decode(response.body));
 
       return walletsModel;

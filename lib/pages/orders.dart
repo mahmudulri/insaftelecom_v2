@@ -902,16 +902,22 @@ class _OrdersState extends State<Orders> {
                                                               SizedBox(
                                                                 width: 5,
                                                               ),
+                                                              // KText(
+                                                              //   text: box.read(
+                                                              //     "currency_code",
+                                                              //   ),
+                                                              //   fontSize: 10,
+                                                              //   color:
+                                                              //       Colors.grey,
+                                                              //   fontWeight:
+                                                              //       FontWeight
+                                                              //           .w600,
+                                                              // ),
                                                               KText(
-                                                                text: box.read(
-                                                                  "currency_code",
-                                                                ),
-                                                                fontSize: 10,
-                                                                color:
-                                                                    Colors.grey,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
+                                                                text: data
+                                                                    .chargedCurrency
+                                                                    .code
+                                                                    .toString(),
                                                               ),
                                                             ],
                                                           ),
@@ -965,15 +971,10 @@ class _OrdersState extends State<Orders> {
                                                                 width: 5,
                                                               ),
                                                               KText(
-                                                                text: box.read(
-                                                                  "currency_code",
-                                                                ),
-                                                                fontSize: 10,
-                                                                color:
-                                                                    Colors.grey,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
+                                                                text: data
+                                                                    .chargedCurrency
+                                                                    .code
+                                                                    .toString(),
                                                               ),
                                                             ],
                                                           ),
@@ -1388,16 +1389,22 @@ class _OrdersState extends State<Orders> {
                                                               SizedBox(
                                                                 width: 5,
                                                               ),
+                                                              // KText(
+                                                              //   text: box.read(
+                                                              //     "currency_code",
+                                                              //   ),
+                                                              //   fontSize: 10,
+                                                              //   color:
+                                                              //       Colors.grey,
+                                                              //   fontWeight:
+                                                              //       FontWeight
+                                                              //           .w600,
+                                                              // ),
                                                               KText(
-                                                                text: box.read(
-                                                                  "currency_code",
-                                                                ),
-                                                                fontSize: 10,
-                                                                color:
-                                                                    Colors.grey,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
+                                                                text: data
+                                                                    .chargedCurrency
+                                                                    .code
+                                                                    .toString(),
                                                               ),
                                                             ],
                                                           ),
@@ -1451,15 +1458,10 @@ class _OrdersState extends State<Orders> {
                                                                 width: 5,
                                                               ),
                                                               KText(
-                                                                text: box.read(
-                                                                  "currency_code",
-                                                                ),
-                                                                fontSize: 10,
-                                                                color:
-                                                                    Colors.grey,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
+                                                                text: data
+                                                                    .chargedCurrency
+                                                                    .code
+                                                                    .toString(),
                                                               ),
                                                             ],
                                                           ),

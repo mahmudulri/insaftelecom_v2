@@ -429,6 +429,7 @@
     "UNNAMED_CURRENCY": "Unnamed Currency",
     "EDIT": "Edit",
     "EXCHANGE_RATE_PER_USD": "Exchange Rate per USD",
+    "IN_LETTER": "In Letter",
     "ADD_NEW_CURRENCY": "Add New Currency",
     "CURRENCY_NAME": "Currency Name",
     "EXAMPLE_AFGHANI": "Example: Afghani",
@@ -546,5 +547,9 @@
     "RECEIVABLES_CREATED": "Receivables Created",
     "RECEIVABLE_PAYMENTS": "Receivable Payments",
     "ADJUSTMENT_EFFECT": "Adjustment Effect",
-    "REVERSAL_EFFECT": "Reversal Effect"
+    "REVERSAL_EFFECT": "Reversal Effect",
+    "VIEW_ALL": "View All",
+    "NOTIFICATIONS": "Notifications",
+    "NOTIFICATIONS_DETAILS": "Notification Details",
+    "NEW": "New"
 }

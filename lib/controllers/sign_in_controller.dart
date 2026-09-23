@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:insaftelecom/utils/api_endpoints.dart';
 
+import '../global_controller/fcm_device_token_controller.dart';
 import '../routes/routes.dart';
 import 'dashboard_controller.dart';
 
@@ -14,8 +15,15 @@ final dashboardController = Get.find<DashboardController>();
 class SignInController extends GetxController {
   final box = GetStorage();
 
+  /// ============================================================
+  /// FCM DEVICE TOKEN CONTROLLER
+  /// ============================================================
+  final FcmDeviceTokenController fcmDeviceTokenController =
+      Get.find<FcmDeviceTokenController>();
+
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
   // final CountryListController countryListController =
   //     Get.put(CountryListController());
 
@@ -35,6 +43,7 @@ class SignInController extends GetxController {
       var url = Uri.parse(
         ApiEndPoints.baseUrl + ApiEndPoints.otherendpoints.loginIink,
       );
+
       print("API URL: $url");
 
       Map body = {
@@ -56,27 +65,33 @@ class SignInController extends GetxController {
       );
 
       final results = jsonDecode(response.body);
+
       // print("Response Status Code: ${response.statusCode}");
       // print("Response Body: ${response.body}");
 
       if (response.statusCode == 200) {
         box.write("userToken", results["data"]["api_token"]);
+
         box.write(
           "currency_code",
           results["data"]["user_info"]["currency"]["code"],
         );
+
         box.write(
           "currency_symbol",
           results["data"]["user_info"]["currency"]["symbol"],
         );
+
         box.write(
           "countryID",
           results["data"]["user_info"]["reseller"]["country_id"],
         );
+
         box.write(
           "currencypreferenceID",
           results["data"]["user_info"]["currency_preference_id"],
         );
+
         box.write(
           "currencyName",
           results["data"]["user_info"]["currency"]["name"],
@@ -86,12 +101,34 @@ class SignInController extends GetxController {
           "resellerrate",
           results["data"]["user_info"]["currency"]["exchange_rate_per_usd"],
         );
+
+        /// ============================================================
+        /// SEND CURRENT FCM DEVICE TOKEN TO SERVER
+        /// ============================================================
+        ///
+        /// Login token save হওয়ার পরে current FCM token
+        /// server-এ register/update করা হবে।
+        ///
+        /// FCM token send fail হলেও login বন্ধ হবে না।
+        ///
+        try {
+          final bool fcmTokenSaved = await fcmDeviceTokenController
+              .sendCurrentTokenToServer();
+
+          print("FCM device token saved: $fcmTokenSaved");
+        } catch (error, stackTrace) {
+          print("Unable to register FCM token: $error");
+
+          debugPrintStack(stackTrace: stackTrace);
+        }
+
         dashboardController.fetchDashboardData();
 
         Get.toNamed(basescreen);
 
         if (results["success"] == true) {
           loginsuccess.value = false;
+
           print(loginsuccess.value);
 
           Fluttertoast.showToast(
@@ -128,8 +165,10 @@ void _showError(dynamic results) {
   } else if (results["errors"] is Map) {
     // Extract first validation message
     final errorsMap = results["errors"] as Map;
+
     if (errorsMap.isNotEmpty) {
       final firstError = errorsMap.values.first;
+
       if (firstError is List && firstError.isNotEmpty) {
         errorMessage = firstError.first.toString();
       }

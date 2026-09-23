@@ -71,19 +71,6 @@ class Bundle {
     this.displayCurrency,
   });
 
-  /// ------------------------------------------------------------
-  /// SAFE CURRENCY GETTERS
-  ///
-  /// API may return:
-  ///   currency
-  ///
-  /// and sometimes may return:
-  ///   display_currency
-  ///
-  /// display_currency has priority.
-  /// If it is null, normal currency will be used.
-  /// ------------------------------------------------------------
-
   String get currencyCode => displayCurrency?.code ?? currency?.code ?? '';
 
   String get currencySymbol =>

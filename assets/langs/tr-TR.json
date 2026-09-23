@@ -429,6 +429,7 @@
     "UNNAMED_CURRENCY": "Adsız Para Birimi",
     "EDIT": "Düzenle",
     "EXCHANGE_RATE_PER_USD": "USD Başına Döviz Kuru",
+    "IN_LETTER": "Yazıyla",
     "ADD_NEW_CURRENCY": "Yeni Para Birimi Ekle",
     "CURRENCY_NAME": "Para Birimi Adı",
     "EXAMPLE_AFGHANI": "Örnek: Afgani",
@@ -546,5 +547,9 @@
     "RECEIVABLES_CREATED": "Oluşturulan Alacaklar",
     "RECEIVABLE_PAYMENTS": "Alacak Ödemeleri",
     "ADJUSTMENT_EFFECT": "Düzeltme Etkisi",
-    "REVERSAL_EFFECT": "Ters Kayıt Etkisi"
+    "REVERSAL_EFFECT": "Ters Kayıt Etkisi",
+    "VIEW_ALL": "Tümünü Gör",
+    "NOTIFICATIONS": "Bildirimler",
+    "NOTIFICATIONS_DETAILS": "Bildirim Detayları",
+    "NEW": "Yeni"
 }

@@ -61,6 +61,7 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   void initState() {
     super.initState();
+    walletsController.fetchwalletsData();
 
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -121,12 +122,17 @@ class _WalletScreenState extends State<WalletScreen> {
                       ),
                       Spacer(),
                       Obx(
-                        () => Text(
-                          languagesController.tr("WALLET_DETAILS"),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: screenWidth * 0.045,
-                            color: Colors.white,
+                        () => GestureDetector(
+                          onTap: () {
+                            walletsController.fetchwalletsData();
+                          },
+                          child: Text(
+                            languagesController.tr("WALLET_DETAILS"),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: screenWidth * 0.045,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),

@@ -31,28 +31,25 @@ class HawalaCurrencyModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "success": success,
-        "code": code,
-        "message": message,
-        "data": data!.toJson(),
-        "payload": List<dynamic>.from(payload!.map((x) => x)),
-      };
+    "success": success,
+    "code": code,
+    "message": message,
+    "data": data!.toJson(),
+    "payload": List<dynamic>.from(payload!.map((x) => x)),
+  };
 }
 
 class Data {
   final List<Rate>? rates;
 
-  Data({
-    this.rates,
-  });
+  Data({this.rates});
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
-        rates: List<Rate>.from(json["rates"].map((x) => Rate.fromJson(x))),
-      );
+  factory Data.fromJson(Map<String, dynamic> json) =>
+      Data(rates: List<Rate>.from(json["rates"].map((x) => Rate.fromJson(x))));
 
   Map<String, dynamic> toJson() => {
-        "rates": List<dynamic>.from(rates!.map((x) => x.toJson())),
-      };
+    "rates": List<dynamic>.from(rates!.map((x) => x.toJson())),
+  };
 }
 
 class Rate {
@@ -62,7 +59,8 @@ class Rate {
   final String? amount;
   final String? buyRate;
   final String? sellRate;
-
+  final dynamic description;
+  final String? amountInLetter;
   final Currency? fromCurrency;
   final Currency? toCurrency;
 
@@ -73,37 +71,47 @@ class Rate {
     this.amount,
     this.buyRate,
     this.sellRate,
+    this.description,
+    this.amountInLetter,
     this.fromCurrency,
     this.toCurrency,
   });
 
   factory Rate.fromJson(Map<String, dynamic> json) => Rate(
-        id: json["id"] == null ? null : json["id"],
-        fromCurrencyId:
-            json["from_currency_id"] == null ? null : json["from_currency_id"],
-        toCurrencyId:
-            json["to_currency_id"] == null ? null : json["to_currency_id"],
-        amount: json["amount"] == null ? null : json["amount"],
-        buyRate: json["buy_rate"] == null ? null : json["buy_rate"],
-        sellRate: json["sell_rate"] == null ? null : json["sell_rate"],
-        fromCurrency: json["from_currency"] == null
-            ? null
-            : Currency.fromJson(json["from_currency"]),
-        toCurrency: json["to_currency"] == null
-            ? null
-            : Currency.fromJson(json["to_currency"]),
-      );
+    id: json["id"] == null ? null : json["id"],
+    fromCurrencyId: json["from_currency_id"] == null
+        ? null
+        : json["from_currency_id"],
+    toCurrencyId: json["to_currency_id"] == null
+        ? null
+        : json["to_currency_id"],
+    amount: json["amount"] == null ? null : json["amount"],
+    buyRate: json["buy_rate"] == null ? null : json["buy_rate"],
+    sellRate: json["sell_rate"] == null ? null : json["sell_rate"],
+    amountInLetter: json["amount_in_letter"] == null
+        ? null
+        : json["amount_in_letter"],
+    description: json["description"] == null ? null : json["description"],
+    fromCurrency: json["from_currency"] == null
+        ? null
+        : Currency.fromJson(json["from_currency"]),
+    toCurrency: json["to_currency"] == null
+        ? null
+        : Currency.fromJson(json["to_currency"]),
+  );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "from_currency_id": fromCurrencyId,
-        "to_currency_id": toCurrencyId,
-        "amount": amount,
-        "buy_rate": buyRate,
-        "sell_rate": sellRate,
-        "from_currency": fromCurrency!.toJson(),
-        "to_currency": toCurrency!.toJson(),
-      };
+    "id": id,
+    "from_currency_id": fromCurrencyId,
+    "to_currency_id": toCurrencyId,
+    "amount": amount,
+    "buy_rate": buyRate,
+    "sell_rate": sellRate,
+    "amount_in_letter": amountInLetter,
+    "description": description,
+    "from_currency": fromCurrency!.toJson(),
+    "to_currency": toCurrency!.toJson(),
+  };
 }
 
 class Currency {
@@ -124,24 +132,24 @@ class Currency {
   });
 
   factory Currency.fromJson(Map<String, dynamic> json) => Currency(
-        id: json["id"] == null ? null : json["id"],
-        name: json["name"] == null ? null : json["name"],
-        code: json["code"] == null ? null : json["code"],
-        symbol: json["symbol"] == null ? null : json["symbol"],
-        ignoreDigitsCount: json["ignore_digits_count"] == null
-            ? null
-            : json["ignore_digits_count"],
-        exchangeRatePerUsd: json["exchange_rate_per_usd"] == null
-            ? null
-            : json["exchange_rate_per_usd"],
-      );
+    id: json["id"] == null ? null : json["id"],
+    name: json["name"] == null ? null : json["name"],
+    code: json["code"] == null ? null : json["code"],
+    symbol: json["symbol"] == null ? null : json["symbol"],
+    ignoreDigitsCount: json["ignore_digits_count"] == null
+        ? null
+        : json["ignore_digits_count"],
+    exchangeRatePerUsd: json["exchange_rate_per_usd"] == null
+        ? null
+        : json["exchange_rate_per_usd"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "code": code,
-        "symbol": symbol,
-        "ignore_digits_count": ignoreDigitsCount,
-        "exchange_rate_per_usd": exchangeRatePerUsd,
-      };
+    "id": id,
+    "name": name,
+    "code": code,
+    "symbol": symbol,
+    "ignore_digits_count": ignoreDigitsCount,
+    "exchange_rate_per_usd": exchangeRatePerUsd,
+  };
 }

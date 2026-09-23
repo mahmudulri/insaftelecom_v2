@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,8 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:insaftelecom/controllers/drawer_controller.dart';
-import 'package:insaftelecom/screens/result_screen.dart';
-import 'package:insaftelecom/widgets/bottomsheet.dart';
 import 'package:insaftelecom/widgets/drawer.dart';
 import 'package:lottie/lottie.dart';
 import 'package:insaftelecom/controllers/bundle_controller.dart';
@@ -22,7 +19,6 @@ import '../controllers/service_controller.dart';
 import '../global_controller/font_controller.dart';
 import '../global_controller/page_controller.dart';
 import '../widgets/custom_text.dart';
-import 'country_selection.dart';
 
 class RechargeScreen extends StatefulWidget {
   const RechargeScreen({super.key, required this.enableOperatorLookup});
@@ -1910,7 +1906,10 @@ class _RechargeScreenState extends State<RechargeScreen> {
                                                         //   ),
                                                         // ),
                                                         Text(
-                                                          data.currencyCode,
+                                                          data
+                                                              .displayCurrency!
+                                                              .code
+                                                              .toString(),
                                                           style: TextStyle(
                                                             fontSize: 12,
                                                             fontWeight:
